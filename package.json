@@ -1,0 +1,29 @@
+{
+  "name": "star-to",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "npm run type-check -- --watch",
+    "build": "npm run build:types && npm run build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel client/ts --out-dir static/js --extensions \".ts,.tsx\" --source-maps inline -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/star-to/star-to.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/star-to/star-to/issues"
+  },
+  "homepage": "https://github.com/star-to/star-to#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.16.0",
+    "@babel/core": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
+    "@babel/preset-typescript": "^7.16.5"
+  }
+}
