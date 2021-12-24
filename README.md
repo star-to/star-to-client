@@ -1,7 +1,7 @@
 # Star To
 
 - [디자인](https://www.figma.com/file/wTh9UDlkJX3VAn3XOvrVDN/star-to?node-id=0%3A1)
-- 
+
 ---
 
 ## 참고링크
