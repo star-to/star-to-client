@@ -1,20 +1,17 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+
+const pathOutput = path.resolve(__dirname, "client/dist/js");
+const pathTs = path.resolve(__dirname, "client/ts");
+const pathScss = path.resolve(__dirname, "client/scss");
 
 module.exports = {
-  entry: ["./client/ts/index.ts", "./client/scss/style.scss"],
+  entry: [pathTs + "/index.ts", pathScss + "/style.scss"],
   output: {
-    path: path.resolve(__dirname, "client/dist/js"),
+    path: pathOutput,
     filename: "star-to.bundle.js",
   },
-  plugins: [
-    new MiniCssExtractPlugin({ filename: "../css/style.css" }),
-    // new HtmlWebpackPlugin({
-    //   template: "./client/html/index.html",
-    //   filename: "index.html",
-    // }),
-  ],
+  plugins: [new MiniCssExtractPlugin({ filename: "../css/style.css" })],
   module: {
     rules: [
       {
