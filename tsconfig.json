@@ -20,7 +20,7 @@
         "declaration": true,
          "emitDeclarationOnly": true,
         // Babel이 TypeScript 프로젝트의 파일을 안전하게 트랜스파일할 수 있는지 확인합니다.
-        "isolatedModules": true
+        // "isolatedModules": true
     },
     "include" : ["client/ts/*"]
 

@@ -15,11 +15,9 @@ class People {
     test() {
       const a: number = 2 ** 2;
   
-      console.log(a);
+      console.log("제곱근",a);
     }
   }
 
 
 console.log(new People())
-
-export {sum}

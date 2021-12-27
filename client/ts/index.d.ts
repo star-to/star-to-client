@@ -1,2 +1,6 @@
 declare function sum(a: number, b: number): number;
-export { sum };
+declare const hello: string;
+declare class People {
+    constructor();
+    test(): void;
+}
