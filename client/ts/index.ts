@@ -17,4 +17,10 @@ class People {
   }
 }
 
+const promise = new Promise((resolve) => {
+  resolve(1);
+});
+
+console.log(promise);
+
 console.log(new People());
