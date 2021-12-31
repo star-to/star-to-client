@@ -2,7 +2,7 @@ function sum(a: number, b: number): number {
   return a + b;
 }
 
-const hello: string = "hi";
+const hello = "hi";
 console.log(sum(2, 3), hello);
 
 class People {
@@ -16,5 +16,11 @@ class People {
     console.log("제곱근", a);
   }
 }
+
+const promise = new Promise((resolve) => {
+  resolve(1);
+});
+
+console.log(promise);
 
 console.log(new People());
