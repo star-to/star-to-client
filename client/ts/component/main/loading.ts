@@ -1,4 +1,6 @@
-export default class Loading {
+import { Component } from "../component";
+
+export default class Loading implements Component {
   html: string;
   constructor() {
     this.html = `<div class="loading-wrapper">

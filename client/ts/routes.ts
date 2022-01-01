@@ -1,17 +1,12 @@
+import { Component } from "./component/component";
 import Loading from "./component/main/loading";
 
-type component = Loading;
-
-interface componentFunction {
-  (): component;
-}
-
-interface pages {
-  [propName: string]: componentFunction;
+interface Pages {
+  [propName: string]: () => Component;
 }
 
 interface route {
-  main: pages;
+  main: Pages;
 }
 
 const routes = {
