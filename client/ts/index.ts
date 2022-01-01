@@ -1,17 +1,10 @@
-// function sum(a: number, b: number): number {
-//   return a + b;
-// }
+import { routes } from "./routes";
+import Router from "./router";
 
-// class People {
-//   constructor() {
-//     this.test();
-//   }
+function main() {
+  new Router(routes);
+}
 
-//   test() {
-//     const a: number = 2 ** 2;
-//   }
-// }
-
-// const promise = new Promise((resolve) => {
-//   resolve(1);
-// });
+window.addEventListener("DOMContentLoaded", () => {
+  main();
+});
