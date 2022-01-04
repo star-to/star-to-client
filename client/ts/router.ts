@@ -24,6 +24,7 @@ export default class Router {
     navigator.geolocation.getCurrentPosition((res) => {
       alert(JSON.stringify(res.coords));
     });
+    alert("hi");
   }
 
   handleRoutePage(event: Event): void {
