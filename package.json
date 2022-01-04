@@ -30,6 +30,7 @@
     "css-loader": "^6.5.1",
     "eslint": "^8.5.0",
     "git-branch-is": "^4.0.0",
+    "html-webpack-plugin": "^5.5.0",
     "husky": "^7.0.4",
     "lint-staged": "^12.1.4",
     "mini-css-extract-plugin": "^2.4.5",

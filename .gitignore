@@ -2,4 +2,5 @@ node_modules
 static/**
 .vscode
 .idea
-client/dist/**
+dist/**
+.vercel
