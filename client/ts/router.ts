@@ -20,6 +20,10 @@ export default class Router {
     document.addEventListener("click", (e: Event) => {
       this.handleRoutePage(e);
     });
+
+    navigator.geolocation.getCurrentPosition((res) => {
+      alert(JSON.stringify(res.coords));
+    });
   }
 
   handleRoutePage(event: Event): void {
