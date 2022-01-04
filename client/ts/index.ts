@@ -2,7 +2,7 @@ import { routes } from "./routes";
 import Router from "./router";
 
 function main() {
-  new Router(routes);
+  const router = new Router(routes);
 }
 
 window.addEventListener("DOMContentLoaded", () => {

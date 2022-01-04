@@ -1,17 +1,36 @@
-import { route } from "./routes";
+import { PageRoute, Route } from "./routes";
 
 export default class Router {
-  routes: route;
+  routes: Route;
 
-  constructor(routes: route) {
+  constructor(routes: Route) {
     this.routes = routes;
     this.init();
   }
 
-  init() {
-    const loading = this.routes.main.loading();
-    const mainElement = document.querySelector("main") as HTMLElement;
-    mainElement.innerHTML = loading.getHtml();
+  init(): void {
+    const main = this.routes.main.find((e: PageRoute) => e.path === "/loading");
+
+    if (!main) {
+      return;
+    }
+
+    this.paintPage(main);
+
+    document.addEventListener("click", (e: Event) => {
+      this.handleRoutePage(e);
+    });
+  }
+
+  handleRoutePage(event: Event): void {
+    const targetElement = event.target;
+  }
+
+  paintPage(_targetPages: PageRoute): void {
+    const mainPage = _targetPages.component();
+
+    const mainWrapper = document.querySelector("main") as HTMLElement;
+    mainWrapper.innerHTML = mainPage.getHtml();
   }
 
   //   route() {

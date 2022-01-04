@@ -1,18 +1,20 @@
 import { Component } from "./component/component";
 import Loading from "./component/main/loading";
 
-interface Pages {
-  [propName: string]: () => Component;
+interface PageRoute {
+  path: string;
+  component: () => Component;
 }
 
-interface route {
-  main: Pages;
+interface Route {
+  main: PageRoute[];
 }
 
 const routes = {
-  main: {
-    loading: () => new Loading(),
-  },
+  main: [
+    { path: "/loading", component: () => new Loading() },
+    { path: "home", component: () => new Loading() },
+  ],
 };
 
-export { route, routes };
+export { PageRoute, Route, routes };
