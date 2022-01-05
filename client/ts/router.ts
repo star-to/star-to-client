@@ -21,8 +21,8 @@ export default class Router {
     });
 
     navigator.geolocation.getCurrentPosition(
-      (res) => {
-        alert("hello", res);
+      () => {
+        alert("hello");
       },
       () => {
         alert("error"), { enableHighAccuracy: true, maximumAge: 0 };
