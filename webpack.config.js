@@ -39,4 +39,15 @@ module.exports = {
   },
   devtool: "source-map",
   mode: "development",
+  devServer: {
+    static: {
+      directory: path.join(__dirname, "dist"),
+    },
+    https: {
+      key: "./localhost+1-key.pem",
+      cert: "./localhost+1.pem",
+    },
+    compress: true,
+    port: 9000,
+  },
 };

@@ -4,3 +4,4 @@ static/**
 .idea
 dist/**
 .vercel
+localhost*.pem

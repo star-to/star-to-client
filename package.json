@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npx webpack"
+    "build": "webpack",
+    "serve": "webpack serve"
   },
   "repository": {
     "type": "git",
@@ -38,7 +39,8 @@
     "sass": "^1.45.1",
     "sass-loader": "^12.4.0",
     "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1"
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.7.2"
   },
   "lint-staged": {
     "*.{ts,js}": "eslint"
