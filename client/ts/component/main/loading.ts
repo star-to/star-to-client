@@ -4,7 +4,7 @@ export default class Loading implements Component {
   html: string;
   constructor() {
     this.html = `<div class="loading-wrapper">
-    <img src="/client/img/icon/loading-icon.png" alt="Loading image">
+    <img src="https://star-to.s3.ap-northeast-2.amazonaws.com/img/loading.png" alt="Loading image">
     </div>
     `;
   }
