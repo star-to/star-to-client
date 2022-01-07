@@ -43,11 +43,20 @@ module.exports = {
     static: {
       directory: path.join(__dirname, "dist"),
     },
-    https: {
-      key: "./localhost+1-key.pem",
-      cert: "./localhost+1.pem",
-    },
+    // https: {
+    //   key: "./localhost+1-key.pem",
+    //   cert: "./localhost+1.pem",
+    //   requestCert: true,
+    // },
     compress: true,
     port: 9000,
+    proxy: {
+      "/api": {
+        target: "http://localhost:7070",
+        // pathRewrite: { "^/api": "" },
+        // secure: false,
+        // logLevel: "debug",
+      },
+    },
   },
 };
