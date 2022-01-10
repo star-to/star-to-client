@@ -1,6 +1,7 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const WebpackShellPluginNext = require("webpack-shell-plugin-next");
 
 const pathOutput = path.resolve(__dirname, "dist/public/js");
 const pathTs = path.resolve(__dirname, "client/ts");
@@ -18,6 +19,14 @@ module.exports = {
       template: "./client/html/index.html",
       inject: false,
       filename: "../../index.html",
+    }),
+    new WebpackShellPluginNext({
+      onAfterDone: {
+        scripts: ["bash script.sh"],
+        blocking: false,
+        parallel: false,
+        logging: false,
+      },
     }),
   ],
   module: {
@@ -49,5 +58,10 @@ module.exports = {
     },
     compress: true,
     port: 9000,
+    proxy: {
+      "/api": {
+        target: "http://localhost:7070",
+      },
+    },
   },
 };
