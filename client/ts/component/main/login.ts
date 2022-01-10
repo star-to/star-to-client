@@ -32,9 +32,16 @@ export default class Login implements Component {
     const naverButton = document.querySelector(
       `.${SELECTOR.LOGIN_BUTTON_NAVER}`
     ) as HTMLDivElement;
+    const kakaoButton = document.querySelector(
+      `.${SELECTOR.LOGIN_BUTTON_KAKAO}`
+    ) as HTMLDivElement;
 
     naverButton.addEventListener("click", () => {
       this.handleNaverLogin();
+    });
+
+    kakaoButton.addEventListener("click", () => {
+      this.handleKakaoLogin();
     });
   }
 
@@ -43,8 +50,15 @@ export default class Login implements Component {
       .fetchNaverLogin()
       .then((res) => res.text())
       .then((url) => {
-        // eslint-disable-next-line no-console
-        // console.log(JSON.stringify(html));
+        window.location.href = url;
+      });
+  }
+
+  handleKakaoLogin(): void {
+    util
+      .fetchKakaoLogin()
+      .then((res) => res.text())
+      .then((url) => {
         window.location.href = url;
       });
   }

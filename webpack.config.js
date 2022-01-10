@@ -62,12 +62,6 @@ module.exports = {
     proxy: {
       "/api": {
         target: "http://localhost:7070",
-<<<<<<< HEAD
-        // pathRewrite: { "^/api": "" },
-        // secure: false,
-        // logLevel: "debug",
-=======
->>>>>>> settings/webpack
       },
     },
   },

@@ -25,7 +25,6 @@ export default class Router {
     response
       .then((res) => res.json())
       .then(({ isLogin }) => {
-        // eslint-disable-next-line no-console
         if (!isLogin) {
           const login = this.routes.main.find(
             (e: PageRoute) => e.path === "/login"
