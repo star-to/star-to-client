@@ -13,5 +13,5 @@
   "rules": {
     "no-console": "error"
   },
-  "ignorePatterns": ["webpack.config.js", "commitlint.config.js"]
+  "ignorePatterns": ["webpack.config.js", "commitlint.config.js", "scripts/**"]
 }
