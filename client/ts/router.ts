@@ -1,4 +1,5 @@
 import { PageRoute, Route } from "./routes";
+import util from "./util";
 
 export default class Router {
   routes: Route;
@@ -9,37 +10,30 @@ export default class Router {
   }
 
   init(): void {
-    const main = this.routes.main.find((e: PageRoute) => e.path === "/loading");
+    const loading = this.routes.main.find(
+      (e: PageRoute) => e.path === "/loading"
+    );
 
-    if (!main) {
-      return;
-    }
+    if (!loading) return;
 
-    this.paintPage(main);
+    this.paintPage(loading);
     document.addEventListener("click", (e: Event) => {
       this.handleRoutePage(e);
     });
 
-    navigator.geolocation.getCurrentPosition(
-      () => {
-        alert("hello");
-      },
-      () => {
-        alert("error"), { enableHighAccuracy: true, maximumAge: 0 };
-      }
-    );
+    const response = util.fetchChecedkLogin();
+    response
+      .then((res) => res.json())
+      .then(({ isLogin }) => {
+        if (!isLogin) {
+          const login = this.routes.main.find(
+            (e: PageRoute) => e.path === "/login"
+          );
 
-    fetch("http://127.0.0.1:7070/api/login/check", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Origin: "http://127.0.0.1:5500",
-      },
-    })
-      .then((response) => response.json())
-      .then((res) => {
-        // eslint-disable-next-line no-console
-        console.log(res);
+          if (!login) return;
+
+          this.paintPage(login);
+        }
       });
   }
 
@@ -52,6 +46,11 @@ export default class Router {
 
     const mainWrapper = document.querySelector("main") as HTMLElement;
     mainWrapper.innerHTML = mainPage.getHtml();
+
+    // eslint-disable-next-line no-console
+    if (mainPage.subscribeEvent) {
+      mainPage.subscribeEvent();
+    }
   }
 
   //   route() {
