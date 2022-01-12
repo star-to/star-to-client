@@ -1,18 +1,16 @@
-import { PageRoute, Route } from "./routes";
+import { PageRoute } from "./routes";
 import util from "./util";
 
 export default class Router {
-  routes: Route;
+  routes: PageRoute[];
 
-  constructor(routes: Route) {
+  constructor(routes: PageRoute[]) {
     this.routes = routes;
     this.init();
   }
 
   init(): void {
-    const loading = this.routes.main.find(
-      (e: PageRoute) => e.path === "/loading"
-    );
+    const loading = this.routes.find((e: PageRoute) => e.path === "/loading");
 
     if (!loading) return;
 
@@ -26,9 +24,7 @@ export default class Router {
       .then((res) => res.json())
       .then(({ isLogin }) => {
         if (!isLogin) {
-          const login = this.routes.main.find(
-            (e: PageRoute) => e.path === "/login"
-          );
+          const login = this.routes.find((e: PageRoute) => e.path === "/login");
 
           if (!login) return;
 
@@ -38,19 +34,25 @@ export default class Router {
   }
 
   handleRoutePage(event: Event): void {
-    const targetElement = event.target;
+    const targetElement = event.target as HTMLElement;
+    // eslint-disable-next-line no-console
+    console.log(targetElement);
+
+    if (!targetElement.dataset?.list) return;
   }
 
   paintPage(_targetPages: PageRoute): void {
-    const mainPage = _targetPages.component();
+    const page = _targetPages.components.map((component) => component());
 
-    const mainWrapper = document.querySelector("main") as HTMLElement;
-    mainWrapper.innerHTML = mainPage.getHtml();
+    page.forEach((component) => {
+      component.paintComponent();
 
-    // eslint-disable-next-line no-console
-    if (mainPage.subscribeEvent) {
-      mainPage.subscribeEvent();
-    }
+      window.addEventListener("DOMContentlLoaded", () => {
+        if (component.subscribeEvent) {
+          component.subscribeEvent();
+        }
+      });
+    });
   }
 
   //   route() {
