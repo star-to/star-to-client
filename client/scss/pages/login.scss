@@ -1,8 +1,8 @@
-main {
-  .loading-wrapper {
-    margin-bottom: 12em;
-  }
+header {
+  display: none;
+}
 
+main {
   .login-wrapper {
     display: flex;
     flex-direction: column;
@@ -45,4 +45,7 @@ main {
       }
     }
   }
+}
+footer {
+  display: none;
 }

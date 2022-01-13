@@ -1,4 +1,4 @@
-import { PageRoute } from "./routes";
+import { PageRoute, ComponentFunction } from "./routes";
 import util from "./util";
 
 export default class Router {
@@ -10,11 +10,9 @@ export default class Router {
   }
 
   init(): void {
-    const loading = this.routes.find((e: PageRoute) => e.path === "/loading");
-
-    if (!loading) return;
-
+    const loading = this.findPage("/loading");
     this.paintPage(loading);
+
     document.addEventListener("click", (e: Event) => {
       this.handleRoutePage(e);
     });
@@ -23,35 +21,46 @@ export default class Router {
     response
       .then((res) => res.json())
       .then(({ isLogin }) => {
-        if (!isLogin) {
-          const login = this.routes.find((e: PageRoute) => e.path === "/login");
-
-          if (!login) return;
-
-          this.paintPage(login);
-        }
+        const nextPageComponents = isLogin
+          ? this.findPage("/home")
+          : this.findPage("/login");
+        this.paintPage(nextPageComponents);
       });
   }
 
   handleRoutePage(event: Event): void {
     const targetElement = event.target as HTMLElement;
-    // eslint-disable-next-line no-console
-    console.log(targetElement);
 
     if (!targetElement.dataset?.list) return;
+
+    const nextPageComponents = this.findPage(
+      targetElement.dataset.link as string
+    );
+
+    this.paintPage(nextPageComponents);
   }
 
-  paintPage(_targetPages: PageRoute): void {
-    const page = _targetPages.components.map((component) => component());
+  findPage(path: string): ComponentFunction[] {
+    const nextPage = this.routes.find((page: PageRoute) => page.path === path);
+    if (!nextPage) {
+      //TODO: 에러 처리 코드 추가
+      return [];
+    }
+
+    return nextPage.components;
+  }
+
+  paintPage(pageComponents: ComponentFunction[]): void {
+    const page = pageComponents.map((componentfn) => componentfn());
 
     page.forEach((component) => {
       component.paintComponent();
+    });
 
-      window.addEventListener("DOMContentlLoaded", () => {
-        if (component.subscribeEvent) {
-          component.subscribeEvent();
-        }
-      });
+    page.forEach((component) => {
+      if (component.subscribeEvent) {
+        component.subscribeEvent();
+      }
     });
   }
 
