@@ -25,9 +25,6 @@ export default class Login implements Component {
     </div>
     `;
   }
-  // getHtml(): string {
-  //   return this.html;
-  // }
 
   subscribeEvent(): void {
     const naverButton = document.querySelector(

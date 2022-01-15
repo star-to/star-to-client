@@ -8,6 +8,7 @@ const SELECTOR = {
   MAP_MY_DIRECTION_BUTTON: "map__my-direction-button",
   HOME_RECOMMEND_WRAPPER: "recommend-wrapper",
   RECOMMEND_MOVE_BUTTON: "recommend__move-button",
+  RECOMMEND_MOVE_BUTTON_ICON: "recommend__move-button__icon",
   OVERLAY: "overlay",
   FOOTER: "footer",
   SIDEBAR: "sidebar",

@@ -14,8 +14,6 @@ export default class Loading implements Component {
       `${SELECTOR.MAIN}`
     ) as HTMLElement;
 
-    // eslint-disable-next-line no-console
-    console.log(mainWrapper);
     mainWrapper.innerHTML = this.html;
   }
 }
