@@ -5,17 +5,20 @@ export default class Home implements Component {
   html: string;
 
   constructor() {
-    this.html = `<div class="${SELECTOR.HOME_WRAPPER}">
-    <div class="${SELECTOR.HOME_MAP_WRAPPER}">
-    </div>
-    <div class="${SELECTOR.HOME_RECOMMEND_WRAPPER}">
-    <div class="${SELECTOR.RECOMMEND_MOVE_BUTTON}">
-    <div class="${SELECTOR.RECOMMEND_MOVE_BUTTON_ICON}">
-    </div>
-    </div>
-    <ul>
-    </ul>
-    </div>
+    this.html = /*html*/ `
+    <div class="${SELECTOR.HOME_WRAPPER}">
+      <div class="${SELECTOR.HOME_MAP_WRAPPER}">
+      </div>
+      <div class="${SELECTOR.HOME_RECOMMEND_WRAPPER}">
+        <div class="${SELECTOR.RECOMMEND_MOVE_BUTTON}">
+          <div class="${SELECTOR.RECOMMEND_MOVE_BUTTON_ICON}">
+          </div>
+        </div>
+        <ul>
+          <div>
+          </div>
+        </ul>
+      </div>
     </div>`;
   }
   paintComponent(): void {
