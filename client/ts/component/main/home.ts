@@ -1,9 +1,14 @@
 import { Component } from "../component";
+import { TouchSlide } from "../state/slide";
 import SELECTOR from "../../const";
 
 export default class Home implements Component {
   html: string;
-
+  touchSlide: TouchSlide;
+  bagicHeight: number;
+  viewHeight: number;
+  recommendLayout: HTMLDivElement | null;
+  home: HTMLDivElement | null;
   constructor() {
     this.html = /*html*/ `
     <div class="${SELECTOR.HOME_WRAPPER}">
@@ -20,6 +25,12 @@ export default class Home implements Component {
         </ul>
       </div>
     </div>`;
+
+    this.touchSlide = new TouchSlide();
+    this.bagicHeight = 0;
+    this.viewHeight = 0;
+    this.recommendLayout = null;
+    this.home = null;
   }
   paintComponent(): void {
     const mainWrapper = document.querySelector(
@@ -29,18 +40,11 @@ export default class Home implements Component {
   }
 
   subscribeEvent(): void {
-    const layoutMoveButton = document.querySelector(
-      `.${SELECTOR.RECOMMEND_MOVE_BUTTON}`
+    this.recommendLayout = document.querySelector(
+      `.${SELECTOR.HOME_RECOMMEND_WRAPPER}`
     ) as HTMLDivElement;
 
-    layoutMoveButton.addEventListener("touchstart", () => {
-      this.handleLayoutMoveEvent();
-    });
-  }
-
-  handleLayoutMoveEvent(): void {
-    //TODO: 한번 이동한 후에 다시 버튼을 클릭해야 이벤트가 발생하도록 수정해야함
-    const home = document.querySelector(
+    this.home = document.querySelector(
       `.${SELECTOR.HOME_WRAPPER}`
     ) as HTMLDivElement;
 
@@ -48,28 +52,59 @@ export default class Home implements Component {
       `.${SELECTOR.RECOMMEND_MOVE_BUTTON}`
     ) as HTMLDivElement;
 
-    const recommendLayout = document.querySelector(
-      `.${SELECTOR.HOME_RECOMMEND_WRAPPER}`
-    ) as HTMLDivElement;
+    const homeRect = this.home.getBoundingClientRect();
+    this.viewHeight = homeRect.bottom;
 
-    const domRect = recommendLayout.getBoundingClientRect();
-    const basicHeight = domRect.top;
-    const middleHeight = domRect.bottom;
-    //TODO: 중간위치가 정확하지 않음
+    const domRect = this.recommendLayout.getBoundingClientRect();
+    this.bagicHeight = domRect.top;
 
-    home.addEventListener("touchmove", (e) => {
-      const moveY = basicHeight - e.changedTouches[0].clientY;
+    const handleTouchStart = () => {
+      this.touchSlide.start();
+    };
 
-      recommendLayout.style.transform = `translate3d(0,-${moveY}px,0)`;
-    });
+    this.subscribeHomeEvent();
 
-    home.addEventListener("touchend", (e) => {
-      const moveY =
-        middleHeight > e.changedTouches[0].clientY
-          ? e.changedTouches[0].clientY - basicHeight
-          : e.changedTouches[0].clientY;
+    layoutMoveButton.addEventListener("touchstart", handleTouchStart);
+  }
 
-      recommendLayout.style.transform = `translate3d(0,-${moveY}px,0)`;
-    });
+  subscribeHomeEvent(): void {
+    const handleTouchMove = (event: TouchEvent) => {
+      this.moveReccommendLayer(event);
+    };
+
+    const handleTouchEnd = (event: TouchEvent) => {
+      this.touchSlide.stop();
+      this.repositionReccommendLayer(event);
+    };
+
+    const subscribeMove = {
+      element: this.home as HTMLDivElement,
+      eventName: "touchmove",
+      callback: handleTouchMove,
+    };
+
+    const subscribeEnd = {
+      element: this.home as HTMLDivElement,
+      eventName: "touchend",
+      callback: handleTouchEnd,
+    };
+
+    this.touchSlide.subscribe(subscribeMove);
+    this.touchSlide.subscribe(subscribeEnd);
+  }
+
+  moveReccommendLayer(e: TouchEvent) {
+    if (this.recommendLayout === null) return;
+
+    const moveY = this.bagicHeight - e.changedTouches[0].clientY;
+    this.recommendLayout.style.transform = `translate3d(0,-${moveY}px,0)`;
+  }
+
+  repositionReccommendLayer(e: TouchEvent) {
+    //TODO: viewport 중간이상이면 화면 제일 위로, 아니면 초기위치로 위치 조정 하고싶음
+    if (this.recommendLayout === null) return;
+
+    const moveY = this.bagicHeight - e.changedTouches[0].clientY;
+    this.recommendLayout.style.transform = `translate3d(0,-${moveY}px,0)`;
   }
 }
