@@ -4,6 +4,7 @@ import util from "../../util";
 
 export default class Login implements Component {
   html: string;
+
   constructor() {
     this.html = `<div class="login-wrapper">
         <div class="login-logo">
@@ -23,9 +24,6 @@ export default class Login implements Component {
         </div>
     </div>
     `;
-  }
-  getHtml(): string {
-    return this.html;
   }
 
   subscribeEvent(): void {
@@ -61,5 +59,12 @@ export default class Login implements Component {
       .then((url) => {
         window.location.href = url;
       });
+  }
+
+  paintComponent(): void {
+    const mainWrapper = document.querySelector(
+      `${SELECTOR.MAIN}`
+    ) as HTMLElement;
+    mainWrapper.innerHTML = this.html;
   }
 }

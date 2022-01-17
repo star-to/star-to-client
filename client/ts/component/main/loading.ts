@@ -1,3 +1,4 @@
+import SELECTOR from "../../const";
 import { Component } from "../component";
 
 export default class Loading implements Component {
@@ -8,7 +9,11 @@ export default class Loading implements Component {
     </div>
     `;
   }
-  getHtml(): string {
-    return this.html;
+  paintComponent(): void {
+    const mainWrapper = document.querySelector(
+      `${SELECTOR.MAIN}`
+    ) as HTMLElement;
+
+    mainWrapper.innerHTML = this.html;
   }
 }
