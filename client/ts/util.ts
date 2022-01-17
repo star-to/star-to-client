@@ -15,6 +15,8 @@ const util = {
       method: "GET",
     });
   },
+
+  //TODO: 카카오 api 요청해서 분석해야함
 };
 
 export default util;

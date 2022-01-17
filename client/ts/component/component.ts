@@ -1,4 +1,4 @@
 export interface Component {
-  getHtml(): string;
+  paintComponent(): void;
   subscribeEvent?(): void;
 }

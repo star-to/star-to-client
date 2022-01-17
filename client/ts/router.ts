@@ -1,59 +1,66 @@
-import { PageRoute, Route } from "./routes";
+import { PageRoute, ComponentFunction } from "./routes";
 import util from "./util";
 
 export default class Router {
-  routes: Route;
+  routes: PageRoute[];
 
-  constructor(routes: Route) {
+  constructor(routes: PageRoute[]) {
     this.routes = routes;
     this.init();
   }
 
   init(): void {
-    const loading = this.routes.main.find(
-      (e: PageRoute) => e.path === "/loading"
-    );
-
-    if (!loading) return;
-
+    const loading = this.findPage("/home");
     this.paintPage(loading);
-    document.addEventListener("click", (e: Event) => {
-      this.handleRoutePage(e);
-    });
 
-    const response = util.fetchChecedkLogin();
-    response
-      .then((res) => res.json())
-      .then(({ isLogin }) => {
-        if (!isLogin) {
-          const login = this.routes.main.find(
-            (e: PageRoute) => e.path === "/login"
-          );
+    // document.addEventListener("click", (e: Event) => {
+    //   this.handleRoutePage(e);
+    // });
 
-          if (!login) return;
-
-          this.paintPage(login);
-        }
-      });
+    // const response = util.fetchChecedkLogin();
+    // response
+    //   .then((res) => res.json())
+    //   .then(({ isLogin }) => {
+    //     const nextPageComponents = isLogin
+    //       ? this.findPage("/home")
+    //       : this.findPage("/login");
+    //     this.paintPage(nextPageComponents);
+    //   });
   }
 
   handleRoutePage(event: Event): void {
-    const targetElement = event.target;
+    const targetElement = event.target as HTMLElement;
+
+    if (!targetElement.dataset?.list) return;
+
+    const nextPageComponents = this.findPage(
+      targetElement.dataset.link as string
+    );
+
+    this.paintPage(nextPageComponents);
   }
 
-  paintPage(_targetPages: PageRoute): void {
-    const mainPage = _targetPages.component();
-
-    const mainWrapper = document.querySelector("main") as HTMLElement;
-    mainWrapper.innerHTML = mainPage.getHtml();
-
-    // eslint-disable-next-line no-console
-    if (mainPage.subscribeEvent) {
-      mainPage.subscribeEvent();
+  findPage(path: string): ComponentFunction[] {
+    const nextPage = this.routes.find((page: PageRoute) => page.path === path);
+    if (!nextPage) {
+      //TODO: 에러 처리 코드 추가
+      return [];
     }
+
+    return nextPage.components;
   }
 
-  //   route() {
-  //     console.log("route");
-  //   }
+  paintPage(pageComponents: ComponentFunction[]): void {
+    const page = pageComponents.map((componentfn) => componentfn());
+
+    page.forEach((component) => {
+      component.paintComponent();
+    });
+
+    page.forEach((component) => {
+      if (component.subscribeEvent) {
+        component.subscribeEvent();
+      }
+    });
+  }
 }
