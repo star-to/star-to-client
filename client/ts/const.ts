@@ -9,7 +9,7 @@ const SELECTOR = {
   HOME_RECOMMEND_WRAPPER: "recommend-wrapper",
   RECOMMEND_MOVE_BUTTON: "recommend__move-button",
   RECOMMEND_MOVE_BUTTON_ICON: "recommend__move-button__icon",
-  OVERLAY: "overlay",
+  RECOMMEND_LIST: "recommend__list",
   FOOTER: "footer",
   SIDEBAR: "sidebar",
 };

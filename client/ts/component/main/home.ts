@@ -1,10 +1,8 @@
 import { Component } from "../component";
-import { TouchSlide } from "../state/slide";
 import SELECTOR from "../../const";
 
 export default class Home implements Component {
   html: string;
-  touchSlide: TouchSlide;
   bagicHeight: number;
   viewHeight: number;
   recommendLayout: HTMLDivElement | null;
@@ -19,20 +17,19 @@ export default class Home implements Component {
           <div class="${SELECTOR.RECOMMEND_MOVE_BUTTON_ICON}">
           </div>
         </div>
-        <ul>
-          <div>
-          </div>
+        <ul class="${SELECTOR.RECOMMEND_LIST}">
         </ul>
       </div>
     </div>`;
 
-    this.touchSlide = new TouchSlide();
     this.bagicHeight = 0;
     this.viewHeight = 0;
     this.recommendLayout = null;
     this.home = null;
   }
+
   paintComponent(): void {
+    //TODO: 함수명 init으로 변경할 지? 고민
     const mainWrapper = document.querySelector(
       `${SELECTOR.MAIN}`
     ) as HTMLElement;
@@ -55,42 +52,25 @@ export default class Home implements Component {
     const homeRect = this.home.getBoundingClientRect();
     this.viewHeight = homeRect.bottom;
 
-    const domRect = this.recommendLayout.getBoundingClientRect();
-    this.bagicHeight = domRect.top;
+    const recommendRect = this.recommendLayout.getBoundingClientRect();
+    this.bagicHeight = recommendRect.top;
 
     const handleTouchStart = () => {
-      this.touchSlide.start();
-    };
+      const handleTouchMove = (event: TouchEvent) => {
+        this.moveReccommendLayer(event);
+      };
 
-    this.subscribeHomeEvent();
+      const handleTouchEnd = (event: TouchEvent) => {
+        this.home?.removeEventListener("touchmove", handleTouchMove);
+        this.home?.removeEventListener("touchend", handleTouchEnd);
+        this.repositionReccommendLayer(event);
+      };
+
+      this.home?.addEventListener("touchmove", handleTouchMove);
+      this.home?.addEventListener("touchend", handleTouchEnd);
+    };
 
     layoutMoveButton.addEventListener("touchstart", handleTouchStart);
-  }
-
-  subscribeHomeEvent(): void {
-    const handleTouchMove = (event: TouchEvent) => {
-      this.moveReccommendLayer(event);
-    };
-
-    const handleTouchEnd = (event: TouchEvent) => {
-      this.touchSlide.stop();
-      this.repositionReccommendLayer(event);
-    };
-
-    const subscribeMove = {
-      element: this.home as HTMLDivElement,
-      eventName: "touchmove",
-      callback: handleTouchMove,
-    };
-
-    const subscribeEnd = {
-      element: this.home as HTMLDivElement,
-      eventName: "touchend",
-      callback: handleTouchEnd,
-    };
-
-    this.touchSlide.subscribe(subscribeMove);
-    this.touchSlide.subscribe(subscribeEnd);
   }
 
   moveReccommendLayer(e: TouchEvent) {
