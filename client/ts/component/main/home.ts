@@ -1,5 +1,5 @@
 import { Component } from "../component";
-import SELECTOR from "../../const";
+import { SELECTOR, IMG, PATH } from "../../const";
 
 export default class Home implements Component {
   html: string;
@@ -17,8 +17,10 @@ export default class Home implements Component {
           <div class="${SELECTOR.RECOMMEND_MOVE_BUTTON_ICON}">
           </div>
         </div>
-        <ul class="${SELECTOR.RECOMMEND_LIST}">
-        </ul>
+        <div class="${SELECTOR.RECOMMEND_LIST_WRAPPER}">
+          <ul class="${SELECTOR.RECOMMEND_LIST}">
+          </ul>
+        </div>
       </div>
     </div>`;
 
@@ -55,6 +57,100 @@ export default class Home implements Component {
     const recommendRect = this.recommendLayout.getBoundingClientRect();
     this.bagicHeight = recommendRect.top;
 
+    const recommendList = document.querySelector(
+      `.${SELECTOR.RECOMMEND_LIST}`
+    ) as HTMLUListElement;
+
+    for (let i = 0; i < 10; i++) {
+      this.predrawElement("li", recommendList);
+    }
+
+    //TODO: test 데이터
+    const cafeList = [
+      {
+        id: 1,
+        name: "카페마스",
+        star: 4,
+        comment: 12,
+        time: 3,
+        bookmark: true,
+      },
+      {
+        id: 2,
+        name: "투썸플레이스",
+        star: 5,
+        comment: 10,
+        time: 5,
+        bookmark: false,
+      },
+      {
+        id: 3,
+        name: "투썸플레이스",
+        star: 2,
+        comment: 10,
+        time: 5,
+        bookmark: false,
+      },
+      {
+        id: 3,
+        name: "투썸플레이스",
+        star: 1,
+        comment: 10,
+        time: 5,
+        bookmark: false,
+      },
+      {
+        id: 3,
+        name: "투썸플레이스",
+        star: 0,
+        comment: 10,
+        time: 5,
+        bookmark: false,
+      },
+      {
+        id: 3,
+        name: "투썸플레이스",
+        star: 4,
+        comment: 10,
+        time: 5,
+        bookmark: false,
+      },
+      {
+        id: 3,
+        name: "투썸플레이스",
+        star: 4,
+        comment: 10,
+        time: 5,
+        bookmark: false,
+      },
+      {
+        id: 3,
+        name: "투썸플레이스",
+        star: 4,
+        comment: 10,
+        time: 5,
+        bookmark: false,
+      },
+      {
+        id: 3,
+        name: "투썸플레이스",
+        star: 4,
+        comment: 10,
+        time: 5,
+        bookmark: false,
+      },
+      {
+        id: 3,
+        name: "투썸플레이스",
+        star: 4,
+        comment: 10,
+        time: 5,
+        bookmark: false,
+      },
+    ];
+
+    this.fillRecommendList(cafeList);
+
     const handleTouchStart = () => {
       const handleTouchMove = (event: TouchEvent) => {
         this.moveReccommendLayer(event);
@@ -87,4 +183,73 @@ export default class Home implements Component {
     const moveY = this.bagicHeight - e.changedTouches[0].clientY;
     this.recommendLayout.style.transform = `translate3d(0,-${moveY}px,0)`;
   }
+
+  fillRecommendList(recommendList: PlaceInfo[]) {
+    //TODO:실제 데이터 받아서 해봐야 함
+    //그 이후에 함수로 분리하거나 클래스로 분리!
+
+    const liElements = document.querySelectorAll(
+      `.${SELECTOR.RECOMMEND_LIST} li`
+    );
+
+    for (let i = 0; i < liElements.length; i++) {
+      const { id, name, star, comment, time, bookmark } = recommendList[i];
+
+      const wrapper = document.createElement("div");
+      wrapper.classList.add(SELECTOR.RECOMMEND_LIST_CONTENTT);
+      wrapper.dataset.link = PATH.DETAIL;
+
+      const nameElement = document.createElement("H1");
+      nameElement.innerHTML = name;
+      nameElement.classList.add(SELECTOR.CONTENT_NAME);
+
+      const starElememt = document.createElement("span");
+      starElememt.classList.add(SELECTOR.CONTENT_STAR);
+
+      for (let j = 1; j <= 5; j++) {
+        const starimg = document.createElement("img");
+        starimg.src = star >= j ? IMG.FILL_STAR : IMG.EMPTY_STAR;
+
+        starElememt.append(starimg);
+      }
+
+      const commentElement = document.createElement("span");
+      commentElement.classList.add(SELECTOR.CONTENT_COMMENT);
+      commentElement.innerHTML = `(${comment})`;
+
+      const timeElement = document.createElement("div");
+      timeElement.classList.add(SELECTOR.CONTENT_TIME);
+      timeElement.innerHTML = `${time}분 이내에 도착할 수 있습니다.`;
+
+      const bookmarkElement = document.createElement("span");
+      const bookmarkImage = document.createElement("img");
+      bookmarkImage.src = bookmark ? IMG.FILL_BOOKMARK : IMG.EMPTY_BOOKMARK;
+      bookmarkImage.alt = "bookmark";
+
+      bookmarkElement.append(bookmarkImage);
+      bookmarkElement.classList.add(SELECTOR.CONTENT_BOOKMARK);
+
+      wrapper.append(bookmarkElement);
+      wrapper.append(nameElement);
+      wrapper.append(starElememt);
+      wrapper.append(commentElement);
+      wrapper.append(timeElement);
+
+      liElements[i].append(wrapper);
+    }
+  }
+
+  predrawElement(tagName: string, parentElement: HTMLElement): void {
+    const newElement = document.createElement(tagName);
+    parentElement.append(newElement);
+  }
 }
+
+type PlaceInfo = {
+  id: number;
+  name: string;
+  star: number;
+  comment: number;
+  time: number;
+  bookmark: boolean;
+};
