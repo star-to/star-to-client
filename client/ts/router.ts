@@ -1,44 +1,66 @@
-import { PageRoute, Route } from "./routes";
+import { PageRoute, ComponentFunction } from "./routes";
+import util from "./util";
 
 export default class Router {
-  routes: Route;
+  routes: PageRoute[];
 
-  constructor(routes: Route) {
+  constructor(routes: PageRoute[]) {
     this.routes = routes;
     this.init();
   }
 
   init(): void {
-    const main = this.routes.main.find((e: PageRoute) => e.path === "/loading");
+    const loading = this.findPage("/home");
+    this.paintPage(loading);
 
-    if (!main) {
-      return;
-    }
+    // document.addEventListener("click", (e: Event) => {
+    //   this.handleRoutePage(e);
+    // });
 
-    this.paintPage(main);
-
-    document.addEventListener("click", (e: Event) => {
-      this.handleRoutePage(e);
-    });
-
-    navigator.geolocation.getCurrentPosition((res) => {
-      alert(JSON.stringify(res.coords));
-    });
-    alert("hi");
+    // const response = util.fetchChecedkLogin();
+    // response
+    //   .then((res) => res.json())
+    //   .then(({ isLogin }) => {
+    //     const nextPageComponents = isLogin
+    //       ? this.findPage("/home")
+    //       : this.findPage("/login");
+    //     this.paintPage(nextPageComponents);
+    //   });
   }
 
   handleRoutePage(event: Event): void {
-    const targetElement = event.target;
+    const targetElement = event.target as HTMLElement;
+
+    if (!targetElement.dataset?.list) return;
+
+    const nextPageComponents = this.findPage(
+      targetElement.dataset.link as string
+    );
+
+    this.paintPage(nextPageComponents);
   }
 
-  paintPage(_targetPages: PageRoute): void {
-    const mainPage = _targetPages.component();
+  findPage(path: string): ComponentFunction[] {
+    const nextPage = this.routes.find((page: PageRoute) => page.path === path);
+    if (!nextPage) {
+      //TODO: 에러 처리 코드 추가
+      return [];
+    }
 
-    const mainWrapper = document.querySelector("main") as HTMLElement;
-    mainWrapper.innerHTML = mainPage.getHtml();
+    return nextPage.components;
   }
 
-  //   route() {
-  //     console.log("route");
-  //   }
+  paintPage(pageComponents: ComponentFunction[]): void {
+    const page = pageComponents.map((componentfn) => componentfn());
+
+    page.forEach((component) => {
+      component.paintComponent();
+    });
+
+    page.forEach((component) => {
+      if (component.subscribeEvent) {
+        component.subscribeEvent();
+      }
+    });
+  }
 }

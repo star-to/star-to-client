@@ -4,3 +4,5 @@ static/**
 .idea
 dist/**
 .vercel
+localhost*.pem
+script.sh

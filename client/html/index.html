@@ -4,13 +4,15 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- <link rel="stylesheet" href="/css/style.css" /> -->
+    <% for (var css in htmlWebpackPlugin.files.css) { %>
+    <link href="<%= htmlWebpackPlugin.files.css[css] %>" rel="stylesheet" />
+    <% } %>
     <title>Hello</title>
   </head>
   <body>
     <header></header>
     <main></main>
     <footer></footer>
-    <!-- <script src="/js/star-to.bundle.js"></script> -->
+    <script src="<%= htmlWebpackPlugin.files.js[js] %>"></script>
   </body>
 </html>

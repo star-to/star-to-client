@@ -1,20 +1,19 @@
 import { Component } from "./component/component";
 import Loading from "./component/main/loading";
+import Login from "./component/main/login";
+import Home from "./component/main/home";
+
+type ComponentFunction = () => Component;
 
 interface PageRoute {
   path: string;
-  component: () => Component;
+  components: ComponentFunction[];
 }
 
-interface Route {
-  main: PageRoute[];
-}
+const routes = [
+  { path: "/loading", components: [() => new Loading()] },
+  { path: "/login", components: [() => new Login()] },
+  { path: "/home", components: [() => new Home()] },
+];
 
-const routes = {
-  main: [
-    { path: "/loading", component: () => new Loading() },
-    { path: "home", component: () => new Loading() },
-  ],
-};
-
-export { PageRoute, Route, routes };
+export { PageRoute, ComponentFunction, routes };
