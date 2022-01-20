@@ -19,6 +19,10 @@ export const SELECTOR = {
   CONTENT_BOOKMARK: "content__bookmark",
   FOOTER: "footer",
   SIDEBAR: "sidebar",
+  MENUBAR_WRAPPER: "menubar-wrapper",
+  MENUBAR_CONTENTS: "menubar__contents",
+  MENUBAR_OVERLAY: "menubar__overlay",
+  NONE: "none",
 };
 
 export const IMG = {

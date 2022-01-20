@@ -1,7 +1,3 @@
-header {
-  display: none;
-}
-
 .home-wrapper {
   width: 100%;
   height: 100%;
@@ -29,7 +25,7 @@ header {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 1px 15px;
     .recommend__move-button {
       width: 100%;
-      height: 2em;
+      height: 4em;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -43,7 +39,7 @@ header {
     }
     .recommend__list-wrapper {
       margin-bottom: 10%;
-      margin-top: 10%;
+      margin-top: 5%;
       width: 100%;
       height: 200%;
       display: flex;
@@ -59,16 +55,17 @@ header {
         align-items: center;
 
         li {
-          width: 80%;
+          width: 90%;
           height: 12%;
-          margin-bottom: 8%;
+          margin-bottom: 5%;
+          margin-top: 5%;
           position: relative;
           padding: 0.5em;
           border-radius: 6px;
           box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
           background-color: rgb(247, 247, 247);
           display: flex;
-          justify-content: space-around;
+          justify-content: center;
           align-items: center;
 
           .recommend__list__content {
@@ -81,7 +78,7 @@ header {
             }
 
             .content__name {
-              margin-bottom: 4%;
+              margin-bottom: 7%;
               font-weight: 600;
               font-size: 1.1em;
             }
@@ -121,6 +118,29 @@ header {
   }
 }
 
-footer {
-  display: none;
+.menubar {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: -65%;
+}
+
+.menubar-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  transition: transform 0.5s ease-out;
+
+  .menubar__contents {
+    width: 60%;
+    background-color: white;
+  }
+
+  .menubar__overlay {
+    width: 40%;
+    background-color: rgb(51, 51, 51);
+    transition: color 0.5s ease-out;
+    opacity: 0.6;
+  }
 }
