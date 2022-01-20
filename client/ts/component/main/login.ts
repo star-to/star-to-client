@@ -1,5 +1,5 @@
 import { Component } from "../component";
-import SELECTOR from "../../const";
+import { SELECTOR } from "../../const";
 import util from "../../util";
 
 export default class Login implements Component {

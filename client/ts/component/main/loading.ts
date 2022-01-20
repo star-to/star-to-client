@@ -1,4 +1,4 @@
-import SELECTOR from "../../const";
+import { SELECTOR } from "../../const";
 import { Component } from "../component";
 
 export default class Loading implements Component {

@@ -21,16 +21,15 @@ header {
     display: flex;
     flex-direction: column;
     border-radius: 7px;
-    top: 80%;
+    top: 78%;
     width: 100%;
-    height: 200%;
+    height: 100%;
     transition: transform 0.5s ease-out;
-    justify-content: center;
     align-items: center;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 1px 15px;
     .recommend__move-button {
       width: 100%;
-      height: 1em;
+      height: 2em;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -42,27 +41,81 @@ header {
         border-radius: 3px;
       }
     }
-
-    ul {
+    .recommend__list-wrapper {
+      margin-bottom: 10%;
+      margin-top: 10%;
       width: 100%;
-      height: 100%;
-      margin: 1em;
+      height: 200%;
       display: flex;
-      flex-direction: column;
-      justify-content: space-around;
+      overflow: scroll;
       align-items: center;
 
-      li {
-        width: 80%;
-        padding: 0.5em;
-        border-radius: 6px;
-        box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px,
-          rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px,
-          rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px,
-          rgba(0, 0, 0, 0.07) 0px 32px 64px;
+      .recommend__list {
+        width: 100%;
+        height: 100%;
+        margin: 1em;
         display: flex;
-        justify-content: space-around;
+        flex-direction: column;
         align-items: center;
+
+        li {
+          width: 80%;
+          height: 12%;
+          margin-bottom: 8%;
+          position: relative;
+          padding: 0.5em;
+          border-radius: 6px;
+          box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+          background-color: rgb(247, 247, 247);
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+
+          .recommend__list__content {
+            width: 100%;
+            height: 100%;
+            padding: 1em;
+            font-size: 0.6em;
+            * {
+              margin: 3%;
+            }
+
+            .content__name {
+              margin-bottom: 4%;
+              font-weight: 600;
+              font-size: 1.1em;
+            }
+
+            .content__comment {
+              font-weight: 600;
+              color: rgb(90, 51, 7);
+            }
+
+            .content__bookmark {
+              position: absolute;
+              padding: 0;
+              top: -15%;
+              left: 80%;
+              img {
+                object-fit: contain;
+              }
+            }
+
+            .content__star {
+              width: 50%;
+              img {
+                object-fit: scale-down;
+                margin: 0.01em;
+                padding: 0;
+              }
+            }
+
+            .content__comment {
+              position: relative;
+              top: -3.5%;
+            }
+          }
+        }
       }
     }
   }

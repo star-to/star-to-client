@@ -10,28 +10,38 @@ export default class Router {
   }
 
   init(): void {
-    const loading = this.findPage("/home");
-    this.paintPage(loading);
+    const page = this.findPage("/loading");
+    this.paintPage(page);
 
-    // document.addEventListener("click", (e: Event) => {
-    //   this.handleRoutePage(e);
-    // });
+    document.addEventListener("click", (e: Event) => {
+      this.handleRoutePage(e);
+    });
 
-    // const response = util.fetchChecedkLogin();
-    // response
-    //   .then((res) => res.json())
-    //   .then(({ isLogin }) => {
-    //     const nextPageComponents = isLogin
-    //       ? this.findPage("/home")
-    //       : this.findPage("/login");
-    //     this.paintPage(nextPageComponents);
-    //   });
+    const response = util.fetchChecedkLogin();
+    response
+      .then((res) => res.json())
+      .then(({ isLogin }) => {
+        const nextPageComponents = isLogin
+          ? this.findPage("/home")
+          : this.findPage("/login");
+        this.paintPage(nextPageComponents);
+      });
   }
 
   handleRoutePage(event: Event): void {
-    const targetElement = event.target as HTMLElement;
+    //TODO: 부모의 부모까지 확인해봐야함 더 효율적인 방법 없을지?
+    const eventTarget = event.target as HTMLElement;
 
-    if (!targetElement.dataset?.list) return;
+    const isLink =
+      eventTarget.dataset?.link || eventTarget.parentElement?.dataset?.link
+        ? true
+        : false;
+
+    if (!isLink) return;
+
+    const targetElement = eventTarget.dataset?.link
+      ? eventTarget
+      : (eventTarget.parentElement as HTMLElement);
 
     const nextPageComponents = this.findPage(
       targetElement.dataset.link as string
