@@ -16,14 +16,10 @@ export default class Action implements Observable {
 
   subscribe(key: string, cb: ObserverFunction): void {
     this.observers[key].push(cb);
-    // eslint-disable-next-line no-console
-    console.log("구독", this.observers);
   }
 
   unsubscribe(key: string, cb: ObserverFunction): void {
     this.observers[key] = this.observers[key].filter((e) => e !== cb);
-    // eslint-disable-next-line no-console
-    console.log("구독해제", this.observers);
   }
 
   notify(key: string): void {

@@ -23,7 +23,10 @@ export const SELECTOR = {
   SIDEBAR: "sidebar",
   MENUBAR: "menubar",
   MENUBAR_WRAPPER: "menubar-wrapper",
+  MENUBAR_CONTENTS_WRAPPER: "menubar__contents-wrapper",
   MENUBAR_CONTENTS: "menubar__contents",
+  MENUBAR_CONTENTS_MY_REVIEW: "menubar__contents__my-review",
+  MENUBAR_CONTENTS_BOOKMARK: "menubar__contents__bookmark",
   MENUBAR_OVERLAY: "menubar__overlay",
   NONE: "none",
 };
@@ -45,6 +48,8 @@ export const PATH = {
   LOGIN: "/login",
   DETAIL: "/detail",
   REVIEW: "/review",
+  MY_REVIEW: "/my-review",
+  BOOKMARK: "/bookmark",
 };
 
 export const ACTION = {
