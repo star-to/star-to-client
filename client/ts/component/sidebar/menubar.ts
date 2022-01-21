@@ -1,26 +1,39 @@
 import { Component } from "../component";
-import { SELECTOR } from "../../const";
+import { SELECTOR, ACTION } from "../../const";
+import Action from "../state/action";
 
 export default class MenuBar implements Component {
   html: string;
-  constructor() {
+  action: Action;
+  constructor(action: Action) {
+    this.action = action;
+
     this.html = /*html*/ `
     <div class="${SELECTOR.MENUBAR_WRAPPER}">
+      <div class="${SELECTOR.MENUBAR_OVERLAY}">
+      </div>
       <div class="${SELECTOR.MENUBAR_CONTENTS}">
       </div>
-      <div class="${SELECTOR.MENUBAR_OVERLAY} ${SELECTOR.NONE}">
-      </div>
     </div>
-    
     `;
   }
-  paintComponent(): void {
+
+  paint(): void {
     const sidebarWrapper = document.querySelector(
       `${SELECTOR.SIDEBAR}`
     ) as HTMLElement;
     sidebarWrapper.className = "";
-    sidebarWrapper.classList.add("menubar");
+    sidebarWrapper.classList.add(SELECTOR.MENUBAR);
     sidebarWrapper.innerHTML = this.html;
+  }
+
+  init(): void {
+    this.action.createObservers(ACTION.MENUBAR_TOGGLE);
+
+    const onVisible = () => {
+      this.displayMenubar();
+    };
+    this.action.subscribe(ACTION.MENUBAR_TOGGLE, onVisible);
   }
 
   displayMenubar(): void {
@@ -28,10 +41,11 @@ export default class MenuBar implements Component {
       `.${SELECTOR.MENUBAR_OVERLAY}`
     ) as HTMLDivElement;
     const sidebarWrapper = document.querySelector(
-      `.${SELECTOR.MENUBAR_WRAPPER}`
+      `.${SELECTOR.MENUBAR}`
     ) as HTMLDivElement;
 
-    overlay.classList.remove(SELECTOR.NONE);
-    sidebarWrapper.style.transform = "translate3d(65%,0,0)";
+    sidebarWrapper.style.transform = "translate3d(100%,0,0)";
+    overlay.style.width = "200%";
+    overlay.style.backgroundColor = "rgba(51, 51, 51, 0.7)";
   }
 }

@@ -1,8 +1,7 @@
 export interface Observable {
-  subscribe(fn: ObserverFunction): void;
-  unsubscribe(fn: ObserverFunction): void;
-  start?(): void;
-  stop?(): void;
+  subscribe(key: string, cb: ObserverFunction): void;
+  unsubscribe(key: string, cb: ObserverFunction): void;
+  notify(key: string): void;
 }
 
 export type ObserverFunction = () => void;

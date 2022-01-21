@@ -27,7 +27,7 @@ export default class Login implements Component {
     `;
   }
 
-  subscribeEvent(): void {
+  init(): void {
     const naverButton = document.querySelector(
       `.${SELECTOR.LOGIN_BUTTON_NAVER}`
     ) as HTMLDivElement;
@@ -42,6 +42,13 @@ export default class Login implements Component {
     kakaoButton.addEventListener("click", () => {
       this.handleKakaoLogin();
     });
+  }
+
+  paint(): void {
+    const mainWrapper = document.querySelector(
+      `${SELECTOR.MAIN}`
+    ) as HTMLElement;
+    mainWrapper.innerHTML = this.html;
   }
 
   handleNaverLogin(): void {
@@ -60,12 +67,5 @@ export default class Login implements Component {
       .then((url) => {
         window.location.href = url;
       });
-  }
-
-  paintComponent(): void {
-    const mainWrapper = document.querySelector(
-      `${SELECTOR.MAIN}`
-    ) as HTMLElement;
-    mainWrapper.innerHTML = this.html;
   }
 }

@@ -1,3 +1,4 @@
+import Action from "./component/state/action";
 import { PageRoute, ComponentFunction } from "./routes";
 import util from "./util";
 
@@ -10,22 +11,22 @@ export default class Router {
   }
 
   init(): void {
-    const page = this.findPage("/loading");
+    const page = this.findPage("/home");
     this.paintPage(page);
 
-    document.addEventListener("click", (e: Event) => {
-      this.handleRoutePage(e);
-    });
+    //   document.addEventListener("click", (e: Event) => {
+    //     this.handleRoutePage(e);
+    //   });
 
-    const response = util.fetchChecedkLogin();
-    response
-      .then((res) => res.json())
-      .then(({ isLogin }) => {
-        const nextPageComponents = isLogin
-          ? this.findPage("/home")
-          : this.findPage("/login");
-        this.paintPage(nextPageComponents);
-      });
+    //   const response = util.fetchChecedkLogin();
+    //   response
+    //     .then((res) => res.json())
+    //     .then(({ isLogin }) => {
+    //       const nextPageComponents = isLogin
+    //         ? this.findPage("/home")
+    //         : this.findPage("/login");
+    //       this.paintPage(nextPageComponents);
+    //     });
   }
 
   handleRoutePage(event: Event): void {
@@ -61,15 +62,16 @@ export default class Router {
   }
 
   paintPage(pageComponents: ComponentFunction[]): void {
-    const page = pageComponents.map((componentfn) => componentfn());
+    const action = new Action();
+    const page = pageComponents.map((componentfn) => componentfn(action));
 
     page.forEach((component) => {
-      component.paintComponent();
+      component.paint();
     });
 
     page.forEach((component) => {
-      if (component.subscribeEvent) {
-        component.subscribeEvent();
+      if (component.init) {
+        component.init();
       }
     });
   }
