@@ -196,10 +196,19 @@ export default class Home implements Component {
   }
 
   repositionReccommendLayer(e: TouchEvent) {
-    //TODO: viewport 중간이상이면 화면 제일 위로, 아니면 초기위치로 위치 조정 하고싶음
     if (this.recommendLayout === null) return;
 
-    const moveY = this.bagicHeight - e.changedTouches[0].clientY;
+    const currentY = e.changedTouches[0].clientY;
+    const middleHeigth = this.viewHeight / 2;
+
+    const isUp = middleHeigth > currentY;
+    const moveY = isUp ? this.bagicHeight : 0;
+
+    const recommendListWrapper = document.querySelector(
+      `.${SELECTOR.RECOMMEND_LIST_WRAPPER}`
+    ) as HTMLDivElement;
+    recommendListWrapper.style.overflow = isUp ? "scroll" : "hidden";
+
     this.recommendLayout.style.transform = `translate3d(0,-${moveY}px,0)`;
   }
 
