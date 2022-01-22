@@ -1,3 +1,4 @@
+import Action from "./component/state/action";
 import { PageRoute, ComponentFunction } from "./routes";
 import util from "./util";
 
@@ -61,15 +62,16 @@ export default class Router {
   }
 
   paintPage(pageComponents: ComponentFunction[]): void {
-    const page = pageComponents.map((componentfn) => componentfn());
+    const action = new Action();
+    const page = pageComponents.map((componentfn) => componentfn(action));
 
     page.forEach((component) => {
-      component.paintComponent();
+      component.paint();
     });
 
     page.forEach((component) => {
-      if (component.subscribeEvent) {
-        component.subscribeEvent();
+      if (component.init) {
+        component.init();
       }
     });
   }

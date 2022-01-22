@@ -5,7 +5,9 @@ export const SELECTOR = {
   LOGIN_BUTTON_KAKAO: "login-button__kakao",
   HOME_WRAPPER: "home-wrapper",
   HOME_MAP_WRAPPER: "map-wrapper",
+  MENUBAR_TOGGLE_BUTTON: "toggle-button",
   MAP_MY_DIRECTION_BUTTON: "map__my-direction-button",
+  SEARCH_WRAPPER: "search-wrapper",
   HOME_RECOMMEND_WRAPPER: "recommend-wrapper",
   RECOMMEND_MOVE_BUTTON: "recommend__move-button",
   RECOMMEND_MOVE_BUTTON_ICON: "recommend__move-button__icon",
@@ -19,6 +21,11 @@ export const SELECTOR = {
   CONTENT_BOOKMARK: "content__bookmark",
   FOOTER: "footer",
   SIDEBAR: "sidebar",
+  MENUBAR: "menubar",
+  MENUBAR_WRAPPER: "menubar-wrapper",
+  MENUBAR_CONTENTS: "menubar__contents",
+  MENUBAR_OVERLAY: "menubar__overlay",
+  NONE: "none",
 };
 
 export const IMG = {
@@ -30,6 +37,7 @@ export const IMG = {
     "https://star-to.s3.ap-northeast-2.amazonaws.com/img/fill-bookmark.png",
   EMPTY_BOOKMARK:
     "https://star-to.s3.ap-northeast-2.amazonaws.com/img/empty-bookmark.png",
+  PLUS: "https://star-to.s3.ap-northeast-2.amazonaws.com/img/plus.png",
 };
 
 export const PATH = {
@@ -37,4 +45,8 @@ export const PATH = {
   LOGIN: "/login",
   DETAIL: "/detail",
   REVIEW: "/review",
+};
+
+export const ACTION = {
+  MENUBAR_TOGGLE: "menubarToggle",
 };

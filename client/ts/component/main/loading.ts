@@ -3,6 +3,7 @@ import { Component } from "../component";
 
 export default class Loading implements Component {
   private html: string;
+
   constructor() {
     this.html = /*html*/ `
     <div class="loading-wrapper">
@@ -10,7 +11,8 @@ export default class Loading implements Component {
     </div>
     `;
   }
-  paintComponent(): void {
+
+  paint(): void {
     const mainWrapper = document.querySelector(
       `${SELECTOR.MAIN}`
     ) as HTMLElement;

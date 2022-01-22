@@ -1,4 +1,4 @@
 export interface Component {
-  paintComponent(): void;
-  subscribeEvent?(): void;
+  paint(): void;
+  init?(): void;
 }

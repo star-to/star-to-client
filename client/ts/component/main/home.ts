@@ -1,16 +1,24 @@
 import { Component } from "../component";
-import { SELECTOR, IMG, PATH } from "../../const";
+import { SELECTOR, IMG, PATH, ACTION } from "../../const";
+import Action from "../state/action";
 
 export default class Home implements Component {
+  action: Action;
   html: string;
   bagicHeight: number;
   viewHeight: number;
   recommendLayout: HTMLDivElement | null;
   home: HTMLDivElement | null;
-  constructor() {
+  constructor(action: Action) {
+    this.action = action;
     this.html = /*html*/ `
     <div class="${SELECTOR.HOME_WRAPPER}">
       <div class="${SELECTOR.HOME_MAP_WRAPPER}">
+      </div>
+      <div class="${SELECTOR.MENUBAR_TOGGLE_BUTTON}">
+        <img src="${IMG.PLUS}" alt="plus button">
+      </div>
+      <div class="${SELECTOR.SEARCH_WRAPPER}">
       </div>
       <div class="${SELECTOR.HOME_RECOMMEND_WRAPPER}">
         <div class="${SELECTOR.RECOMMEND_MOVE_BUTTON}">
@@ -30,15 +38,14 @@ export default class Home implements Component {
     this.home = null;
   }
 
-  paintComponent(): void {
-    //TODO: 함수명 init으로 변경할 지? 고민
+  paint(): void {
     const mainWrapper = document.querySelector(
       `${SELECTOR.MAIN}`
     ) as HTMLElement;
     mainWrapper.innerHTML = this.html;
   }
 
-  subscribeEvent(): void {
+  init(): void {
     this.recommendLayout = document.querySelector(
       `.${SELECTOR.HOME_RECOMMEND_WRAPPER}`
     ) as HTMLDivElement;
@@ -167,6 +174,18 @@ export default class Home implements Component {
     };
 
     layoutMoveButton.addEventListener("touchstart", handleTouchStart);
+
+    //TODO: menubar toggle button click event
+    //분리 해야할지 생각해보기!
+
+    const toggleButton = document.querySelector(
+      `.${SELECTOR.MENUBAR_TOGGLE_BUTTON}`
+    ) as HTMLButtonElement;
+
+    toggleButton.addEventListener("click", (e: Event) => {
+      e.preventDefault();
+      this.action.notify(ACTION.MENUBAR_TOGGLE);
+    });
   }
 
   moveReccommendLayer(e: TouchEvent) {
