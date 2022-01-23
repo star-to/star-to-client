@@ -11,22 +11,22 @@ export default class Router {
   }
 
   init(): void {
-    const page = this.findPage("/home");
+    const page = this.findPage("/loading");
     this.paintPage(page);
 
-    // document.addEventListener("click", (e: Event) => {
-    //   this.handleRoutePage(e);
-    // });
+    document.addEventListener("click", (e: Event) => {
+      this.handleRoutePage(e);
+    });
 
-    // const response = util.fetchChecedkLogin();
-    // response
-    //   .then((res) => res.json())
-    //   .then(({ isLogin }) => {
-    //     const nextPageComponents = isLogin
-    //       ? this.findPage("/home")
-    //       : this.findPage("/login");
-    //     this.paintPage(nextPageComponents);
-    //   });
+    const response = util.fetchChecedkLogin();
+    response
+      .then((res) => res.json())
+      .then(({ isLogin }) => {
+        const nextPageComponents = isLogin
+          ? this.findPage("/home")
+          : this.findPage("/login");
+        this.paintPage(nextPageComponents);
+      });
   }
 
   handleRoutePage(event: Event): void {

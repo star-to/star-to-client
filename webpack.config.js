@@ -4,8 +4,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const WebpackShellPluginNext = require("webpack-shell-plugin-next");
 
 const pathOutput = path.resolve(__dirname, "dist/public/js");
-const pathTs = path.resolve(__dirname, "client/ts");
-const pathScss = path.resolve(__dirname, "client/scss");
+const pathTs = path.resolve(__dirname, "src/ts");
+const pathScss = path.resolve(__dirname, "src/scss");
 
 module.exports = {
   entry: [pathTs + "/index.ts", pathScss + "/style.scss"],
@@ -16,7 +16,7 @@ module.exports = {
   plugins: [
     new MiniCssExtractPlugin({ filename: "../css/style.css" }),
     new HtmlWebpackPlugin({
-      template: "./client/html/index.html",
+      template: "./src/html/index.html",
       inject: false,
       filename: "../../index.html",
     }),
