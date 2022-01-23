@@ -7,24 +7,32 @@ export default class Login implements Component {
 
   constructor() {
     this.html = /*html*/ `
-    <div class="login-wrapper">
-      <div class="login-logo">
-        <img src="https://star-to.s3.ap-northeast-2.amazonaws.com/img/login.png" alt="Login logo image">
+    <div class="${SELECTOR.LOGIN_WRAPPER}">
+      <div class="${SELECTOR.LOGIN_LOGO}">
+        <img src="${SELECTOR.LOGIN_LOGO}" alt="Login logo image">
       </div>
-      <div class="login-button-wrapper">
-        <div class="login-button__naver">
-          <span class="button-text">
+      <div class="${SELECTOR.LOGIN_BUTTON_WRAPPER}">
+        <div class="${SELECTOR.LOGIN_BUTTON_NAVER}">
+          <span class="${SELECTOR.LOGIN_BUTTON_CONTENT}">
             네이버 로그인
           </span>
         </div>
-        <div class="login-button__kakao">
-          <span class="button-text">
+        <div class="${SELECTOR.LOGIN_BUTTON_KAKAO}">
+          <span class="${SELECTOR.LOGIN_BUTTON_CONTENT}">
             카카오 로그인
           </span>
         </div>
       </div>
     </div>
     `;
+  }
+
+  paint(): void {
+    //TODO: 메인 래퍼를 구분할 필요가 있다면 main 에 셀렉터 부여하기
+    const mainWrapper = document.querySelector(
+      `${SELECTOR.MAIN}`
+    ) as HTMLElement;
+    mainWrapper.innerHTML = this.html;
   }
 
   init(): void {
@@ -42,13 +50,6 @@ export default class Login implements Component {
     kakaoButton.addEventListener("click", () => {
       this.handleKakaoLogin();
     });
-  }
-
-  paint(): void {
-    const mainWrapper = document.querySelector(
-      `${SELECTOR.MAIN}`
-    ) as HTMLElement;
-    mainWrapper.innerHTML = this.html;
   }
 
   handleNaverLogin(): void {

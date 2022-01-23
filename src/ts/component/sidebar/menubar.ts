@@ -50,12 +50,12 @@ export default class MenuBar implements Component {
       `.${SELECTOR.MENUBAR_CONTENTS_WRAPPER}`
     ) as HTMLElement;
 
-    this.action.createObservers(ACTION.MENUBAR_TOGGLE);
+    this.action.createObservers(ACTION.MENUBAR_VISIBLE);
 
     const onVisible = () => {
       this.displayMenubar();
     };
-    this.action.subscribe(ACTION.MENUBAR_TOGGLE, onVisible);
+    this.action.subscribe(ACTION.MENUBAR_VISIBLE, onVisible);
 
     this.overlayLayout.addEventListener("click", () => {
       this.hideMenubar();

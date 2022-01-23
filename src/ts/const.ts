@@ -1,8 +1,13 @@
 export const SELECTOR = {
   HEADER: "header",
   MAIN: "main",
+  LOADING_WRAPPER: "loading-wrapper",
+  LOGIN_WRAPPER: "login-wrapper",
+  LOGIN_LOGO: "login-logo",
+  LOGIN_BUTTON_WRAPPER: "login-botton-wrapper",
   LOGIN_BUTTON_NAVER: "login-button__naver",
   LOGIN_BUTTON_KAKAO: "login-button__kakao",
+  LOGIN_BUTTON_CONTENT: "button-text",
   HOME_WRAPPER: "home-wrapper",
   HOME_MAP_WRAPPER: "map-wrapper",
   MENUBAR_TOGGLE_BUTTON: "toggle-button",
@@ -32,6 +37,8 @@ export const SELECTOR = {
 };
 
 export const IMG = {
+  LOGO: "https://star-to.s3.ap-northeast-2.amazonaws.com/img/loading.png",
+  LOGIN_LOGO: "https://star-to.s3.ap-northeast-2.amazonaws.com/img/login.png",
   FILL_STAR:
     "https://star-to.s3.ap-northeast-2.amazonaws.com/img/fill-star.png",
   EMPTY_STAR:
@@ -46,6 +53,7 @@ export const IMG = {
 export const PATH = {
   HOME: "/home",
   LOGIN: "/login",
+  LOADING: "/loading",
   DETAIL: "/detail",
   REVIEW: "/review",
   MY_REVIEW: "/my-review",
@@ -53,5 +61,5 @@ export const PATH = {
 };
 
 export const ACTION = {
-  MENUBAR_TOGGLE: "menubarToggle",
+  MENUBAR_VISIBLE: "visibleMenubar",
 };

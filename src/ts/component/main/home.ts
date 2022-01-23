@@ -11,6 +11,7 @@ export default class Home implements Component {
   home: HTMLDivElement | null;
   constructor(action: Action) {
     this.action = action;
+
     this.html = /*html*/ `
     <div class="${SELECTOR.HOME_WRAPPER}">
       <div class="${SELECTOR.HOME_MAP_WRAPPER}">
@@ -39,9 +40,12 @@ export default class Home implements Component {
   }
 
   paint(): void {
+    //TODO: 메인 래퍼를 구분할 필요가 있다면 main 에 셀렉터 부여하기
+
     const mainWrapper = document.querySelector(
       `${SELECTOR.MAIN}`
     ) as HTMLElement;
+
     mainWrapper.innerHTML = this.html;
   }
 
@@ -178,13 +182,13 @@ export default class Home implements Component {
     //TODO: menubar toggle button click event
     //분리 해야할지 생각해보기!
 
-    const toggleButton = document.querySelector(
+    const visibleMenubarButton = document.querySelector(
       `.${SELECTOR.MENUBAR_TOGGLE_BUTTON}`
     ) as HTMLButtonElement;
 
-    toggleButton.addEventListener("click", (e: Event) => {
+    visibleMenubarButton.addEventListener("click", (e: Event) => {
       e.preventDefault();
-      this.action.notify(ACTION.MENUBAR_TOGGLE);
+      this.action.notify(ACTION.MENUBAR_VISIBLE);
     });
   }
 
