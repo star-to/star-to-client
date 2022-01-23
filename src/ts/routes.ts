@@ -6,6 +6,7 @@ import Home from "./component/main/home";
 import Detail from "./component/main/datail";
 import MenuBar from "./component/sidebar/menubar";
 import Action from "./component/state/action";
+import Bagic from "./component/header/bagic";
 
 export type ComponentFunction = (action: Action, params?: Params) => Component;
 
@@ -28,6 +29,7 @@ export const routes = [
     path: PATH.DETAIL,
     components: [
       (action: Action, params: Params) => new Detail(action, params),
+      () => new Bagic(),
     ],
   },
 ];
