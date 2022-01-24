@@ -19,5 +19,5 @@
     "declaration": true,
     "emitDeclarationOnly": true
   },
-  "include": ["client/ts/*"]
+  "include": ["src/ts/*"]
 }
