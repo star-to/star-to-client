@@ -2,11 +2,12 @@ export const SELECTOR = {
   HEADER: "header",
   BAGIC: "header-bagic",
   BAGIC_WRAPPER: "bagic-wrapper",
+  BAGIC_HOME_BUTTON: "bagic__home-button",
   MAIN: "main",
   LOADING_WRAPPER: "loading-wrapper",
   LOGIN_WRAPPER: "login-wrapper",
   LOGIN_LOGO: "login-logo",
-  LOGIN_BUTTON_WRAPPER: "login-botton-wrapper",
+  LOGIN_BUTTON_WRAPPER: "login-button-wrapper",
   LOGIN_BUTTON_NAVER: "login-button__naver",
   LOGIN_BUTTON_KAKAO: "login-button__kakao",
   LOGIN_BUTTON_CONTENT: "button-text",
@@ -26,7 +27,6 @@ export const SELECTOR = {
   CONTENT_COMMENT: "content__comment",
   CONTENT_TIME: "content__time",
   CONTENT_BOOKMARK: "content__bookmark",
-  FOOTER: "footer",
   SIDEBAR: "sidebar",
   MENUBAR: "menubar",
   MENUBAR_WRAPPER: "menubar-wrapper",
@@ -35,6 +35,7 @@ export const SELECTOR = {
   MENUBAR_CONTENTS_MY_REVIEW: "menubar__contents__my-review",
   MENUBAR_CONTENTS_BOOKMARK: "menubar__contents__bookmark",
   MENUBAR_OVERLAY: "menubar__overlay",
+  FOOTER: "footer",
   NONE: "none",
 };
 
@@ -50,6 +51,7 @@ export const IMG = {
   EMPTY_BOOKMARK:
     "https://star-to.s3.ap-northeast-2.amazonaws.com/img/empty-bookmark.png",
   PLUS: "https://star-to.s3.ap-northeast-2.amazonaws.com/img/plus.png",
+  HOME_LOGO: "https://star-to.s3.ap-northeast-2.amazonaws.com/img/logo.png",
 };
 
 export const PATH = {
