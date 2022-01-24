@@ -17,6 +17,12 @@ const util = {
   },
 
   //TODO: 카카오 api 요청해서 분석해야함
+
+  fetchClientReview: () => {
+    return fetch("/api/my-review", {
+      method: "GET",
+    });
+  },
 };
 
 export default util;

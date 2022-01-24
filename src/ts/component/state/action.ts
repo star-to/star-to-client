@@ -1,4 +1,4 @@
-import { Observable, ObserverFunction } from "../observable";
+import { Observable, ObserverFunction, State } from "../observable";
 
 export default class Action implements Observable {
   private observers: Observers;
@@ -22,8 +22,10 @@ export default class Action implements Observable {
     this.observers[key] = this.observers[key].filter((e) => e !== cb);
   }
 
-  notify(key: string): void {
-    this.observers[key].forEach((cb) => cb());
+  notify(key: string, state?: State | State[]): void {
+    this.observers[key].forEach((cb) => {
+      state ? cb(state) : cb();
+    });
   }
 }
 

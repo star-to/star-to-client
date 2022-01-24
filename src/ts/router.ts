@@ -1,13 +1,14 @@
 import Action from "./component/state/action";
-import { PageRoute, ComponentFunction, Params } from "./routes";
+import { PageRoute, ComponentFunction, Params, routes } from "./routes";
 import util from "./util";
 
 export default class Router {
-  routes: PageRoute[];
-  params: Params | null = null;
+  action: Action;
+  params: Params;
 
-  constructor(routes: PageRoute[]) {
-    this.routes = routes;
+  constructor(action: Action) {
+    this.action = action;
+    this.params = {};
     this.init();
   }
 
@@ -64,7 +65,7 @@ export default class Router {
   }
 
   findPage(path: string): ComponentFunction[] {
-    const nextPage = this.routes.find((page: PageRoute) => page.path === path);
+    const nextPage = routes.find((page) => page.path === path);
     if (!nextPage) {
       //TODO: 에러 처리 코드 추가
       return [];
@@ -74,12 +75,9 @@ export default class Router {
   }
 
   paintPage(pageComponents: ComponentFunction[]): void {
-    const action = new Action();
-    const page = pageComponents.map((componentfn) => {
-      return this.params
-        ? componentfn(action, this.params)
-        : componentfn(action);
-    });
+    const page = pageComponents.map((componentfn) =>
+      componentfn(this.action, this.params)
+    );
 
     page.forEach((component) => {
       component.paint();

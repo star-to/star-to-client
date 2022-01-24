@@ -1,5 +1,5 @@
 import { Component } from "../component";
-import { SELECTOR } from "../../const";
+import { IMG, SELECTOR } from "../../const";
 import util from "../../util";
 
 export default class Login implements Component {
@@ -9,7 +9,7 @@ export default class Login implements Component {
     this.html = /*html*/ `
     <div class="${SELECTOR.LOGIN_WRAPPER}">
       <div class="${SELECTOR.LOGIN_LOGO}">
-        <img src="${SELECTOR.LOGIN_LOGO}" alt="Login logo image">
+        <img src="${IMG.LOGIN_LOGO}" alt="Login logo image">
       </div>
       <div class="${SELECTOR.LOGIN_BUTTON_WRAPPER}">
         <div class="${SELECTOR.LOGIN_BUTTON_NAVER}">
