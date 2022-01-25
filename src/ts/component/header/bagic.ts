@@ -1,4 +1,4 @@
-import { SELECTOR } from "../../const";
+import { IMG, SELECTOR } from "../../const";
 import { Component } from "../component";
 
 export default class Bagic implements Component {
@@ -7,6 +7,9 @@ export default class Bagic implements Component {
   constructor() {
     this.html = /*html*/ `
     <div class="${SELECTOR.BAGIC_WRAPPER}">
+        <div class="${SELECTOR.BAGIC_HOME_BUTTON}">
+            <img src="${IMG.HOME_LOGO}" alt="home button">
+        </div>
     </div>
     `;
   }
