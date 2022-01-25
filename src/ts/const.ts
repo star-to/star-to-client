@@ -1,5 +1,7 @@
 export const SELECTOR = {
   HEADER: "header",
+  BAGIC: "header-bagic",
+  BAGIC_WRAPPER: "bagic-wrapper",
   MAIN: "main",
   LOADING_WRAPPER: "loading-wrapper",
   LOGIN_WRAPPER: "login-wrapper",

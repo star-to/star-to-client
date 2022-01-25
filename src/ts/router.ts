@@ -1,9 +1,10 @@
 import Action from "./component/state/action";
-import { PageRoute, ComponentFunction } from "./routes";
+import { PageRoute, ComponentFunction, Params } from "./routes";
 import util from "./util";
 
 export default class Router {
   routes: PageRoute[];
+  params: Params | null = null;
 
   constructor(routes: PageRoute[]) {
     this.routes = routes;
@@ -44,6 +45,17 @@ export default class Router {
       ? eventTarget
       : (eventTarget.parentElement as HTMLElement);
 
+    if (targetElement.dataset.params) {
+      const paramData = targetElement.dataset.params?.split("/");
+
+      this.params = paramData.reduce((acc, cur) => {
+        const [key, data] = cur.split("=");
+        acc[key] = data;
+
+        return acc;
+      }, {} as Params);
+    }
+
     const nextPageComponents = this.findPage(
       targetElement.dataset.link as string
     );
@@ -63,7 +75,11 @@ export default class Router {
 
   paintPage(pageComponents: ComponentFunction[]): void {
     const action = new Action();
-    const page = pageComponents.map((componentfn) => componentfn(action));
+    const page = pageComponents.map((componentfn) => {
+      return this.params
+        ? componentfn(action, this.params)
+        : componentfn(action);
+    });
 
     page.forEach((component) => {
       component.paint();

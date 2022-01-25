@@ -230,6 +230,7 @@ export default class Home implements Component {
       const wrapper = document.createElement("div");
       wrapper.classList.add(SELECTOR.RECOMMEND_LIST_CONTENTT);
       wrapper.dataset.link = PATH.DETAIL;
+      wrapper.dataset.params = `id=${id}`;
 
       const nameElement = document.createElement("H1");
       nameElement.innerHTML = name;
