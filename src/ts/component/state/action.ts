@@ -22,9 +22,9 @@ export default class Action implements Observable {
     this.observers[key] = this.observers[key].filter((e) => e !== cb);
   }
 
-  notify(key: string, state?: State | State[]): void {
+  notify(key: string, params?: State | State[] | Option): void {
     this.observers[key].forEach((cb) => {
-      state ? cb(state) : cb();
+      params ? cb(params) : cb();
     });
   }
 }

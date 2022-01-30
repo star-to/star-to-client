@@ -1,7 +1,6 @@
 import Action from "./action";
 import util from "../../util";
 import { State } from "../observable";
-import MyReview from "../main/my-review";
 
 export default class UserInfo {
   action: Action;
