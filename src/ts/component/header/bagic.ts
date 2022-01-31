@@ -7,17 +7,17 @@ export default class Bagic implements Component {
   constructor() {
     this.html = /*html*/ `
     <div class="${SELECTOR.BAGIC_WRAPPER}">
-        <div class="${SELECTOR.BAGIC_HOME_BUTTON}">
-            <img src="${IMG.HOME_LOGO}" alt="home button">
+        <div class="${SELECTOR.BAGIC_HOME_BUTTON}" data-link="/home">
+            <img src="${IMG.HOME_LOGO}" alt="logo home button">
         </div>
     </div>
     `;
   }
 
-  paint(): void {
+  paint = (): void => {
     const header = document.querySelector(`${SELECTOR.HEADER}`) as HTMLElement;
     header.innerHTML = this.html;
     header.className = "";
     header.classList.add(`${SELECTOR.BAGIC}`);
-  }
+  };
 }
