@@ -1,4 +1,5 @@
 import Action from "./action";
+import { ACTION } from "../../const";
 
 export default class MapOption {
   options: Option;
@@ -13,35 +14,34 @@ export default class MapOption {
     };
   }
 
-  init() {
-    this.action.createObservers("updateMapOption");
-  }
+  init = (): void => {
+    this.action.createObservers(ACTION.UPDATE_MAP_OPTION);
+    this.action.createObservers(ACTION.START_MAP);
+    this.action.subscribe(ACTION.START_MAP, this.getCurrentPosition);
+  };
 
-  getCurrentPosition() {
+  getCurrentPosition = (): void => {
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      (position: GeolocationPosition) => {
         this.options.center = new kakao.maps.LatLng(
           position.coords.latitude,
           position.coords.longitude
         );
 
-        // eslint-disable-next-line no-console
-        console.log(this.options.center);
-
         this.prePosition.latitude = position.coords.latitude;
         this.prePosition.longitude = position.coords.longitude;
-        this.action.notify("updateMapOption", this.options);
+        this.action.notify(ACTION.UPDATE_MAP_OPTION, this.options);
       },
       (error) => {
         //TODO: 에러처리 필요함
       },
       { enableHighAccuracy: true, maximumAge: 0 }
     );
-  }
+  };
 
-  watchPosition() {
+  watchPosition = (): void => {
     const id = navigator.geolocation.watchPosition(
-      (position) => {
+      (position: GeolocationPosition) => {
         if (!this.options.center) return;
 
         const currentCoords = new kakao.maps.LatLng(
@@ -57,12 +57,23 @@ export default class MapOption {
         }
 
         this.options.center = currentCoords;
-        this.action.notify("updateMapOption", this.options);
+        this.action.notify(ACTION.UPDATE_MAP_OPTION, this.options);
       },
       (error) => {
         //TODO: 에러처리 필요함
       },
       { enableHighAccuracy: true, maximumAge: 0 }
     );
-  }
+  };
+}
+
+interface GeolocationPosition {
+  coords: GeolocationCoordinates;
+  timestamp: number;
+}
+
+interface GeolocationCoordinates {
+  accuracy: number;
+  latitude: number;
+  longitude: number;
 }

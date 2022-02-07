@@ -66,4 +66,6 @@ export const PATH = {
 
 export const ACTION = {
   MENUBAR_VISIBLE: "visibleMenubar",
+  UPDATE_MAP_OPTION: "updateMapOption",
+  START_MAP: "startMap",
 };

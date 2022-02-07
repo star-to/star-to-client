@@ -1,6 +1,7 @@
 import { Component } from "../component";
 import { SELECTOR, IMG, PATH, ACTION } from "../../const";
 import Action from "../state/action";
+import { ObserverFunction } from "../observable";
 
 export default class Home implements Component {
   action: Action;
@@ -9,6 +10,9 @@ export default class Home implements Component {
   viewHeight: number;
   recommendLayout: HTMLDivElement | null;
   home: HTMLDivElement | null;
+  mapLayout: Node | null;
+  // infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+  // map = "";
   constructor(action: Action) {
     this.action = action;
 
@@ -37,6 +41,7 @@ export default class Home implements Component {
     this.viewHeight = 0;
     this.recommendLayout = null;
     this.home = null;
+    this.mapLayout = null;
   }
 
   paint(): void {
@@ -57,6 +62,17 @@ export default class Home implements Component {
     this.home = document.querySelector(
       `.${SELECTOR.HOME_WRAPPER}`
     ) as HTMLDivElement;
+
+    this.mapLayout = document.querySelector(
+      `.${SELECTOR.HOME_MAP_WRAPPER}`
+    ) as Node;
+
+    this.action.subscribe(
+      ACTION.UPDATE_MAP_OPTION,
+      this.updateMap as ObserverFunction
+    );
+
+    this.action.notify(ACTION.START_MAP);
 
     const layoutMoveButton = document.querySelector(
       `.${SELECTOR.RECOMMEND_MOVE_BUTTON}`
@@ -276,6 +292,10 @@ export default class Home implements Component {
     const newElement = document.createElement(tagName);
     parentElement.append(newElement);
   }
+
+  updateMap = (options: Option) => {
+    new kakao.maps.Map(this.mapLayout as Node, options);
+  };
 }
 
 type PlaceInfo = {
