@@ -77,3 +77,7 @@ export const ACTION = {
   UPDATE_USER_INFO: "updateUserInfo",
   FETCH_CLIENT_REVIEW: "fetchClientReview",
 };
+
+export const STATIC = {
+  MAX_COUTING_STARS: 5,
+};
