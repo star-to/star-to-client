@@ -2,7 +2,7 @@ import Action from "./action";
 import { ACTION } from "../../const";
 
 export default class MapOption {
-  options: Option;
+  options: KakaoMapOption;
   prePosition = { latitude: 0, longitude: 0 };
   action: Action;
 
