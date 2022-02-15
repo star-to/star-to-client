@@ -74,6 +74,7 @@ export const PATH = {
 
 export const ACTION = {
   MENUBAR_VISIBLE: "visibleMenubar",
+  UPDATE_MAP_OPTION: "updateMapOption",
   UPDATE_USER_INFO: "updateUserInfo",
   FETCH_CLIENT_REVIEW: "fetchClientReview",
 };
