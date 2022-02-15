@@ -1,4 +1,5 @@
 import Action from "./component/state/action";
+import { SELECTOR } from "./const";
 import { PageRoute, ComponentFunction, Params, routes } from "./routes";
 import util from "./util";
 
@@ -12,7 +13,7 @@ export default class Router {
     this.init();
   }
 
-  init(): void {
+  init = (): void => {
     const page = this.findPage("/loading");
     this.paintPage(page);
 
@@ -29,9 +30,9 @@ export default class Router {
           : this.findPage("/login");
         this.paintPage(nextPageComponents);
       });
-  }
+  };
 
-  handleRoutePage(event: Event): void {
+  handleRoutePage = (event: Event): void => {
     //TODO: 부모의 부모까지 확인해봐야함 더 효율적인 방법 없을지?
     const eventTarget = event.target as HTMLElement;
 
@@ -61,10 +62,34 @@ export default class Router {
       targetElement.dataset.link as string
     );
 
+    this.removeElementChild();
     this.paintPage(nextPageComponents);
-  }
+  };
 
-  findPage(path: string): ComponentFunction[] {
+  removeElementChild = (): void => {
+    const header = document.querySelector(`${SELECTOR.HEADER}`) as HTMLElement;
+    const main = document.querySelector(`.${SELECTOR.MAIN}`) as HTMLElement;
+    const sidebar = document.querySelector(
+      `.${SELECTOR.SIDEBAR}`
+    ) as HTMLElement;
+
+    if (header) {
+      header.innerHTML = "";
+      header.removeAttribute("class");
+    }
+
+    if (main) {
+      main.innerHTML = "";
+      main.removeAttribute("class");
+    }
+
+    if (sidebar) {
+      sidebar.innerHTML = "";
+      sidebar.removeAttribute("class");
+    }
+  };
+
+  findPage = (path: string): ComponentFunction[] => {
     const nextPage = routes.find((page) => page.path === path);
     if (!nextPage) {
       //TODO: 에러 처리 코드 추가
@@ -72,9 +97,9 @@ export default class Router {
     }
 
     return nextPage.components;
-  }
+  };
 
-  paintPage(pageComponents: ComponentFunction[]): void {
+  paintPage = (pageComponents: ComponentFunction[]): void => {
     const page = pageComponents.map((componentfn) =>
       componentfn(this.action, this.params)
     );
@@ -88,5 +113,5 @@ export default class Router {
         component.init();
       }
     });
-  }
+  };
 }
