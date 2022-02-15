@@ -20,7 +20,6 @@
     "emitDeclarationOnly": true,
     "typeRoots": ["src/ts/types"],
     "baseUrl": "./"
-    // "sourceRoot": "/"
   },
   "include": ["src/ts/*", "src/types"]
 }

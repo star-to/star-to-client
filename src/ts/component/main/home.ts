@@ -1,5 +1,5 @@
 import { Component } from "../component";
-import { SELECTOR, IMG, PATH, ACTION } from "../../const";
+import { SELECTOR, IMG, PATH, ACTION, STATIC } from "../../const";
 import Action from "../state/action";
 import { ObserverFunction } from "../observable";
 
@@ -90,6 +90,7 @@ export default class Home implements Component {
       `.${SELECTOR.RECOMMEND_LIST}`
     ) as HTMLUListElement;
 
+    //TODO: 추천 리스트의 개수를 고정할 것인지 정해야함!!
     for (let i = 0; i < 10; i++) {
       this.predrawElement("li", recommendList);
     }
@@ -257,7 +258,7 @@ export default class Home implements Component {
       const starElememt = document.createElement("span");
       starElememt.classList.add(SELECTOR.CONTENT_STAR);
 
-      for (let j = 1; j <= 5; j++) {
+      for (let j = 1; j <= STATIC.MAX_COUTING_STARS; j++) {
         const starimg = document.createElement("img");
         starimg.src = star >= j ? IMG.FILL_STAR : IMG.EMPTY_STAR;
 

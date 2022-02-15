@@ -1,4 +1,5 @@
 @import "../component/sidebar-menubar.scss";
+@import "../component//button-content.scss";
 
 .home-wrapper {
   width: 100%;
@@ -70,7 +71,7 @@
 
         li {
           width: 90%;
-          height: 12%;
+          height: fit-content;
           margin-bottom: 5%;
           margin-top: 5%;
           position: relative;
@@ -81,51 +82,6 @@
           display: flex;
           justify-content: center;
           align-items: center;
-
-          .recommend__list__content {
-            width: 100%;
-            height: 100%;
-            padding: 1em;
-            font-size: 0.6em;
-            * {
-              margin: 3%;
-            }
-
-            .content__name {
-              margin-bottom: 7%;
-              font-weight: 600;
-              font-size: 1.1em;
-            }
-
-            .content__comment {
-              font-weight: 600;
-              color: rgb(90, 51, 7);
-            }
-
-            .content__bookmark {
-              position: absolute;
-              padding: 0;
-              top: -15%;
-              left: 80%;
-              img {
-                object-fit: contain;
-              }
-            }
-
-            .content__star {
-              width: 50%;
-              img {
-                object-fit: scale-down;
-                margin: 0.01em;
-                padding: 0;
-              }
-            }
-
-            .content__comment {
-              position: relative;
-              top: -3.5%;
-            }
-          }
         }
       }
     }

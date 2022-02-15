@@ -1,0 +1,49 @@
+.my-review-wrapper {
+  width: 100%;
+  height: 100%;
+
+  .my-reveiw__list-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    .my-review__list {
+      width: 85%;
+      margin: 4%;
+
+      .my-review__date {
+        padding: 4% 2% 4% 2%;
+        font-weight: 600;
+        font-size: 1.2em;
+        border-bottom: solid rgb(238, 238, 238);
+      }
+      .my-review__content {
+        width: 85%;
+        padding: 3%;
+        height: fit-content;
+        border-radius: 6px;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+        background-color: rgb(247, 247, 247);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 6% 3% 6% 3%;
+
+        .my-review__content-wrapper {
+          font-size: 0.7em;
+          font-weight: 520;
+          width: 100%;
+          padding: 3%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+    }
+  }
+}
