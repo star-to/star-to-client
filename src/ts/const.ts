@@ -76,6 +76,8 @@ export const ACTION = {
   MENUBAR_VISIBLE: "visibleMenubar",
   UPDATE_MAP_OPTION: "updateMapOption",
   UPDATE_USER_INFO: "updateUserInfo",
+  START_MAP: "startMap",
+  CURRENT_LOCATION_MAP: "currentLocationMap",
   FETCH_CLIENT_REVIEW: "fetchClientReview",
 };
 

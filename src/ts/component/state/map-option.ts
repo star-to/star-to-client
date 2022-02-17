@@ -1,9 +1,9 @@
 import Action from "./action";
 import { ACTION } from "../../const";
+import { ObserverFunction } from "../observable";
 
 export default class MapOption {
   options: KakaoMapOption;
-  prePosition = { latitude: 0, longitude: 0 };
   action: Action;
 
   constructor(action: Action) {
@@ -15,12 +15,17 @@ export default class MapOption {
   }
 
   init = (): void => {
-    this.action.createObservers(ACTION.UPDATE_MAP_OPTION);
+    //TODO:맵 액션들 정리할 필요 있음!!
     this.action.createObservers(ACTION.START_MAP);
-    this.action.subscribe(ACTION.START_MAP, this.getCurrentPosition);
+    this.action.createObservers(ACTION.UPDATE_MAP_OPTION);
+    this.action.createObservers(ACTION.CURRENT_LOCATION_MAP);
+    this.action.subscribe(
+      ACTION.CURRENT_LOCATION_MAP,
+      this.getCurrentPosition as ObserverFunction
+    );
   };
 
-  getCurrentPosition = (): void => {
+  getCurrentPosition = (isInit: boolean): void => {
     navigator.geolocation.getCurrentPosition(
       (position: GeolocationPosition) => {
         this.options.center = new kakao.maps.LatLng(
@@ -28,9 +33,11 @@ export default class MapOption {
           position.coords.longitude
         );
 
-        this.prePosition.latitude = position.coords.latitude;
-        this.prePosition.longitude = position.coords.longitude;
-        this.action.notify(ACTION.UPDATE_MAP_OPTION, this.options);
+        if (isInit) {
+          this.action.notify(ACTION.START_MAP, this.options);
+        } else {
+          this.action.notify(ACTION.UPDATE_MAP_OPTION, this.options.center);
+        }
       },
       (error) => {
         //TODO: 에러처리 필요함

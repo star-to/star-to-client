@@ -22,15 +22,12 @@ export default class UserInfo {
 
   lookupMyReview() {
     //TODO: 사용자 정보 api 요청
-    // eslint-disable-next-line no-console
     const response = util.fetchClientReview();
     response
       .then((res) => res.json())
       .then((text: State[]) => {
         const newState = this.getState();
         newState.myReview = text;
-        // eslint-disable-next-line no-console
-        console.log(newState);
         this.setState(newState);
         const currentMyReview = this.getState().myReview;
         this.action.notify("updateUserInfo", currentMyReview as State[]);
