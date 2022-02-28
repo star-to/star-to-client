@@ -1,6 +1,5 @@
 import Action from "./action";
 import { ACTION } from "../../const";
-import { ObserverFunction } from "../observable";
 
 export default class MapOption {
   options: KakaoMapOption;
@@ -19,9 +18,8 @@ export default class MapOption {
     this.action.createObservers(ACTION.START_MAP);
     this.action.createObservers(ACTION.UPDATE_MAP_OPTION);
     this.action.createObservers(ACTION.CURRENT_LOCATION_MAP);
-    this.action.subscribe(
-      ACTION.CURRENT_LOCATION_MAP,
-      this.getCurrentPosition as ObserverFunction
+    this.action.subscribe(ACTION.CURRENT_LOCATION_MAP, (isInit) =>
+      this.getCurrentPosition(isInit)
     );
   };
 
@@ -41,8 +39,9 @@ export default class MapOption {
       },
       (error) => {
         //TODO: 에러처리 필요함
+        alert(JSON.stringify(error));
       },
-      { enableHighAccuracy: true, maximumAge: 0 }
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
     );
   };
 

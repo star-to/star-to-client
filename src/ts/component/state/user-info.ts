@@ -30,7 +30,7 @@ export default class UserInfo {
         newState.myReview = text;
         this.setState(newState);
         const currentMyReview = this.getState().myReview;
-        this.action.notify("updateUserInfo", currentMyReview as State[]);
+        this.action.notify("updateUserInfo", currentMyReview);
       });
   }
 

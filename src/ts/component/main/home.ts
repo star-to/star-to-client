@@ -1,7 +1,6 @@
 import { Component } from "../component";
 import { SELECTOR, IMG, PATH, ACTION, STATIC } from "../../const";
 import Action from "../state/action";
-import { ObserverFunction } from "../observable";
 
 export default class Home implements Component {
   action: Action;
@@ -73,12 +72,9 @@ export default class Home implements Component {
     ) as Node;
 
     //TODO: 구독 및 아림 정리 필요함
-    this.action.subscribe(
-      ACTION.UPDATE_MAP_OPTION,
-      this.setMapCenter as ObserverFunction
-    );
+    this.action.subscribe(ACTION.UPDATE_MAP_OPTION, this.setMapCenter);
 
-    this.action.subscribe(ACTION.START_MAP, this.initMap as ObserverFunction);
+    this.action.subscribe(ACTION.START_MAP, this.initMap);
 
     this.action.notify(ACTION.CURRENT_LOCATION_MAP, true);
 

@@ -1,7 +1,7 @@
 import { Component } from "../component";
 import Action from "../state/action";
 import { SELECTOR, IMG, ACTION } from "../../const";
-import { ObserverFunction, State } from "../observable";
+import { State } from "../observable";
 
 export default class MyReview implements Component {
   action: Action;
@@ -23,10 +23,7 @@ export default class MyReview implements Component {
   };
 
   init = (): void => {
-    this.action.subscribe(
-      ACTION.UPDATE_USER_INFO,
-      this.fillReveiw as ObserverFunction
-    );
+    this.action.subscribe(ACTION.UPDATE_USER_INFO, this.fillReveiw);
 
     this.action.notify(ACTION.FETCH_CLIENT_REVIEW);
   };
