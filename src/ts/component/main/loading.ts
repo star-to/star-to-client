@@ -1,15 +1,19 @@
 import { SELECTOR, IMG } from "../../const";
 import { Component } from "../component";
+import Action from "../state/action";
 
 export default class Loading implements Component {
   private html: string;
+  action: Action;
 
-  constructor() {
+  constructor(action: Action) {
     this.html = /*html*/ `
     <div class="${SELECTOR.LOADING_WRAPPER}">
       <img src="${IMG.LOGO}" alt="Loading image">
     </div>
     `;
+
+    this.action = action;
   }
 
   paint(): void {

@@ -1,7 +1,6 @@
 import { Component } from "../component";
 import { SELECTOR, IMG, PATH, ACTION, STATIC } from "../../const";
 import Action from "../state/action";
-import { ObserverFunction } from "../observable";
 
 export default class Home implements Component {
   action: Action;
@@ -25,6 +24,9 @@ export default class Home implements Component {
         <img src="${IMG.PLUS}" alt="plus button">
       </div>
       <div class="${SELECTOR.SEARCH_WRAPPER}">
+      </div>
+      <div class="${SELECTOR.MAP_MY_DIRECTION_BUTTON}">
+      MY
       </div>
       <div class="${SELECTOR.HOME_RECOMMEND_WRAPPER}">
         <div class="${SELECTOR.RECOMMEND_MOVE_BUTTON}">
@@ -69,12 +71,12 @@ export default class Home implements Component {
       `.${SELECTOR.HOME_MAP_WRAPPER}`
     ) as Node;
 
-    this.action.subscribe(
-      ACTION.UPDATE_MAP_OPTION,
-      this.initMap as ObserverFunction
-    );
+    //TODO: 구독 및 아림 정리 필요함
+    this.action.subscribe(ACTION.UPDATE_MAP_OPTION, this.setMapCenter);
 
-    this.action.notify(ACTION.START_MAP);
+    this.action.subscribe(ACTION.START_MAP, this.initMap);
+
+    this.action.notify(ACTION.CURRENT_LOCATION_MAP, true);
 
     const layoutMoveButton = document.querySelector(
       `.${SELECTOR.RECOMMEND_MOVE_BUTTON}`
@@ -209,6 +211,14 @@ export default class Home implements Component {
       e.preventDefault();
       this.action.notify(ACTION.MENUBAR_VISIBLE);
     });
+
+    const mylocationButton = document.querySelector(
+      `.${SELECTOR.MAP_MY_DIRECTION_BUTTON}`
+    ) as HTMLDivElement;
+
+    mylocationButton.addEventListener("click", (e: Event) => {
+      this.action.notify(ACTION.CURRENT_LOCATION_MAP);
+    });
   }
 
   moveReccommendLayer(e: TouchEvent) {
@@ -296,22 +306,29 @@ export default class Home implements Component {
     parentElement.append(newElement);
   }
 
-  initMap = (options: KakaoMapOption) => {
+  initMap = (options: KakaoMapOption): void => {
     if (!this.mapLayout) return;
 
     this.map = new kakao.maps.Map(this.mapLayout, options);
     if (!this.map) return;
 
-    const ps = new kakao.maps.services.Places(this.map);
-
-    this.updateCategorySearch(ps);
+    this.setMapCenter(options.center as KakaoLatLng);
 
     //TODO: 위치가 여기 있으면 안될듯!!
     kakao.maps.event.addListener(this.map, "dragend", () => {
       if (!this.map) return;
       const newCenter = this.map.getCenter();
-      this.initMap({ center: newCenter });
+      this.map.setCenter(newCenter);
+      this.setMapCenter(newCenter);
     });
+  };
+
+  setMapCenter = (newCenter: KakaoLatLng): void => {
+    if (!this.map) return;
+    this.map.setCenter(newCenter);
+
+    const ps = new kakao.maps.services.Places(this.map);
+    this.updateCategorySearch(ps);
   };
 
   updateCategorySearch(place: KakaoPlaces) {
@@ -332,13 +349,13 @@ export default class Home implements Component {
     );
   }
 
-  placesSearchCB = (data: KakaoSearchedPlace[], status: KakaoContantStatus) => {
+  placesSearchCB(data: KakaoSearchedPlace[], status: KakaoContantStatus) {
     if (status === kakao.maps.services.Status.OK) {
       for (let i = 0; i < data.length; i++) {
         this.displayMarker(data[i]);
       }
     }
-  };
+  }
 
   displayMarker(place: KakaoSearchedPlace) {
     const marker = new kakao.maps.Marker({

@@ -17,7 +17,7 @@ export interface PageRoute {
 }
 
 export const routes = [
-  { path: PATH.LOADING, components: [() => new Loading()] },
+  { path: PATH.LOADING, components: [(action: Action) => new Loading(action)] },
   { path: PATH.LOGIN, components: [() => new Login()] },
   {
     path: PATH.HOME,

@@ -174,3 +174,9 @@ type KakaoSearchedPlace = kakao.maps.services.SearchedPlace;
 type KakaoContantStatus = kakao.maps.services.ConstantStatus;
 type KakaoLatLngBounds = kakao.maps.LatLngBounds;
 type KakaoEventName = kakao.maps.event.EventName;
+type KakaoOption =
+  | kakao.maps.MapOption
+  | kakao.maps.services.CategoryOption
+  | kakao.maps.MarkerOption
+  | kakao.maps.MarkerImageOption
+  | kakao.maps.InfoWindowOption;
