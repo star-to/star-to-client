@@ -16,6 +16,8 @@ export const SELECTOR = {
   MENUBAR_TOGGLE_BUTTON: "toggle-button",
   MAP_MY_DIRECTION_BUTTON: "map__my-direction-button",
   SEARCH_WRAPPER: "search-wrapper",
+  SEARCH_KEYWORD: "search__keyword",
+  SEARCH_INPUT_BUTTON: "search__keyword-button",
   HOME_RECOMMEND_WRAPPER: "recommend-wrapper",
   RECOMMEND_MOVE_BUTTON: "recommend__move-button",
   RECOMMEND_MOVE_BUTTON_ICON: "recommend__move-button__icon",
@@ -60,6 +62,9 @@ export const IMG = {
     "https://star-to.s3.ap-northeast-2.amazonaws.com/img/empty-bookmark.png",
   PLUS: "https://star-to.s3.ap-northeast-2.amazonaws.com/img/plus.png",
   HOME_LOGO: "https://star-to.s3.ap-northeast-2.amazonaws.com/img/logo.png",
+  MY_LOCATION:
+    "https://star-to.s3.ap-northeast-2.amazonaws.com/img/my-location.png",
+  SEARCH: "https://star-to.s3.ap-northeast-2.amazonaws.com/img/search.png",
 };
 
 export const PATH = {

@@ -24,9 +24,13 @@ export default class Home implements Component {
         <img src="${IMG.PLUS}" alt="plus button">
       </div>
       <div class="${SELECTOR.SEARCH_WRAPPER}">
+        <input class="${SELECTOR.SEARCH_KEYWORD}" type="text">
+        <button class="${SELECTOR.SEARCH_INPUT_BUTTON}">
+          <img src="${IMG.SEARCH}" alt="search button">
+        </button>
       </div>
       <div class="${SELECTOR.MAP_MY_DIRECTION_BUTTON}">
-      MY
+        <img src="${IMG.MY_LOCATION}" alt="current location button">
       </div>
       <div class="${SELECTOR.HOME_RECOMMEND_WRAPPER}">
         <div class="${SELECTOR.RECOMMEND_MOVE_BUTTON}">
@@ -207,17 +211,54 @@ export default class Home implements Component {
       `.${SELECTOR.MENUBAR_TOGGLE_BUTTON}`
     ) as HTMLButtonElement;
 
-    visibleMenubarButton.addEventListener("click", (e: Event) => {
+    const handleVisibleMenubar = (e: Event) => {
       e.preventDefault();
       this.action.notify(ACTION.MENUBAR_VISIBLE);
-    });
+    };
+
+    visibleMenubarButton.addEventListener("click", handleVisibleMenubar);
 
     const mylocationButton = document.querySelector(
       `.${SELECTOR.MAP_MY_DIRECTION_BUTTON}`
     ) as HTMLDivElement;
 
-    mylocationButton.addEventListener("click", (e: Event) => {
+    const handleMyLocation = () => {
       this.action.notify(ACTION.CURRENT_LOCATION_MAP);
+    };
+
+    mylocationButton.addEventListener("click", handleMyLocation);
+
+    const searchInputButton = document.querySelector(
+      `.${SELECTOR.SEARCH_INPUT_BUTTON}`
+    ) as HTMLButtonElement;
+
+    const searchInput = document.querySelector(
+      `.${SELECTOR.SEARCH_KEYWORD}`
+    ) as HTMLInputElement;
+
+    const handleKeywordSearch = (e: Event) => {
+      //TODO: 정규삭 추가하기
+      e.preventDefault();
+      const keyword = searchInput.value;
+
+      const place = new kakao.maps.services.Places();
+
+      place.keywordSearch(keyword, (results, status) => {
+        //TODO: status 확인하는 예외처리 하기
+        const x = parseFloat(results[0].x);
+        const y = parseFloat(results[0].y);
+
+        const newCenter = new kakao.maps.LatLng(y, x);
+
+        this.setMapCenter(newCenter);
+      });
+    };
+
+    searchInputButton.addEventListener("click", handleKeywordSearch);
+    searchInput.addEventListener("keyup", (e: KeyboardEvent) => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      searchInputButton.click();
     });
   }
 
@@ -240,6 +281,8 @@ export default class Home implements Component {
     const recommendListWrapper = document.querySelector(
       `.${SELECTOR.RECOMMEND_LIST_WRAPPER}`
     ) as HTMLDivElement;
+
+    recommendListWrapper.scrollTop = 0;
     recommendListWrapper.style.overflow = isUp ? "scroll" : "hidden";
 
     this.recommendLayout.style.transform = `translate3d(0,-${moveY}px,0)`;
