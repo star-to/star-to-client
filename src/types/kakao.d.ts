@@ -38,11 +38,16 @@ declare namespace kakao {
 
     namespace services {
       class Places {
-        constructor(map: Map);
+        constructor(map?: Map);
         categorySearch(
           code: string,
           callback: (data: SearchedPlace[], status: ConstantStatus) => void,
           options: CategoryOption
+        ): void;
+        keywordSearch(
+          keyword: string,
+          callback: (data: SearchedPlace[], status: ConstantStatus) => void,
+          option?: KeywordOption
         ): void;
       }
 
@@ -70,6 +75,20 @@ declare namespace kakao {
         size?: number;
         page?: number;
         sort?: SortBy;
+        useMapCenter?: boolean;
+        useMapBounds?: boolean;
+      }
+
+      interface KeywordOption {
+        category_group_code?: string;
+        location?: LatLng;
+        x?: number;
+        y?: number;
+        radius?: number;
+        bounds?: LatLngBounds;
+        rect?: string;
+        size?: number;
+        page?: number;
         useMapCenter?: boolean;
         useMapBounds?: boolean;
       }
