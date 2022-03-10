@@ -1,21 +1,19 @@
 import { Component } from "../component";
+import MyMap from "./my-map";
 import { SELECTOR, IMG, PATH, ACTION, STATIC } from "../../const";
 import Action from "../state/action";
 
 export default class Home implements Component {
   action: Action;
+  myMap: MyMap;
   html: string;
   bagicHeight: number;
   viewHeight: number;
   recommendLayout: HTMLDivElement | null;
   home: HTMLDivElement | null;
-  mapLayout: Node | null;
-  map: kakao.maps.Map | null;
-  infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
   constructor(action: Action) {
     this.action = action;
-
     this.html = /*html*/ `
     <div class="${SELECTOR.HOME_WRAPPER}">
       <div class="${SELECTOR.HOME_MAP_WRAPPER}">
@@ -48,8 +46,7 @@ export default class Home implements Component {
     this.viewHeight = 0;
     this.recommendLayout = null;
     this.home = null;
-    this.mapLayout = null;
-    this.map = null;
+    this.myMap = new MyMap(this.action);
   }
 
   paint(): void {
@@ -71,16 +68,11 @@ export default class Home implements Component {
       `.${SELECTOR.HOME_WRAPPER}`
     ) as HTMLDivElement;
 
-    this.mapLayout = document.querySelector(
+    const mapLayout = document.querySelector(
       `.${SELECTOR.HOME_MAP_WRAPPER}`
     ) as Node;
 
-    //TODO: 구독 및 아림 정리 필요함
-    this.action.subscribe(ACTION.UPDATE_MAP_OPTION, this.setMapCenter);
-
-    this.action.subscribe(ACTION.START_MAP, this.initMap);
-
-    this.action.notify(ACTION.CURRENT_LOCATION_MAP, true);
+    this.myMap.init(mapLayout);
 
     const layoutMoveButton = document.querySelector(
       `.${SELECTOR.RECOMMEND_MOVE_BUTTON}`
@@ -223,7 +215,7 @@ export default class Home implements Component {
     ) as HTMLDivElement;
 
     const handleMyLocation = () => {
-      this.action.notify(ACTION.CURRENT_LOCATION_MAP);
+      this.myMap.moveCurrentPosition();
     };
 
     mylocationButton.addEventListener("click", handleMyLocation);
@@ -241,17 +233,7 @@ export default class Home implements Component {
       e.preventDefault();
       const keyword = searchInput.value;
 
-      const place = new kakao.maps.services.Places();
-
-      place.keywordSearch(keyword, (results, status) => {
-        //TODO: status 확인하는 예외처리 하기
-        const x = parseFloat(results[0].x);
-        const y = parseFloat(results[0].y);
-
-        const newCenter = new kakao.maps.LatLng(y, x);
-
-        this.setMapCenter(newCenter);
-      });
+      this.myMap.searchKeyword(keyword);
     };
 
     searchInputButton.addEventListener("click", handleKeywordSearch);
@@ -347,71 +329,6 @@ export default class Home implements Component {
   predrawElement(tagName: string, parentElement: HTMLElement): void {
     const newElement = document.createElement(tagName);
     parentElement.append(newElement);
-  }
-
-  initMap = (options: KakaoMapOption): void => {
-    if (!this.mapLayout) return;
-
-    this.map = new kakao.maps.Map(this.mapLayout, options);
-    if (!this.map) return;
-
-    this.setMapCenter(options.center as KakaoLatLng);
-
-    //TODO: 위치가 여기 있으면 안될듯!!
-    kakao.maps.event.addListener(this.map, "dragend", () => {
-      if (!this.map) return;
-      const newCenter = this.map.getCenter();
-      this.map.setCenter(newCenter);
-      this.setMapCenter(newCenter);
-    });
-  };
-
-  setMapCenter = (newCenter: KakaoLatLng): void => {
-    if (!this.map) return;
-    this.map.setCenter(newCenter);
-
-    const ps = new kakao.maps.services.Places(this.map);
-    this.updateCategorySearch(ps);
-  };
-
-  updateCategorySearch(place: KakaoPlaces) {
-    place.categorySearch(
-      "FD6",
-      (data: KakaoSearchedPlace[], status: KakaoContantStatus) => {
-        this.placesSearchCB(data, status);
-      },
-      { useMapBounds: true }
-    );
-
-    place.categorySearch(
-      "CE7",
-      (data: KakaoSearchedPlace[], status: KakaoContantStatus) => {
-        this.placesSearchCB(data, status);
-      },
-      { useMapBounds: true }
-    );
-  }
-
-  placesSearchCB(data: KakaoSearchedPlace[], status: KakaoContantStatus) {
-    if (status === kakao.maps.services.Status.OK) {
-      for (let i = 0; i < data.length; i++) {
-        this.displayMarker(data[i]);
-      }
-    }
-  }
-
-  displayMarker(place: KakaoSearchedPlace) {
-    const marker = new kakao.maps.Marker({
-      map: this.map as KakaoMap,
-      position: new kakao.maps.LatLng(Number(place.y), Number(place.x)),
-    });
-
-    kakao.maps.event.addListener(marker, "click", () => {
-      this.infowindow.setContent(
-        `<div style="padding:5px;font-size:12px;"> ${place.place_name}  </div>`
-      );
-      this.infowindow.open(this.map as KakaoMap, marker);
-    });
   }
 }
 
