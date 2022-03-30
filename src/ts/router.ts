@@ -1,7 +1,7 @@
 import Action from "./component/state/action";
 import { SELECTOR } from "./const";
 import { PageRoute, ComponentFunction, Params, routes } from "./routes";
-import util from "./util";
+import api from "./api";
 
 export default class Router {
   action: Action;
@@ -21,7 +21,7 @@ export default class Router {
       this.handleRoutePage(e);
     });
 
-    const response = util.fetchChecedkLogin();
+    const response = api.fetchChecedkLogin();
     response
       .then((res) => res.json())
       .then(({ isLogin }) => {

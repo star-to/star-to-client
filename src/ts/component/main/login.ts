@@ -1,6 +1,6 @@
 import { Component } from "../component";
 import { IMG, SELECTOR } from "../../const";
-import util from "../../util";
+import api from "../../api";
 
 export default class Login implements Component {
   private html: string;
@@ -53,7 +53,7 @@ export default class Login implements Component {
   }
 
   handleNaverLogin(): void {
-    util
+    api
       .fetchNaverLogin()
       .then((res) => res.text())
       .then((url) => {
@@ -62,7 +62,7 @@ export default class Login implements Component {
   }
 
   handleKakaoLogin(): void {
-    util
+    api
       .fetchKakaoLogin()
       .then((res) => res.text())
       .then((url) => {

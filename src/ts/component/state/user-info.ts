@@ -1,5 +1,5 @@
 import Action from "./action";
-import util from "../../util";
+import api from "../../api";
 import { State } from "../observable";
 
 export default class UserInfo {
@@ -22,7 +22,7 @@ export default class UserInfo {
 
   lookupMyReview() {
     //TODO: 사용자 정보 api 요청
-    const response = util.fetchClientReview();
+    const response = api.fetchClientReview();
     response
       .then((res) => res.json())
       .then((text: State[]) => {

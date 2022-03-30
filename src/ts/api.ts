@@ -1,4 +1,4 @@
-const util = {
+const api = {
   fetchChecedkLogin: () => {
     return fetch("/api/login/check", {
       method: "GET",
@@ -25,4 +25,4 @@ const util = {
   },
 };
 
-export default util;
+export default api;
