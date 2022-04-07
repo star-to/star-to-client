@@ -47,6 +47,7 @@ export const SELECTOR = {
   MENUBAR_OVERLAY: "menubar__overlay",
   FOOTER: "footer",
   NONE: "none",
+  REVIEW_WRAPPER: "review-wrapper",
 };
 
 export const IMG = {

@@ -8,6 +8,7 @@ import MyReview from "./component/main/my-review";
 import MenuBar from "./component/sidebar/menubar";
 import Action from "./component/state/action";
 import Bagic from "./component/header/bagic";
+import Review from "./component/main/review";
 
 export type ComponentFunction = (action: Action, params: Params) => Component;
 
@@ -40,6 +41,10 @@ export const routes = [
       (action: Action) => new MenuBar(action),
       () => new Bagic(),
     ],
+  },
+  {
+    path: PATH.REVIEW,
+    components: [(action: Action) => new Review(action)],
   },
 ];
 
