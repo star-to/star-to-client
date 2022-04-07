@@ -25,7 +25,7 @@ export default class MyReview implements Component {
   init = (): void => {
     this.action.subscribe(ACTION.UPDATE_USER_INFO, this.fillReveiw);
 
-    this.action.notify(ACTION.FETCH_CLIENT_REVIEW);
+    this.action.notify(ACTION.GET_USER_REVIEW);
   };
 
   fillReveiw = (reviewList: State[]): void => {

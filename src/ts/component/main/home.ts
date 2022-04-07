@@ -60,6 +60,8 @@ export default class Home implements Component {
   }
 
   init(): void {
+    this.action.notify(ACTION.INIT_APP);
+
     this.recommendLayout = document.querySelector(
       `.${SELECTOR.HOME_RECOMMEND_WRAPPER}`
     ) as HTMLDivElement;
@@ -253,11 +255,12 @@ export default class Home implements Component {
 
   repositionReccommendLayer(e: TouchEvent) {
     if (this.recommendLayout === null) return;
+    //TODO: 위치이동 조절 할 필요가 있음
 
     const currentY = e.changedTouches[0].clientY;
     const middleHeigth = this.viewHeight / 2;
 
-    const isUp = middleHeigth > currentY;
+    const isUp = middleHeigth / 2 > currentY;
     const moveY = isUp ? this.bagicHeight : 0;
 
     const recommendListWrapper = document.querySelector(
