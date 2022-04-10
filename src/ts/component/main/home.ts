@@ -284,9 +284,9 @@ export default class Home implements Component {
     for (let i = 0; i < liElements.length; i++) {
       const { id, name, star, comment, time, bookmark } = recommendList[i];
 
-      const wrapper = document.createElement("div");
+      const wrapper = document.createElement("a");
       wrapper.classList.add(SELECTOR.RECOMMEND_LIST_CONTENTT);
-      wrapper.dataset.link = PATH.DETAIL;
+      wrapper.href = PATH.DETAIL;
       wrapper.dataset.params = `id=${id}`;
 
       const nameElement = document.createElement("H1");

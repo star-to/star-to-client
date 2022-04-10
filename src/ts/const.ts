@@ -68,7 +68,7 @@ export const IMG = {
 };
 
 export const PATH = {
-  HOME: "/home",
+  HOME: "/",
   LOGIN: "/login",
   LOADING: "/loading",
   DETAIL: "/detail",
@@ -89,4 +89,8 @@ export const ACTION = {
 
 export const STATIC = {
   MAX_COUTING_STARS: 5,
+};
+
+export const EVENT = {
+  CHANGE_LOCATION: "changeLocation",
 };
