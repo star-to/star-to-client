@@ -83,7 +83,8 @@ export const ACTION = {
   UPDATE_USER_INFO: "updateUserInfo",
   START_MAP: "startMap",
   CURRENT_LOCATION_MAP: "currentLocationMap",
-  FETCH_CLIENT_REVIEW: "fetchClientReview",
+  GET_USER_REVIEW: "getUserReview",
+  INIT_APP: "initAPP",
 };
 
 export const STATIC = {

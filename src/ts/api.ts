@@ -23,6 +23,22 @@ const api = {
       method: "GET",
     });
   },
+
+  fetchPlaceInfo: (data: KakaoSearchedPlace[]) => {
+    return fetch("/api/place", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+  },
+
+  fetchUserBookmark: () => {
+    return fetch("/api/bookmark", {
+      method: "GET",
+    });
+  },
 };
 
 export default api;

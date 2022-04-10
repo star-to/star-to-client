@@ -1,5 +1,6 @@
 import Action from "../state/action";
 import { ACTION } from "../../const";
+import api from "../../api";
 
 export default class MyMap {
   action: Action;
@@ -73,9 +74,15 @@ export default class MyMap {
       status: KakaoContantStatus
     ) => {
       if (status === kakao.maps.services.Status.OK) {
-        for (let i = 0; i < searchedPlace.length; i++) {
-          this.createMarker(searchedPlace[i]);
-        }
+        api
+          .fetchPlaceInfo(searchedPlace)
+          .then((res) => res.json())
+          .then(({ result }) => {
+            //TODO: 응답이 제대로 오지 않았을 때 해야할 것들 추가!!
+            for (let i = 0; i < searchedPlace.length; i++) {
+              this.createMarker(searchedPlace[i]);
+            }
+          });
       }
     };
 

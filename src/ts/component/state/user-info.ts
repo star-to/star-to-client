@@ -1,6 +1,7 @@
 import Action from "./action";
 import api from "../../api";
 import { State } from "../observable";
+import { ACTION } from "../../const";
 
 export default class UserInfo {
   action: Action;
@@ -11,13 +12,32 @@ export default class UserInfo {
   }
 
   init() {
-    this.action.createObservers("fetchClientReview");
-    this.action.createObservers("updateUserInfo");
+    this.action.createObservers(ACTION.GET_USER_REVIEW);
+    this.action.createObservers(ACTION.UPDATE_USER_INFO);
 
-    const newUserInfo = () => {
+    const initUserInfo = () => {
+      this.lookupBookmark();
       this.lookupMyReview();
     };
-    this.action.subscribe("fetchClientReview", newUserInfo);
+
+    this.action.subscribe(ACTION.INIT_APP, initUserInfo);
+
+    const getUserReview = () => {
+      this.action.notify(ACTION.UPDATE_USER_INFO, this.getState().review);
+    };
+
+    this.action.subscribe(ACTION.GET_USER_REVIEW, getUserReview);
+  }
+
+  lookupBookmark() {
+    const response = api.fetchUserBookmark();
+    response
+      .then((res) => res.json())
+      .then(({ result }) => {
+        const newState = this.getState();
+        newState.bookmark = result;
+        this.setState(newState);
+      });
   }
 
   lookupMyReview() {
@@ -27,10 +47,8 @@ export default class UserInfo {
       .then((res) => res.json())
       .then((text: State[]) => {
         const newState = this.getState();
-        newState.myReview = text;
+        newState.review = text;
         this.setState(newState);
-        const currentMyReview = this.getState().myReview;
-        this.action.notify("updateUserInfo", currentMyReview);
       });
   }
 
