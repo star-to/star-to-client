@@ -7,7 +7,6 @@ import Home from "./component/main/home";
 import Detail from "./component/main/detail";
 import MyReview from "./component/main/my-review";
 import MenuBar from "./component/sidebar/menubar";
-import Action from "./component/state/action";
 import Bagic from "./component/header/bagic";
 
 export type ComponentFunction = () => Component;
@@ -46,7 +45,7 @@ export function createRoutes(params: AppParams): RouteList {
     {
       path: PATH.MY_REVIEW,
       components: [
-        () => new MyReview(action),
+        () => new MyReview(action, userInfo),
         () => new MenuBar(action),
         () => new Bagic(),
       ],
