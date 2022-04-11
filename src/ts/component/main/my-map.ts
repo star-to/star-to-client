@@ -1,15 +1,18 @@
 import Action from "../state/action";
 import { ACTION } from "../../const";
 import api from "../../api";
+import MapOption from "../state/map-option";
 
 export default class MyMap {
   action: Action;
+  mapOption: MapOption;
   mapLayout: Node | null;
   map: kakao.maps.Map | null;
   infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
-  constructor(action: Action) {
+  constructor(action: Action, mapOption: MapOption) {
     this.action = action;
+    this.mapOption = mapOption;
     this.mapLayout = null;
     this.map = null;
   }
@@ -41,7 +44,7 @@ export default class MyMap {
 
     this.action.subscribe(ACTION.UPDATE_MAP_OPTION, updateCenterObserver);
     this.action.subscribe(ACTION.START_MAP, createMapObserver);
-    this.action.notify(ACTION.CURRENT_LOCATION_MAP, true);
+    this.mapOption.findCurrentPosition(true);
   }
 
   createMap(options: KakaoMapOption): KakaoMap {
@@ -119,7 +122,7 @@ export default class MyMap {
   }
 
   moveCurrentPosition() {
-    this.action.notify(ACTION.CURRENT_LOCATION_MAP);
+    this.mapOption.findCurrentPosition(false);
   }
 
   searchKeyword(keyword: string) {

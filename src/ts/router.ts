@@ -1,15 +1,15 @@
-import Action from "./component/state/action";
-import { SELECTOR, EVENT, PATH } from "./const";
-import { ComponentFunction, Params, routes } from "./routes";
+import { SELECTOR, EVENT, PATH, ACTION } from "./const";
+import { ComponentFunction, createRoutes, RouteList } from "./routes";
+import { AppParams } from ".";
 import api from "./api";
 
 export default class Router {
-  action: Action;
-  params: Params;
+  params: AppParams;
+  routes: RouteList;
 
-  constructor(action: Action) {
-    this.action = action;
-    this.params = {};
+  constructor(params: AppParams) {
+    this.params = params;
+    this.routes = createRoutes(this.params);
     this.init();
   }
 
@@ -43,7 +43,15 @@ export default class Router {
     response
       .then((res) => res.json())
       .then(({ isLogin }) => {
-        const url = isLogin ? location.href : `${location.origin}${PATH.LOGIN}`;
+        let url = "";
+
+        if (isLogin) {
+          url = location.href;
+          this.params.action.notify(ACTION.INIT_APP);
+        } else {
+          url = `${location.origin}${PATH.LOGIN}`;
+        }
+
         this.emitChangeLocation(EVENT.CHANGE_LOCATION, url);
       });
   }
@@ -85,7 +93,7 @@ export default class Router {
   }
 
   findPage(path: string): ComponentFunction[] {
-    const nextPage = routes.find((page) => page.path === path);
+    const nextPage = this.routes.find((page) => page.path === path);
     if (!nextPage) {
       //TODO: 에러 처리 코드 추가
       return [];
@@ -96,9 +104,7 @@ export default class Router {
 
   paintPage(pageComponents: ComponentFunction[]): void {
     //TODO: param을 여기서 매개변수로 받아야함
-    const page = pageComponents.map((componentfn) =>
-      componentfn(this.action, this.params)
-    );
+    const page = pageComponents.map((componentfn) => componentfn());
 
     page.forEach((component) => {
       component.paint();

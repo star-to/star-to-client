@@ -2,9 +2,11 @@ import { Component } from "../component";
 import MyMap from "./my-map";
 import { SELECTOR, IMG, PATH, ACTION, STATIC } from "../../const";
 import Action from "../state/action";
+import MapOption from "../state/map-option";
 
 export default class Home implements Component {
   action: Action;
+  mapOption: MapOption;
   myMap: MyMap;
   html: string;
   bagicHeight: number;
@@ -12,8 +14,9 @@ export default class Home implements Component {
   recommendLayout: HTMLDivElement | null;
   home: HTMLDivElement | null;
 
-  constructor(action: Action) {
+  constructor(action: Action, mapOption: MapOption) {
     this.action = action;
+    this.mapOption = mapOption;
     this.html = /*html*/ `
     <div class="${SELECTOR.HOME_WRAPPER}">
       <div class="${SELECTOR.HOME_MAP_WRAPPER}">
@@ -46,12 +49,11 @@ export default class Home implements Component {
     this.viewHeight = 0;
     this.recommendLayout = null;
     this.home = null;
-    this.myMap = new MyMap(this.action);
+    this.myMap = new MyMap(this.action, this.mapOption);
   }
 
   paint(): void {
     //TODO: 메인 래퍼를 구분할 필요가 있다면 main 에 셀렉터 부여하기
-
     const mainWrapper = document.querySelector(
       `${SELECTOR.MAIN}`
     ) as HTMLElement;
@@ -60,8 +62,6 @@ export default class Home implements Component {
   }
 
   init(): void {
-    this.action.notify(ACTION.INIT_APP);
-
     this.recommendLayout = document.querySelector(
       `.${SELECTOR.HOME_RECOMMEND_WRAPPER}`
     ) as HTMLDivElement;
