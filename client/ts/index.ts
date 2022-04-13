@@ -10,6 +10,8 @@ console.log(sum(2,3), hello)
 class People {
     constructor() {
       this.test();
+      this.test();
+      this.test();
     }
   
     test() {
