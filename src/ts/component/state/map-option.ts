@@ -1,48 +1,25 @@
-import Action from "./action";
-import { ACTION } from "../../const";
-
+// TODO: 제거 검토 (제거하란말은 아님)
 export default class MapOption {
   options: KakaoMapOption;
-  action: Action;
+  
+  // state: { a: string }
+  // state: { b: string }
+  
+  // getState():string { return a }
+  // getSTate():string { retrun b };
 
-  constructor(action: Action) {
-    this.action = action;
+  constructor() {
     this.options = {
       center: null,
       level: 3,
     };
   }
 
-  init(): void {
-    //TODO:맵 액션들 정리할 필요 있음!!
-    this.action.createObservers(ACTION.START_MAP);
-    this.action.createObservers(ACTION.UPDATE_MAP_OPTION);
-  }
+  // init(): void {
+  // }
 
-  findCurrentPosition = (isInit: boolean): void => {
-    navigator.geolocation.getCurrentPosition(
-      (position: GeolocationPosition) => {
-        const newOptions = this.getOptions();
-        newOptions.center = new kakao.maps.LatLng(
-          position.coords.latitude,
-          position.coords.longitude
-        );
 
-        this.setOptions(newOptions);
-        if (isInit) {
-          this.action.notify(ACTION.START_MAP, newOptions);
-        } else {
-          this.action.notify(ACTION.UPDATE_MAP_OPTION, newOptions);
-        }
-      },
-      (error) => {
-        //TODO: 에러처리 필요함
-        alert(JSON.stringify(error));
-      },
-      { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
-    );
-  };
-
+  // TODO: 제거 및 대체
   watchPosition = (): void => {
     const id = navigator.geolocation.watchPosition(
       (position: GeolocationPosition) => {
@@ -61,7 +38,7 @@ export default class MapOption {
         }
 
         this.options.center = currentCoords;
-        this.action.notify(ACTION.UPDATE_MAP_OPTION, this.options);
+        // this.action.notify(ACTION.UPDATE_MAP_OPTION, this.options);
       },
       (error) => {
         //TODO: 에러처리 필요함

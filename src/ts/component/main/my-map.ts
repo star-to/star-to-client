@@ -8,7 +8,8 @@ export default class MyMap {
   mapOption: MapOption;
   mapLayout: Node | null;
   map: kakao.maps.Map | null;
-  infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+  infoWindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+  // markers = [];
 
   constructor(action: Action, mapOption: MapOption) {
     this.action = action;
@@ -19,48 +20,29 @@ export default class MyMap {
 
   init(mapLayout: Node) {
     this.mapLayout = mapLayout;
+    
+    try {
+      if (!this.mapLayout) throw "ERROR:(Map) mapLayout 객체가 비어있습니다.";
 
-    const createMapObserver = (options: KakaoMapOption): void => {
-      try {
-        const map = this.createMap(options);
+      this.map = new kakao.maps.Map(this.mapLayout, this.mapOption.getOptions());
+
+      kakao.maps.event.addListener(this.map, "dragend", () => {
+        if (!this.map) return;
+  
+        const newCenter = this.map.getCenter();
+        const map = this.moveMapCenter(newCenter);
         this.searchAroundPlace(map);
-      } catch (e) {
-        // TODO: 에러 객체를 만들어서 에러 타입별로 행동을 다르게 해야할 듯
-        // eslint-disable-next-line no-console
-        console.error(e);
-      }
-    };
-
-    const updateCenterObserver = (center: KakaoLatLng): void => {
-      try {
-        const map = this.moveMapCenter(center);
-        this.searchAroundPlace(map);
-      } catch (e) {
-        // TODO: 에러 객체를 만들어서 에러 타입별로 행동을 다르게 해야할 듯
-        // eslint-disable-next-line no-console
-        console.error(e);
-      }
-    };
-
-    this.action.subscribe(ACTION.UPDATE_MAP_OPTION, updateCenterObserver);
-    this.action.subscribe(ACTION.START_MAP, createMapObserver);
-    this.mapOption.findCurrentPosition(true);
+      });
+      
+      this.searchAroundPlace(this.map);
+      
+    } catch (e) {
+      // TODO: 에러 객체를 만들어서 에러 타입별로 행동을 다르게 해야할 듯
+      // eslint-disable-next-line no-console
+      console.error(e);
+    }
   }
 
-  createMap(options: KakaoMapOption): KakaoMap {
-    if (!this.mapLayout) throw "ERROR:(Map) mapLayout 객체가 비어있습니다.";
-
-    this.map = new kakao.maps.Map(this.mapLayout, options);
-
-    kakao.maps.event.addListener(this.map, "dragend", () => {
-      if (!this.map) return;
-      const newCenter = this.map.getCenter();
-      const map = this.moveMapCenter(newCenter);
-      this.searchAroundPlace(map);
-    });
-
-    return this.map;
-  }
 
   moveMapCenter(newCenter: KakaoLatLng): KakaoMap {
     if (!this.map) throw "ERROR:(Map) mapLayout 객체가 비어있습니다.";
@@ -69,13 +51,56 @@ export default class MyMap {
     return this.map;
   }
 
-  searchAroundPlace(map: KakaoMap) {
-    const place = new kakao.maps.services.Places(map);
+  moveCurrentPosition() {
+    this.syncCurrentPosition();
+  }
 
+  searchKeyword(keyword: string) {
+    const place = new kakao.maps.services.Places();
+
+    const keywordSearchCallback = (
+      results: KakaoSearchedPlace[],
+      status: KakaoContantStatus
+    ): void => {
+      // TODO: status 체크하는 코드 추가하기
+      const x = parseFloat(results[0].x);
+      const y = parseFloat(results[0].y);
+      const newCenter = new kakao.maps.LatLng(y, x);
+
+      const map = this.moveMapCenter(newCenter);
+      this.searchAroundPlace(map);
+    };
+
+    place.keywordSearch(keyword, keywordSearchCallback);
+  }
+  
+  private createMarker(place: KakaoSearchedPlace) {
+    const marker = new kakao.maps.Marker({
+      map: this.map as KakaoMap,
+      position: new kakao.maps.LatLng(Number(place.y), Number(place.x)),
+    });
+    
+    // this.markers.push(marker);
+    
+    kakao.maps.event.addListener(marker, "click", () => {
+      // TODO: 요론거는 액션으로 만들어"도" 좋음
+      
+      this.infoWindow.setContent(
+        `<div style="padding:5px;font-size:12px;"> ${place.place_name}  </div>`
+      );
+      
+      this.infoWindow.open(this.map as KakaoMap, marker);
+    });
+  }
+  
+  private searchAroundPlace(map: KakaoMap) {
+    const place = new kakao.maps.services.Places(map);
+    
     const categorySearchCallback = (
       searchedPlace: KakaoSearchedPlace[],
       status: KakaoContantStatus
     ) => {
+      // TODO: 외부로 빠지면 좋음
       if (status === kakao.maps.services.Status.OK) {
         api
           .fetchPlaceInfo(searchedPlace)
@@ -88,7 +113,7 @@ export default class MyMap {
           });
       }
     };
-
+    
     place.categorySearch(
       "FD6",
       (data: KakaoSearchedPlace[], status: KakaoContantStatus) => {
@@ -96,7 +121,7 @@ export default class MyMap {
       },
       { useMapBounds: true }
     );
-
+    
     place.categorySearch(
       "CE7",
       (data: KakaoSearchedPlace[], status: KakaoContantStatus) => {
@@ -105,42 +130,37 @@ export default class MyMap {
       { useMapBounds: true }
     );
   }
-
-  createMarker(place: KakaoSearchedPlace) {
-    const marker = new kakao.maps.Marker({
-      map: this.map as KakaoMap,
-      position: new kakao.maps.LatLng(Number(place.y), Number(place.x)),
-    });
-
-    kakao.maps.event.addListener(marker, "click", () => {
-      this.infowindow.setContent(
-        `<div style="padding:5px;font-size:12px;"> ${place.place_name}  </div>`
-      );
-
-      this.infowindow.open(this.map as KakaoMap, marker);
-    });
+  
+  
+  
+  private syncCurrentPosition (): void  {
+    navigator.geolocation.getCurrentPosition(
+      (position: GeolocationPosition) => {
+        const newOptions = this.mapOption.getOptions();
+        newOptions.center = new kakao.maps.LatLng(
+          position.coords.latitude,
+          position.coords.longitude
+        );
+      
+        this.mapOption.setOptions(newOptions);
+        this.updateCenterObserver(newOptions)
+      },
+      (error) => {
+        //TODO: 에러처리 필요함
+        alert(JSON.stringify(error));
+      },
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
+    );
   }
-
-  moveCurrentPosition() {
-    this.mapOption.findCurrentPosition(false);
-  }
-
-  searchKeyword(keyword: string) {
-    const place = new kakao.maps.services.Places();
-
-    const keywordSearchCallback = (
-      results: KakaoSearchedPlace[],
-      status: KakaoContantStatus
-    ): void => {
-      //TODO:status 체크하는 코드 추가하기
-      const x = parseFloat(results[0].x);
-      const y = parseFloat(results[0].y);
-      const newCenter = new kakao.maps.LatLng(y, x);
-
-      const map = this.moveMapCenter(newCenter);
-      this.searchAroundPlace(map);
-    };
-
-    place.keywordSearch(keyword, keywordSearchCallback);
+  
+  private updateCenterObserver(newOptions:kakao.maps.MapOption):void{
+    try {
+      // const map = this.moveMapCenter(newOptions.center);
+      // this.searchAroundPlace(map);
+    } catch (e) {
+      // TODO: 에러 객체를 만들어서 에러 타입별로 행동을 다르게 해야할 듯
+      // eslint-disable-next-line no-console
+      console.error(e);
+    }
   }
 }
