@@ -12,6 +12,8 @@ class People {
       this.test();
       this.test();
       this.test();
+      this.test();
+      this.test();
     }
   
     test() {
