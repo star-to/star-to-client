@@ -18,6 +18,8 @@ class People {
       const a: number = 2 ** 2;
   
       console.log(a);
+      console.log(a);
+      console.log(a);
     }
   }
 
