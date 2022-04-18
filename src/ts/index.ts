@@ -1,26 +1,27 @@
 import Router from "./router";
 import Action from "./component/state/action";
 import UserInfo from "./component/state/user-info";
-import MapOption from "./component/state/map-option";
+import MyMap from "./component/main/my-map";
+// import MapOption from "./component/state/map-option";
 import { ACTION } from "./const";
 
 export type AppParams = {
   action: Action;
   userInfo: UserInfo;
-  mapOption: MapOption;
+  myMap: MyMap;
 };
 
 function main() {
   const action = new Action();
   const userInfo = new UserInfo(action);
-  const mapOption = new MapOption(action);
+  const myMap = new MyMap(action);
   action.createObservers(ACTION.INIT_APP);
-  mapOption.init();
+  myMap.init();
   userInfo.init();
   const params = {
     action,
     userInfo,
-    mapOption,
+    myMap,
   };
   new Router(params);
 }
