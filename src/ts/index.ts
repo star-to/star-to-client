@@ -4,6 +4,12 @@ import UserInfo from "./component/state/user-info";
 import MapOption from "./component/state/map-option";
 import { ACTION } from "./const";
 
+export type AppParams = {
+  action: Action;
+  userInfo: UserInfo;
+  mapOption: MapOption;
+};
+
 function main() {
   const action = new Action();
   const userInfo = new UserInfo(action);
@@ -11,7 +17,12 @@ function main() {
   action.createObservers(ACTION.INIT_APP);
   mapOption.init();
   userInfo.init();
-  new Router(action);
+  const params = {
+    action,
+    userInfo,
+    mapOption,
+  };
+  new Router(params);
 }
 
 window.addEventListener("DOMContentLoaded", () => {

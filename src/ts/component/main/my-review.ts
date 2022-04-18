@@ -10,7 +10,7 @@ export default class MyReview implements Component {
     this.action = action;
   }
 
-  paint = (): void => {
+  paint(): void {
     //TODO: 메인 래퍼를 구분할 필요가 있다면 main 에 셀렉터 부여하기
     const mainWrapper = document.querySelector(
       `${SELECTOR.MAIN}`
@@ -20,13 +20,12 @@ export default class MyReview implements Component {
       <div class="${SELECTOR.MY_REVEIW_WRAPPER}">
       </div>
       `;
-  };
+  }
 
-  init = (): void => {
+  init(): void {
     this.action.subscribe(ACTION.UPDATE_USER_INFO, this.fillReveiw);
-
     this.action.notify(ACTION.GET_USER_REVIEW);
-  };
+  }
 
   fillReveiw = (reviewList: State[]): void => {
     //TODO: 홈화면에서 구현했던 방식이랑 이 방식중 더 효율적인 것으로 통일!!
@@ -67,7 +66,7 @@ export default class MyReview implements Component {
     reviewWrapper.innerHTML = addHtml;
   };
 
-  paintStar = (count: number): string => {
+  paintStar(count: number): string {
     let starElement = "";
 
     for (let j = 1; j <= 5; j++) {
@@ -77,5 +76,5 @@ export default class MyReview implements Component {
     }
 
     return starElement;
-  };
+  }
 }

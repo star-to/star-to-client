@@ -13,28 +13,26 @@ export default class MapOption {
     };
   }
 
-  init = (): void => {
+  init(): void {
     //TODO:맵 액션들 정리할 필요 있음!!
     this.action.createObservers(ACTION.START_MAP);
     this.action.createObservers(ACTION.UPDATE_MAP_OPTION);
-    this.action.createObservers(ACTION.CURRENT_LOCATION_MAP);
-    this.action.subscribe(ACTION.CURRENT_LOCATION_MAP, (isInit) =>
-      this.getCurrentPosition(isInit)
-    );
-  };
+  }
 
-  getCurrentPosition = (isInit: boolean): void => {
+  findCurrentPosition = (isInit: boolean): void => {
     navigator.geolocation.getCurrentPosition(
       (position: GeolocationPosition) => {
-        this.options.center = new kakao.maps.LatLng(
+        const newOptions = this.getOptions();
+        newOptions.center = new kakao.maps.LatLng(
           position.coords.latitude,
           position.coords.longitude
         );
 
+        this.setOptions(newOptions);
         if (isInit) {
-          this.action.notify(ACTION.START_MAP, this.options);
+          this.action.notify(ACTION.START_MAP, newOptions);
         } else {
-          this.action.notify(ACTION.UPDATE_MAP_OPTION, this.options.center);
+          this.action.notify(ACTION.UPDATE_MAP_OPTION, newOptions);
         }
       },
       (error) => {
@@ -71,6 +69,14 @@ export default class MapOption {
       { enableHighAccuracy: true, maximumAge: 0 }
     );
   };
+
+  getOptions(): KakaoMapOption {
+    return { ...this.options };
+  }
+
+  setOptions(newOptions: KakaoMapOption): void {
+    this.options = { ...newOptions };
+  }
 }
 
 interface GeolocationPosition {
