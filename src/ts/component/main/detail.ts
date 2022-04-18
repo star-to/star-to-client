@@ -12,7 +12,6 @@ export default class Detail implements Component {
   }
   paint(): void {
     //TODO: 메인 래퍼를 구분할 필요가 있다면 main 에 셀렉터 부여하기
-    ``;
     const mainWrapper = document.querySelector(
       `${SELECTOR.MAIN}`
     ) as HTMLElement;
