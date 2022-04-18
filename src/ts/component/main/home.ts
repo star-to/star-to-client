@@ -2,11 +2,9 @@ import { Component } from "../component";
 import MyMap from "./my-map";
 import { SELECTOR, IMG, PATH, ACTION, STATIC } from "../../const";
 import Action from "../state/action";
-import MapOption from "../state/map-option";
 
 export default class Home implements Component {
   action: Action;
-  mapOption: MapOption;
   myMap: MyMap;
   html: string;
   bagicHeight: number;
@@ -14,9 +12,9 @@ export default class Home implements Component {
   recommendLayout: HTMLDivElement | null;
   home: HTMLDivElement | null;
 
-  constructor(action: Action, mapOption: MapOption) {
+  constructor(action: Action, myMap: MyMap) {
     this.action = action;
-    this.mapOption = mapOption;
+    // this.mapOption = mapOption;
     this.html = /*html*/ `
     <div class="${SELECTOR.HOME_WRAPPER}">
       <div class="${SELECTOR.HOME_MAP_WRAPPER}">
@@ -49,7 +47,7 @@ export default class Home implements Component {
     this.viewHeight = 0;
     this.recommendLayout = null;
     this.home = null;
-    this.myMap = new MyMap(this.action, this.mapOption);
+    this.myMap = myMap;
   }
 
   paint(): void {
@@ -74,7 +72,7 @@ export default class Home implements Component {
       `.${SELECTOR.HOME_MAP_WRAPPER}`
     ) as Node;
 
-    this.myMap.init(mapLayout);
+    this.myMap.createMap(mapLayout);
 
     const layoutMoveButton = document.querySelector(
       `.${SELECTOR.RECOMMEND_MOVE_BUTTON}`

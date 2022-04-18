@@ -1,76 +1,62 @@
 import Action from "../state/action";
-import { ACTION } from "../../const";
 import api from "../../api";
-import MapOption from "../state/map-option";
+
+interface GeolocationPosition {
+  coords: GeolocationCoordinates;
+  timestamp: number;
+}
+
+interface GeolocationCoordinates {
+  accuracy: number;
+  latitude: number;
+  longitude: number;
+}
+
+type positionCallbackFunction = (options: KakaoMapOption) => void;
 
 export default class MyMap {
   action: Action;
-  mapOption: MapOption;
-  mapLayout: Node | null;
-  map: kakao.maps.Map | null;
+  options: KakaoMapOption;
+  map: KakaoMap | null;
   infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
-  constructor(action: Action, mapOption: MapOption) {
+  constructor(action: Action) {
     this.action = action;
-    this.mapOption = mapOption;
-    this.mapLayout = null;
+    this.options = {
+      center: null,
+      level: 3,
+    };
     this.map = null;
   }
 
-  init(mapLayout: Node) {
-    this.mapLayout = mapLayout;
-
-    const createMapObserver = (options: KakaoMapOption): void => {
-      try {
-        const map = this.createMap(options);
-        this.searchAroundPlace(map);
-      } catch (e) {
-        // TODO: 에러 객체를 만들어서 에러 타입별로 행동을 다르게 해야할 듯
-        // eslint-disable-next-line no-console
-        console.error(e);
-      }
-    };
-
-    const updateCenterObserver = (center: KakaoLatLng): void => {
-      try {
-        const map = this.moveMapCenter(center);
-        this.searchAroundPlace(map);
-      } catch (e) {
-        // TODO: 에러 객체를 만들어서 에러 타입별로 행동을 다르게 해야할 듯
-        // eslint-disable-next-line no-console
-        console.error(e);
-      }
-    };
-
-    this.action.subscribe(ACTION.UPDATE_MAP_OPTION, updateCenterObserver);
-    this.action.subscribe(ACTION.START_MAP, createMapObserver);
-    this.mapOption.findCurrentPosition(true);
+  init() {
+    this.findCurrentPosition();
   }
 
-  createMap(options: KakaoMapOption): KakaoMap {
-    if (!this.mapLayout) throw "ERROR:(Map) mapLayout 객체가 비어있습니다.";
+  createMap(mapLayout: Node) {
+    if (!this.options) throw "ERROR:(Map) options 멤버변수가 비어있습니다.";
 
-    this.map = new kakao.maps.Map(this.mapLayout, options);
+    const map = new kakao.maps.Map(mapLayout, this.options);
+    this.setMap(map);
 
-    kakao.maps.event.addListener(this.map, "dragend", () => {
-      if (!this.map) return;
-      const newCenter = this.map.getCenter();
-      const map = this.moveMapCenter(newCenter);
-      this.searchAroundPlace(map);
+    kakao.maps.event.addListener(map, "dragend", () => {
+      const currentMap = this.getMap();
+      const newCenter = currentMap.getCenter();
+      this.moveMapCenter(newCenter);
+      this.searchAroundPlace();
     });
-
-    return this.map;
   }
 
-  moveMapCenter(newCenter: KakaoLatLng): KakaoMap {
-    if (!this.map) throw "ERROR:(Map) mapLayout 객체가 비어있습니다.";
-    this.map.setCenter(newCenter);
-
-    return this.map;
+  moveMapCenter(newCenter: KakaoLatLng) {
+    if (!this.map) throw "ERROR:(Map) map 객체가 비어있습니다.";
+    const newMap = this.getMap();
+    newMap.setCenter(newCenter);
+    this.setMap(newMap);
   }
 
-  searchAroundPlace(map: KakaoMap) {
-    const place = new kakao.maps.services.Places(map);
+  searchAroundPlace() {
+    const currentMap = this.getMap();
+    const place = new kakao.maps.services.Places(currentMap);
 
     const categorySearchCallback = (
       searchedPlace: KakaoSearchedPlace[],
@@ -122,7 +108,7 @@ export default class MyMap {
   }
 
   moveCurrentPosition() {
-    this.mapOption.findCurrentPosition(false);
+    this.findCurrentPosition(this.updateCenterCallback);
   }
 
   searchKeyword(keyword: string) {
@@ -136,11 +122,62 @@ export default class MyMap {
       const x = parseFloat(results[0].x);
       const y = parseFloat(results[0].y);
       const newCenter = new kakao.maps.LatLng(y, x);
-
-      const map = this.moveMapCenter(newCenter);
-      this.searchAroundPlace(map);
+      this.moveMapCenter(newCenter);
+      this.searchAroundPlace();
     };
 
     place.keywordSearch(keyword, keywordSearchCallback);
+  }
+
+  findCurrentPosition = (callback?: positionCallbackFunction): void => {
+    navigator.geolocation.getCurrentPosition(
+      (position: GeolocationPosition) => {
+        const newOptions = this.getOptions();
+        newOptions.center = new kakao.maps.LatLng(
+          position.coords.latitude,
+          position.coords.longitude
+        );
+
+        this.setOptions(newOptions);
+
+        if (!callback) return;
+        callback(newOptions);
+      },
+      (error) => {
+        //TODO: 에러처리 필요함
+        alert(JSON.stringify(error));
+      },
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
+    );
+  };
+
+  updateCenterCallback = (options: KakaoMapOption): void => {
+    if (!options.center) return;
+    const { center } = options;
+    try {
+      this.moveMapCenter(center);
+      this.searchAroundPlace();
+    } catch (e) {
+      // TODO: 에러 객체를 만들어서 에러 타입별로 행동을 다르게 해야할 듯
+      // eslint-disable-next-line no-console
+      console.error(e);
+    }
+  };
+
+  getOptions(): KakaoMapOption {
+    return { ...this.options };
+  }
+
+  private setOptions(newOptions: KakaoMapOption): void {
+    this.options = newOptions;
+  }
+
+  private getMap(): KakaoMap {
+    if (!this.map) throw "ERROR:(Map) map 객체가 비어있습니다.";
+    return this.map;
+  }
+
+  private setMap(newMap: KakaoMap): void {
+    this.map = newMap;
   }
 }
