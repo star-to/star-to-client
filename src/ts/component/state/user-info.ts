@@ -1,6 +1,6 @@
 import Action from "./action";
 import api from "../../api";
-import { State } from "../observable";
+import { State, UserInfomation } from "../observable";
 import { ACTION } from "../../const";
 
 export default class UserInfo {
@@ -12,7 +12,6 @@ export default class UserInfo {
   }
 
   init() {
-    this.action.createObservers(ACTION.GET_USER_REVIEW);
     this.action.createObservers(ACTION.UPDATE_USER_INFO);
 
     const initUserInfo = () => {
@@ -21,12 +20,6 @@ export default class UserInfo {
     };
 
     this.action.subscribe(ACTION.INIT_APP, initUserInfo);
-
-    const getUserReview = () => {
-      this.action.notify(ACTION.UPDATE_USER_INFO, this.getState().review);
-    };
-
-    this.action.subscribe(ACTION.GET_USER_REVIEW, getUserReview);
   }
 
   lookupBookmark() {
@@ -52,11 +45,12 @@ export default class UserInfo {
       });
   }
 
-  getState(): State {
+  getState(): UserInfomation {
     return { ...this.state };
   }
 
-  setState(newState: State): void {
+  setState(newState: UserInfomation): void {
     this.state = { ...newState };
+    this.action.notify(ACTION.UPDATE_USER_INFO, newState);
   }
 }

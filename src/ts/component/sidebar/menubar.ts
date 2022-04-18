@@ -16,12 +16,12 @@ export default class MenuBar implements Component {
       </div>
       <div class="${SELECTOR.MENUBAR_CONTENTS_WRAPPER}">
         <div class="${SELECTOR.MENUBAR_CONTENTS}">
-          <span class="${SELECTOR.MENUBAR_CONTENTS_MY_REVIEW}" data-link="${PATH.MY_REVIEW}">
+          <a class="${SELECTOR.MENUBAR_CONTENTS_MY_REVIEW}" href="${PATH.MY_REVIEW}">
             MY리뷰
-          </span>
-          <span class="${SELECTOR.MENUBAR_CONTENTS_BOOKMARK}" data-link="${PATH.BOOKMARK}">
+          </a>
+          <a class="${SELECTOR.MENUBAR_CONTENTS_BOOKMARK}" href="${PATH.BOOKMARK}">
             즐겨찾기
-          </span>
+          </a>
         </div>
       </div>
     </div>
