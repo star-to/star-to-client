@@ -69,7 +69,7 @@ export const IMG = {
 };
 
 export const PATH = {
-  HOME: "/home",
+  HOME: "/",
   LOGIN: "/login",
   LOADING: "/loading",
   DETAIL: "/detail",
@@ -83,11 +83,14 @@ export const ACTION = {
   UPDATE_MAP_OPTION: "updateMapOption",
   UPDATE_USER_INFO: "updateUserInfo",
   START_MAP: "startMap",
-  CURRENT_LOCATION_MAP: "currentLocationMap",
   GET_USER_REVIEW: "getUserReview",
   INIT_APP: "initAPP",
 };
 
 export const STATIC = {
   MAX_COUTING_STARS: 5,
+};
+
+export const EVENT = {
+  CHANGE_LOCATION: "changeLocation",
 };

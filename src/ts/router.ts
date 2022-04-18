@@ -1,72 +1,75 @@
-import Action from "./component/state/action";
-import { SELECTOR } from "./const";
-import { PageRoute, ComponentFunction, Params, routes } from "./routes";
+import { SELECTOR, EVENT, PATH, ACTION } from "./const";
+import { ComponentFunction, createRoutes, RouteList } from "./routes";
+import { AppParams } from ".";
 import api from "./api";
 
 export default class Router {
-  action: Action;
-  params: Params;
+  params: AppParams;
+  routes: RouteList;
 
-  constructor(action: Action) {
-    this.action = action;
-    this.params = {};
+  constructor(params: AppParams) {
+    this.params = params;
+    this.routes = createRoutes(this.params);
     this.init();
   }
 
-  init = (): void => {
-    const page = this.findPage("/loading");
+  init(): void {
+    const page = this.findPage(PATH.LOADING);
     this.paintPage(page);
 
-    document.addEventListener("click", (e: Event) => {
-      this.handleRoutePage(e);
+    const handleRoutePage = (event: Event): void => {
+      const $event = event.target as HTMLElement;
+      const $target = $event.closest("a");
+      if (!$target) return;
+
+      event.preventDefault();
+
+      this.emitChangeLocation(EVENT.CHANGE_LOCATION, $target.href);
+    };
+
+    document.addEventListener("click", handleRoutePage);
+
+    window.addEventListener(EVENT.CHANGE_LOCATION, (e: Event) => {
+      this.removeElementChild();
+      const { pathname } = (e as CustomEvent).detail;
+      this.paintPage(this.findPage(pathname));
+    });
+
+    window.addEventListener("popstate", (e) => {
+      this.emitChangeLocation(EVENT.CHANGE_LOCATION, location.href);
     });
 
     const response = api.fetchChecedkLogin();
     response
       .then((res) => res.json())
       .then(({ isLogin }) => {
-        const nextPageComponents = isLogin
-          ? this.findPage("/home")
-          : this.findPage("/login");
-        this.paintPage(nextPageComponents);
+        let url = "";
+
+        if (isLogin) {
+          url = location.href;
+          this.params.action.notify(ACTION.INIT_APP);
+        } else {
+          url = `${location.origin}${PATH.LOGIN}`;
+        }
+
+        this.emitChangeLocation(EVENT.CHANGE_LOCATION, url);
       });
-  };
+  }
 
-  handleRoutePage = (event: Event): void => {
-    //TODO: 부모의 부모까지 확인해봐야함 더 효율적인 방법 없을지?
-    const eventTarget = event.target as HTMLElement;
-
-    const isLink =
-      eventTarget.dataset?.link || eventTarget.parentElement?.dataset?.link
-        ? true
-        : false;
-
-    if (!isLink) return;
-
-    const targetElement = eventTarget.dataset?.link
-      ? eventTarget
-      : (eventTarget.parentElement as HTMLElement);
-
-    if (targetElement.dataset.params) {
-      const paramData = targetElement.dataset.params?.split("/");
-
-      this.params = paramData.reduce((acc, cur) => {
-        const [key, data] = cur.split("=");
-        acc[key] = data;
-
-        return acc;
-      }, {} as Params);
-    }
-
-    const nextPageComponents = this.findPage(
-      targetElement.dataset.link as string
+  emitChangeLocation(eventName: string, url: string) {
+    const reg = new RegExp(`${location.origin}`, "g");
+    const pathname = url.replace(reg, "");
+    history.pushState(null, pathname, url);
+    window.dispatchEvent(
+      new CustomEvent(eventName, {
+        detail: {
+          pathname,
+        },
+      })
     );
+  }
 
-    this.removeElementChild();
-    this.paintPage(nextPageComponents);
-  };
-
-  removeElementChild = (): void => {
+  removeElementChild(): void {
     const header = document.querySelector(`${SELECTOR.HEADER}`) as HTMLElement;
     const main = document.querySelector(`.${SELECTOR.MAIN}`) as HTMLElement;
     const sidebar = document.querySelector(
@@ -87,22 +90,21 @@ export default class Router {
       sidebar.innerHTML = "";
       sidebar.removeAttribute("class");
     }
-  };
+  }
 
-  findPage = (path: string): ComponentFunction[] => {
-    const nextPage = routes.find((page) => page.path === path);
+  findPage(path: string): ComponentFunction[] {
+    const nextPage = this.routes.find((page) => page.path === path);
     if (!nextPage) {
       //TODO: 에러 처리 코드 추가
       return [];
     }
 
     return nextPage.components;
-  };
+  }
 
-  paintPage = (pageComponents: ComponentFunction[]): void => {
-    const page = pageComponents.map((componentfn) =>
-      componentfn(this.action, this.params)
-    );
+  paintPage(pageComponents: ComponentFunction[]): void {
+    //TODO: param을 여기서 매개변수로 받아야함
+    const page = pageComponents.map((componentfn) => componentfn());
 
     page.forEach((component) => {
       component.paint();
@@ -113,5 +115,5 @@ export default class Router {
         component.init();
       }
     });
-  };
+  }
 }

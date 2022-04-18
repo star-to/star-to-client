@@ -1,16 +1,21 @@
 import { Component } from "../component";
 import Action from "../state/action";
 import { SELECTOR, IMG, ACTION } from "../../const";
-import { State } from "../observable";
+import { State, UserInfomation } from "../observable";
+import UserInfo from "../state/user-info";
 
 export default class MyReview implements Component {
   action: Action;
+  userInfo: UserInfo;
+  reviewList: State[];
 
-  constructor(action: Action) {
+  constructor(action: Action, userInfo: UserInfo) {
     this.action = action;
+    this.userInfo = userInfo;
+    this.reviewList = [];
   }
 
-  paint = (): void => {
+  paint(): void {
     //TODO: 메인 래퍼를 구분할 필요가 있다면 main 에 셀렉터 부여하기
     const mainWrapper = document.querySelector(
       `${SELECTOR.MAIN}`
@@ -20,15 +25,15 @@ export default class MyReview implements Component {
       <div class="${SELECTOR.MY_REVEIW_WRAPPER}">
       </div>
       `;
-  };
+  }
 
-  init = (): void => {
-    this.action.subscribe(ACTION.UPDATE_USER_INFO, this.fillReveiw);
+  init(): void {
+    this.setReviewList(this.userInfo.getState());
+    this.fillReveiw(this.getReviewList());
+  }
 
-    this.action.notify(ACTION.GET_USER_REVIEW);
-  };
-
-  fillReveiw = (reviewList: State[]): void => {
+  //TODO: reviewList 형식 바뀜
+  fillReveiw(reviewList: State[]): void {
     //TODO: 홈화면에서 구현했던 방식이랑 이 방식중 더 효율적인 것으로 통일!!
     let addHtml = "";
     addHtml += /*html*/ `<div class="${SELECTOR.MY_REVIEW_LIST_WRAPPER}">`;
@@ -65,9 +70,9 @@ export default class MyReview implements Component {
     ) as HTMLDivElement;
 
     reviewWrapper.innerHTML = addHtml;
-  };
+  }
 
-  paintStar = (count: number): string => {
+  paintStar(count: number): string {
     let starElement = "";
 
     for (let j = 1; j <= 5; j++) {
@@ -77,5 +82,15 @@ export default class MyReview implements Component {
     }
 
     return starElement;
-  };
+  }
+
+  getReviewList(): State[] {
+    return [...this.reviewList];
+  }
+
+  setReviewList(newUserInfo: UserInfomation) {
+    //TODO: State 말고 REVIEW 타입 만들기
+    if (!newUserInfo.review) return;
+    this.reviewList = [...newUserInfo.review];
+  }
 }
