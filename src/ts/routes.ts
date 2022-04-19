@@ -47,5 +47,9 @@ export function createRoutes(params: AppParams): RouteList {
         () => new Bagic(),
       ],
     },
+    {
+      path: PATH.REVIEW,
+      components: [() => new Review(action, myMap)],
+    },
   ];
 }

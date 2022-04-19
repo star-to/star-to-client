@@ -43,16 +43,37 @@ export default class Router {
     response
       .then((res) => res.json())
       .then(({ isLogin }) => {
-        let url = "";
+        const url = location.origin;
 
         if (isLogin) {
-          url = location.href;
           this.params.action.notify(ACTION.INIT_APP);
-        } else {
-          url = `${location.origin}${PATH.LOGIN}`;
+          const mapOptions = this.params.myMap.getOptions();
+
+          if (!mapOptions.center)
+            return this.emitChangeLocation(
+              EVENT.CHANGE_LOCATION,
+              `${url}${PATH.HOME}`
+            );
+
+          const serachOption = {
+            location: mapOptions.center,
+            radius: 0,
+          };
+
+          //TODO: 좌표를 주소로 변환하는 함수를 이용하고, 그 주소로 키워드 검색을 하는 식으로 변경
+          return this.params.myMap.searchCategory(
+            serachOption,
+            (data: KakaoSearchedPlace[]) => {
+              const path = data.length === 0 ? location.pathname : PATH.REVIEW;
+              return this.emitChangeLocation(
+                EVENT.CHANGE_LOCATION,
+                `${url}${path}`
+              );
+            }
+          );
         }
 
-        this.emitChangeLocation(EVENT.CHANGE_LOCATION, url);
+        this.emitChangeLocation(EVENT.CHANGE_LOCATION, `${url}${PATH.LOGIN}`);
       });
   }
 
