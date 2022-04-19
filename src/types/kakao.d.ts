@@ -39,6 +39,7 @@ declare namespace kakao {
     namespace services {
       class Places {
         constructor(map?: Map);
+        setMap(map: Map | null): void;
         categorySearch(
           code: string,
           callback: (data: SearchedPlace[], status: ConstantStatus) => void,
@@ -189,10 +190,12 @@ type KakaoMap = kakao.maps.Map;
 type KakaoMapOption = kakao.maps.MapOption;
 type KakaoLatLng = kakao.maps.LatLng;
 type KakaoPlaces = kakao.maps.services.Places;
+type kakaoCategoryOption = kakao.maps.services.CategoryOption;
 type KakaoSearchedPlace = kakao.maps.services.SearchedPlace;
 type KakaoContantStatus = kakao.maps.services.ConstantStatus;
 type KakaoLatLngBounds = kakao.maps.LatLngBounds;
 type KakaoEventName = kakao.maps.event.EventName;
+type KakaoMarker = kakao.maps.Marker;
 type KakaoOption =
   | kakao.maps.MapOption
   | kakao.maps.services.CategoryOption

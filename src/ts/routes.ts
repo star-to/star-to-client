@@ -23,7 +23,7 @@ export type Params = {
 export type RouteList = PageRoute[];
 
 export function createRoutes(params: AppParams): RouteList {
-  const { action, userInfo, mapOption } = params;
+  const { action, userInfo, myMap } = params;
 
   return [
     {
@@ -33,10 +33,7 @@ export function createRoutes(params: AppParams): RouteList {
     { path: PATH.LOGIN, components: [() => new Login()] },
     {
       path: PATH.HOME,
-      components: [
-        () => new Home(action, mapOption),
-        () => new MenuBar(action),
-      ],
+      components: [() => new Home(action, myMap), () => new MenuBar(action)],
     },
     {
       path: PATH.DETAIL,
