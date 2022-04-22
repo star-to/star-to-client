@@ -34,6 +34,8 @@ declare namespace kakao {
     class LatLng {
       constructor(latitude: number, logitude: number);
       equals(compareInstance: LatLng): boolean;
+      getLat(): number;
+      getLng(): number;
     }
 
     namespace services {

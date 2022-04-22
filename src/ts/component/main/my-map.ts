@@ -14,10 +14,7 @@ interface GeolocationCoordinates {
 
 type PositionCallbackFunction = (options: KakaoMapOption) => void;
 
-type SearchCallbackFunction = (
-  data: KakaoSearchedPlace[],
-  status: KakaoContantStatus
-) => void;
+type SearchCallbackFunction = (data: KakaoSearchedPlace[]) => void;
 
 export default class MyMap {
   action: Action;
@@ -118,7 +115,7 @@ export default class MyMap {
       this.place.categorySearch(
         code,
         (data: KakaoSearchedPlace[], status: KakaoContantStatus) => {
-          callback(data, status);
+          callback(data);
         },
         option
       );
@@ -150,21 +147,16 @@ export default class MyMap {
     const currentMap = this.getMap();
     this.setPlaceMap(currentMap);
 
-    const categorySearchCallback = (
-      searchedPlace: KakaoSearchedPlace[],
-      status: KakaoContantStatus
-    ) => {
-      if (status === kakao.maps.services.Status.OK) {
-        api
-          .fetchPlaceInfo(searchedPlace)
-          .then((res) => res.json())
-          .then(({ result }) => {
-            //TODO: 응답이 제대로 오지 않았을 때 해야할 것들 추가!!
-            for (let i = 0; i < searchedPlace.length; i++) {
-              this.createMarker(searchedPlace[i]);
-            }
-          });
-      }
+    const categorySearchCallback = (searchedPlace: KakaoSearchedPlace[]) => {
+      api
+        .fetchPlaceInfo(searchedPlace)
+        .then((res) => res.json())
+        .then(({ result }) => {
+          //TODO: 응답이 제대로 오지 않았을 때 해야할 것들 추가!!
+          for (let i = 0; i < searchedPlace.length; i++) {
+            this.createMarker(searchedPlace[i]);
+          }
+        });
     };
 
     this.searchCategory({ useMapBounds: true }, categorySearchCallback);
