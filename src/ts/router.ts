@@ -12,6 +12,8 @@ export default class Router {
     this.routes = createRoutes(this.params);
     this.init();
   }
+  // 이벤트 생성, 또는 액선 생성 후 상태 컴포넌트의 init 작업이 끝난 후
+  // 페이지 라우팅을 할 수 있도록 변경해야함
 
   init(): void {
     const page = this.findPage(PATH.LOADING);
@@ -20,6 +22,8 @@ export default class Router {
     const handleRoutePage = (event: Event): void => {
       const $event = event.target as HTMLElement;
       const $target = $event.closest("a");
+
+      //TODO: 외부 사이트를 접근하는 anchor 태그를 구분하는 코드 추가 해야함
       if (!$target) return;
 
       event.preventDefault();
@@ -35,7 +39,7 @@ export default class Router {
       this.paintPage(this.findPage(pathname));
     });
 
-    window.addEventListener("popstate", (e) => {
+    window.addEventListener("popstate", () => {
       this.emitChangeLocation(EVENT.CHANGE_LOCATION, location.href);
     });
 
@@ -47,34 +51,26 @@ export default class Router {
 
         if (isLogin) {
           this.params.action.notify(ACTION.INIT_APP);
-          const mapOptions = this.params.myMap.getOptions();
+          const timeId = setInterval(() => {
+            const placeList = this.params.myMap.getCurrentPlaceList();
+            if (!placeList) return;
 
-          if (!mapOptions.center)
-            return this.emitChangeLocation(
-              EVENT.CHANGE_LOCATION,
-              `${url}${PATH.HOME}`
-            );
+            clearInterval(timeId);
+            this.router();
+          }, 100);
 
-          const serachOption = {
-            location: mapOptions.center,
-            radius: 0,
-          };
-
-          //TODO: 좌표를 주소로 변환하는 함수를 이용하고, 그 주소로 키워드 검색을 하는 식으로 변경
-          return this.params.myMap.searchCategory(
-            serachOption,
-            (data: KakaoSearchedPlace[]) => {
-              const path = data.length === 0 ? location.pathname : PATH.REVIEW;
-              return this.emitChangeLocation(
-                EVENT.CHANGE_LOCATION,
-                `${url}${path}`
-              );
-            }
-          );
+          return;
         }
 
         this.emitChangeLocation(EVENT.CHANGE_LOCATION, `${url}${PATH.LOGIN}`);
       });
+  }
+
+  router() {
+    const url = location.origin;
+    const pathname = location.pathname;
+
+    this.emitChangeLocation(EVENT.CHANGE_LOCATION, `${url}${pathname}`);
   }
 
   emitChangeLocation(eventName: string, url: string) {

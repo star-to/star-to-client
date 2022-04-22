@@ -233,7 +233,7 @@ export default class Home implements Component {
       e.preventDefault();
       const keyword = searchInput.value;
 
-      this.myMap.searchKeyword(keyword);
+      this.myMap.moveToSearchedPlace(keyword);
     };
 
     searchInputButton.addEventListener("click", handleKeywordSearch);
