@@ -37,6 +37,7 @@ export const SELECTOR = {
   MY_REVIEW_CONTENT_WRAPPER: "my-review__content-wrapper",
   MY_REVIEW_CONTENT_NAME: "my-review__content__name",
   MY_REVIEW_CONTENT_STAR: "my-review__content__star",
+  REVIEW_WRAPPER: "review-wrapper",
   SIDEBAR: "sidebar",
   MENUBAR: "menubar",
   MENUBAR_WRAPPER: "menubar-wrapper",

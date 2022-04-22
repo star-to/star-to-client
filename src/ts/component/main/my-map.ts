@@ -53,7 +53,7 @@ export default class MyMap {
 
         const keywordOption = {
           category_group_code: "CE7",
-          radius: 1,
+          radius: 3,
         };
 
         this.searchKeyword(address, initKeywordSearch, keywordOption);
