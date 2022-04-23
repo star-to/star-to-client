@@ -1,5 +1,5 @@
 import { SELECTOR, EVENT, PATH, ACTION } from "./const";
-import { ComponentFunction, createRoutes, RouteList } from "./routes";
+import { ComponentFunction, createRoutes, Params, RouteList } from "./routes";
 import { AppParams } from ".";
 import api from "./api";
 
@@ -12,8 +12,6 @@ export default class Router {
     this.routes = createRoutes(this.params);
     this.init();
   }
-  // 이벤트 생성, 또는 액선 생성 후 상태 컴포넌트의 init 작업이 끝난 후
-  // 페이지 라우팅을 할 수 있도록 변경해야함
 
   init(): void {
     const page = this.findPage(PATH.LOADING);
@@ -35,8 +33,8 @@ export default class Router {
 
     window.addEventListener(EVENT.CHANGE_LOCATION, (e: Event) => {
       this.removeElementChild();
-      const { pathname } = (e as CustomEvent).detail;
-      this.paintPage(this.findPage(pathname));
+      const { pathname, state } = (e as CustomEvent).detail;
+      this.paintPage(this.findPage(pathname), { state });
     });
 
     window.addEventListener("popstate", () => {
@@ -48,6 +46,7 @@ export default class Router {
       .then((res) => res.json())
       .then(({ isLogin }) => {
         const url = location.origin;
+        let pathname = location.pathname;
 
         if (isLogin) {
           this.params.action.notify(ACTION.INIT_APP);
@@ -56,7 +55,12 @@ export default class Router {
             if (!placeList) return;
 
             clearInterval(timeId);
-            this.router();
+
+            if (pathname === PATH.HOME) {
+              pathname = placeList.length > 0 ? PATH.REVIEW : PATH.HOME;
+            }
+
+            this.router<KakaoSearchedPlace[]>(pathname, placeList);
           }, 100);
 
           return;
@@ -66,26 +70,31 @@ export default class Router {
       });
   }
 
-  router() {
+  router<T>(path: string, state?: T) {
     const url = location.origin;
-    const pathname = location.pathname;
 
-    this.emitChangeLocation(EVENT.CHANGE_LOCATION, `${url}${pathname}`);
+    if (state) {
+      this.emitChangeLocation(EVENT.CHANGE_LOCATION, `${url}${path}`);
+      return;
+    }
+
+    this.emitChangeLocation<T>(EVENT.CHANGE_LOCATION, `${url}${path}`, state);
   }
 
-  emitChangeLocation(eventName: string, url: string) {
+  emitChangeLocation<T>(eventName: string, url: string, state?: T) {
     const reg = new RegExp(`${location.origin}`, "g");
     const pathname = url.replace(reg, "");
+    //TODO: 첫 진입에 login은 뒤로 가기에 포함하면 안될 것 같음
     history.pushState(null, pathname, url);
     window.dispatchEvent(
       new CustomEvent(eventName, {
         detail: {
           pathname,
+          state: state ? state : null,
         },
       })
     );
   }
-
   removeElementChild(): void {
     const header = document.querySelector(`${SELECTOR.HEADER}`) as HTMLElement;
     const main = document.querySelector(`.${SELECTOR.MAIN}`) as HTMLElement;
@@ -119,15 +128,25 @@ export default class Router {
     return nextPage.components;
   }
 
-  paintPage(pageComponents: ComponentFunction[]): void {
-    //TODO: param을 여기서 매개변수로 받아야함
-    const page = pageComponents.map((componentfn) => componentfn());
+  paintPage(pageComponents: ComponentFunction[], params?: Params): void {
+    const page = pageComponents.map((componentfn) => componentfn(params));
 
     page.forEach((component) => {
+      //TODO: 다름방법 고민해보기!!
+      if (!component)
+        return this.emitChangeLocation(
+          EVENT.CHANGE_LOCATION,
+          `${location.origin}${PATH.HOME}`
+        );
       component.paint();
     });
 
     page.forEach((component) => {
+      if (!component)
+        return this.emitChangeLocation(
+          EVENT.CHANGE_LOCATION,
+          `${location.origin}${PATH.HOME}`
+        );
       if (component.init) {
         component.init();
       }
