@@ -34,6 +34,8 @@ declare namespace kakao {
     class LatLng {
       constructor(latitude: number, logitude: number);
       equals(compareInstance: LatLng): boolean;
+      getLat(): number;
+      getLng(): number;
     }
 
     namespace services {
@@ -53,6 +55,7 @@ declare namespace kakao {
       }
 
       interface SearchedPlace {
+        id: string;
         place_name: string;
         category_name: string;
         category_group_code: string;
@@ -102,6 +105,31 @@ declare namespace kakao {
         const OK: "OK";
         const ZERO_RESULT: "ZERO_RESULT";
         const ERROR: "ERROR";
+      }
+
+      class Geocoder {
+        constructor();
+        coord2Address(
+          x: number,
+          y: number,
+          callback: (address?: TransformedAddress[]) => void,
+          options?: COORDS
+        ): void;
+      }
+
+      type COORDS = "WGS84" | "WCONGNAMUL" | "CONGNAMUL" | "WTM" | "TM";
+
+      interface TransformedAddress {
+        address: Address;
+        road_address: RoadAddress;
+      }
+
+      interface Address {
+        address_name: string;
+      }
+
+      interface RoadAddress {
+        address_name: string;
       }
     }
 
@@ -190,7 +218,10 @@ type KakaoMap = kakao.maps.Map;
 type KakaoMapOption = kakao.maps.MapOption;
 type KakaoLatLng = kakao.maps.LatLng;
 type KakaoPlaces = kakao.maps.services.Places;
+type KakaoGeocoder = kakao.maps.services.Geocoder;
+type KakaoTransformAddress = kakao.maps.services.TransformedAddress;
 type kakaoCategoryOption = kakao.maps.services.CategoryOption;
+type kakaoKeywordOption = kakao.maps.services.KeywordOption;
 type KakaoSearchedPlace = kakao.maps.services.SearchedPlace;
 type KakaoContantStatus = kakao.maps.services.ConstantStatus;
 type KakaoLatLngBounds = kakao.maps.LatLngBounds;

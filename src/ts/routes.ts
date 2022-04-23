@@ -6,11 +6,12 @@ import Login from "./component/main/login";
 import Home from "./component/main/home";
 import Detail from "./component/main/detail";
 import MyReview from "./component/main/my-review";
+import Review from "./component/main/review";
 import MenuBar from "./component/sidebar/menubar";
 import Bagic from "./component/header/bagic";
 import Review from "./component/main/review";
 
-export type ComponentFunction = () => Component;
+export type ComponentFunction = (params?: Params) => Component | null;
 
 export interface PageRoute {
   path: string;
@@ -46,6 +47,15 @@ export function createRoutes(params: AppParams): RouteList {
         () => new MyReview(action, userInfo),
         () => new MenuBar(action),
         () => new Bagic(),
+      ],
+    },
+    {
+      path: PATH.REVIEW,
+      components: [
+        (componentParams?: Params) => {
+          if (!componentParams) return null;
+          return new Review(action, myMap, componentParams);
+        },
       ],
     },
   ];
