@@ -51,10 +51,12 @@ export default class Router {
         if (isLogin) {
           this.params.action.notify(ACTION.INIT_APP);
           const timeId = setInterval(() => {
-            const placeList = this.params.myMap.getCurrentPlaceList();
-            if (!placeList) return;
+            const isCompleted = this.params.myMap.getIsLoadedCurrentPlaceList();
 
+            if (!isCompleted) return;
             clearInterval(timeId);
+
+            const placeList = this.params.myMap.getCurrentPlaceList();
 
             if (pathname === PATH.HOME) {
               pathname = placeList.length > 0 ? PATH.REVIEW : PATH.HOME;
