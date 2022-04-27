@@ -34,7 +34,7 @@ export default class Router {
     window.addEventListener(EVENT.CHANGE_LOCATION, (e: Event) => {
       this.removeElementChild();
       const { pathname, state } = (e as CustomEvent).detail;
-      this.paintPage(this.findPage(pathname), { state });
+      this.paintPage(this.findPage(pathname), state);
     });
 
     window.addEventListener("popstate", () => {
@@ -57,7 +57,6 @@ export default class Router {
             clearInterval(timeId);
 
             const placeList = this.params.myMap.getCurrentPlaceList();
-
             if (pathname === PATH.HOME) {
               pathname = placeList.length > 0 ? PATH.REVIEW : PATH.HOME;
             }
@@ -75,7 +74,7 @@ export default class Router {
   router<T>(path: string, state?: T) {
     const url = location.origin;
 
-    if (state) {
+    if (!state) {
       this.emitChangeLocation(EVENT.CHANGE_LOCATION, `${url}${path}`);
       return;
     }
@@ -130,7 +129,10 @@ export default class Router {
     return nextPage.components;
   }
 
-  paintPage(pageComponents: ComponentFunction[], params?: Params): void {
+  paintPage(
+    pageComponents: ComponentFunction[],
+    params?: KakaoSearchedPlace[]
+  ): void {
     const page = pageComponents.map((componentfn) => componentfn(params));
 
     page.forEach((component) => {
