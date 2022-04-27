@@ -38,6 +38,12 @@ export const SELECTOR = {
   MY_REVIEW_CONTENT_NAME: "my-review__content__name",
   MY_REVIEW_CONTENT_STAR: "my-review__content__star",
   REVIEW_WRAPPER: "review-wrapper",
+  REVIEW_CONTENT_WRAPPER: "review__content-wrapper",
+  REVIEW_CONTENT_MAIN: "review__content__main",
+  REVIEW_CONTENT_ANOTHER: "review__content__another",
+  REVIEW_STAR_WRAPPER: "review__star-wrapper",
+  REVIEW_STAR_TITLE: "review__star__title",
+  REVIEW_STAR: "review__star",
   SIDEBAR: "sidebar",
   MENUBAR: "menubar",
   MENUBAR_WRAPPER: "menubar-wrapper",
@@ -80,10 +86,7 @@ export const PATH = {
 
 export const ACTION = {
   MENUBAR_VISIBLE: "visibleMenubar",
-  UPDATE_MAP_OPTION: "updateMapOption",
   UPDATE_USER_INFO: "updateUserInfo",
-  START_MAP: "startMap",
-  GET_USER_REVIEW: "getUserReview",
   INIT_APP: "initAPP",
 };
 
