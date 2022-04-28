@@ -5,7 +5,7 @@
   height: 100%;
   align-items: center;
   justify-content: center;
-  margin-bottom: 40%;
+  margin-bottom: 10%;
 
   .review__content-wrapper {
     width: 80%;
@@ -40,6 +40,7 @@
     width: 80%;
     height: 20%;
     align-items: center;
+    margin-bottom: 20%;
 
     .review__star__title {
       font-size: 1.2rem;
@@ -58,11 +59,47 @@
       align-items: center;
 
       .rating__star {
+        text-align: center;
         cursor: pointer;
         width: 20%;
         font-size: 1.6rem;
         color: rgb(255, 239, 15);
       }
+    }
+  }
+
+  .review__button-wrapper {
+    width: 80%;
+    height: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .review__button__submit {
+      width: 90%;
+      height: 50%;
+      border-radius: 1rem;
+      color: white;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      outline: inherit;
+      background-color: #ff4c6c;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    }
+
+    .review__button__next-day {
+      margin-top: 2%;
+      color: #ff4c6c;
+      border: none;
+      padding: 1%;
+      cursor: pointer;
+      outline: inherit;
+      background-color: rgba(255, 255, 255, 0);
+      font-weight: 550;
     }
   }
 }
