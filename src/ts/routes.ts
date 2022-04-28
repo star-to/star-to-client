@@ -54,7 +54,7 @@ export function createRoutes(params: AppParams): RouteList {
       path: PATH.REVIEW,
       components: [
         (componentParams?: KakaoSearchedPlace[]) => {
-          if (!componentParams) return null;
+          if (!componentParams || componentParams.length === 0) return null;
           return new Review(action, myMap, componentParams);
         },
       ],

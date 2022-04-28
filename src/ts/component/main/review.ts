@@ -40,6 +40,10 @@ export default class Review implements Component {
           <i class="rating__star far fa-star"></i>
         </div>
       </div>
+      <div class="${SELECTOR.REVIEW_BUTTON_WRAPPER}">
+        <button class="${SELECTOR.REVIEW_BUTTON_SUBMIT}">별점 주기</button>
+        <button class="${SELECTOR.REVIEW_BUTTON_NEXTDAY}">다음에 하기</button>
+      </div>
     </div>
     `;
   }
@@ -64,9 +68,8 @@ export default class Review implements Component {
       $contentWrapper.append(button);
     }
 
-    const $ratingStars = document.querySelectorAll<HTMLElement>(
-      `.${SELECTOR.REVIEW_STAR}`
-    );
+    const $ratingStars =
+      document.querySelectorAll<HTMLElement>(`.rating__star`);
 
     const starArr = Array.from($ratingStars);
     this.executeRating(starArr);
