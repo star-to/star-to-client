@@ -2,18 +2,18 @@ import { Component } from "../component";
 import Action from "../state/action";
 import { SELECTOR } from "../../const";
 import MyMap from "./my-map";
+import ReviewInfo from "../state/review-info";
 
 export default class Review implements Component {
   action: Action;
   myMap: MyMap;
-  //TODO: 자료형 만들어야할 듯
-  placeList: KakaoSearchedPlace[];
+  reviewInfo: ReviewInfo;
   starCount;
 
-  constructor(action: Action, myMap: MyMap, placeList: KakaoSearchedPlace[]) {
+  constructor(action: Action, myMap: MyMap, reviewInfo: ReviewInfo) {
     this.action = action;
     this.myMap = myMap;
-    this.placeList = placeList;
+    this.reviewInfo = reviewInfo;
     this.starCount = 0;
   }
 
@@ -49,8 +49,9 @@ export default class Review implements Component {
   }
 
   init(): void {
-    this.placeList.sort((a, b) => Number(a.distance) - Number(b.distance));
-    const mainPlace = this.placeList[0];
+    const placeList = this.reviewInfo.getPlaceList();
+    placeList.sort((a, b) => Number(a.distance) - Number(b.distance));
+    const mainPlace = placeList[0];
 
     const $contentWrapper = document.querySelector(
       `.${SELECTOR.REVIEW_CONTENT_WRAPPER}`
@@ -61,7 +62,7 @@ export default class Review implements Component {
     ) as HTMLDivElement;
     $mainContent.innerHTML = mainPlace.place_name;
 
-    if (this.placeList.length > 1) {
+    if (placeList.length > 1) {
       const button = document.createElement("button");
       button.classList.add(SELECTOR.REVIEW_CONTENT_ANOTHER);
       button.innerHTML = "이 곳이 아니라면...";

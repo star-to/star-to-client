@@ -26,7 +26,7 @@ export type Params = {
 export type RouteList = PageRoute[];
 
 export function createRoutes(params: AppParams): RouteList {
-  const { action, userInfo, myMap } = params;
+  const { action, userInfo, myMap, reviewInfo } = params;
 
   return [
     {
@@ -53,9 +53,8 @@ export function createRoutes(params: AppParams): RouteList {
     {
       path: PATH.REVIEW,
       components: [
-        (componentParams?: KakaoSearchedPlace[]) => {
-          if (!componentParams || componentParams.length === 0) return null;
-          return new Review(action, myMap, componentParams);
+        () => {
+          return new Review(action, myMap, reviewInfo);
         },
       ],
     },
