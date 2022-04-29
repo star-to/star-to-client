@@ -39,6 +39,12 @@ const api = {
       method: "GET",
     });
   },
+
+  fetchReviewContent: () => {
+    return fetch("/api/review-content", {
+      method: "GET",
+    });
+  },
 };
 
 export default api;

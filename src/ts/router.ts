@@ -60,8 +60,9 @@ export default class Router {
             if (pathname === PATH.HOME) {
               pathname = placeList.length > 0 ? PATH.REVIEW : PATH.HOME;
             }
+            this.params.reviewInfo.addPlaceList(placeList);
 
-            this.router<KakaoSearchedPlace[]>(pathname, placeList);
+            this.router(pathname);
           }, 100);
 
           return;
@@ -96,6 +97,7 @@ export default class Router {
       })
     );
   }
+
   removeElementChild(): void {
     const header = document.querySelector(`${SELECTOR.HEADER}`) as HTMLElement;
     const main = document.querySelector(`.${SELECTOR.MAIN}`) as HTMLElement;
