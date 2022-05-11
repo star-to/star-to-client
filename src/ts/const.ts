@@ -85,6 +85,7 @@ export const PATH = {
   REVIEW: "/review",
   MY_REVIEW: "/my-review",
   BOOKMARK: "/bookmark",
+  REVEIW_DETAIL: "/review-detail",
 };
 
 export const ACTION = {
