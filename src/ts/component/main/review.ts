@@ -1,6 +1,6 @@
 import { Component } from "../component";
 import Action from "../state/action";
-import { SELECTOR } from "../../const";
+import { PATH, SELECTOR } from "../../const";
 import MyMap from "./my-map";
 import ReviewInfo from "../state/review-info";
 
@@ -41,7 +41,9 @@ export default class Review implements Component {
         </div>
       </div>
       <div class="${SELECTOR.REVIEW_BUTTON_WRAPPER}">
-        <button class="${SELECTOR.REVIEW_BUTTON_SUBMIT}">별점 주기</button>
+        <button class="${SELECTOR.REVIEW_BUTTON_SUBMIT}">
+          <a href="${PATH.REVEIW_DETAIL}">별점 주기</a>  
+        </button>
         <button class="${SELECTOR.REVIEW_BUTTON_NEXTDAY}">다음에 하기</button>
       </div>
     </div>

@@ -80,15 +80,27 @@
       width: 90%;
       height: 50%;
       border-radius: 1rem;
-      color: white;
-      border: none;
       padding: 0;
+      border: none;
       cursor: pointer;
       outline: inherit;
       background-color: #ff4c6c;
       font-size: 0.9rem;
       font-weight: 600;
       box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 90%;
+        height: 100%;
+        color: white;
+        text-decoration: none;
+      }
     }
 
     .review__button__next-day {

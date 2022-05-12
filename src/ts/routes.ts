@@ -9,6 +9,7 @@ import MyReview from "./component/main/my-review";
 import MenuBar from "./component/sidebar/menubar";
 import Bagic from "./component/header/bagic";
 import Review from "./component/main/review";
+import ReviewDetail from "./component/main/review-detail";
 
 export type ComponentFunction = (
   params?: KakaoSearchedPlace[]
@@ -52,11 +53,11 @@ export function createRoutes(params: AppParams): RouteList {
     },
     {
       path: PATH.REVIEW,
-      components: [
-        () => {
-          return new Review(action, myMap, reviewInfo);
-        },
-      ],
+      components: [() => new Review(action, myMap, reviewInfo)],
+    },
+    {
+      path: PATH.REVEIW_DETAIL,
+      components: [() => new ReviewDetail(action, reviewInfo)],
     },
   ];
 }
