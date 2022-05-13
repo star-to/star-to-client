@@ -27,6 +27,9 @@ export default class Review implements Component {
       <div class="${SELECTOR.REVIEW_CONTENT_WRAPPER}">
         <div class="${SELECTOR.REVIEW_CONTENT_MAIN}">
         </div>
+        <div class="${SELECTOR.REVIEW_CONTENT_ANOTHER}">
+          3
+        </div>
       </div>
       <div class="${SELECTOR.REVIEW_STAR_WRAPPER}">
         <div class="${SELECTOR.REVIEW_STAR_TITLE}">
@@ -51,9 +54,15 @@ export default class Review implements Component {
   }
 
   init(): void {
+    let mainPlaceId = this.reviewInfo.getMainPlaceId();
+
+    if (!mainPlaceId) {
+      this.reviewInfo.assignMainPlaceId();
+      mainPlaceId = this.reviewInfo.getMainPlaceId();
+    }
+
     const placeList = this.reviewInfo.getPlaceList();
-    placeList.sort((a, b) => Number(a.distance) - Number(b.distance));
-    const mainPlace = placeList[0];
+    const mainPlace = placeList.filter((place) => place.id === mainPlaceId)[0];
 
     const $contentWrapper = document.querySelector(
       `.${SELECTOR.REVIEW_CONTENT_WRAPPER}`
@@ -65,10 +74,13 @@ export default class Review implements Component {
     $mainContent.innerHTML = mainPlace.place_name;
 
     if (placeList.length > 1) {
-      const button = document.createElement("button");
-      button.classList.add(SELECTOR.REVIEW_CONTENT_ANOTHER);
-      button.innerHTML = "이 곳이 아니라면...";
-      $contentWrapper.append(button);
+      const $anotherContent = $contentWrapper.querySelector(
+        `.${SELECTOR.REVIEW_CONTENT_ANOTHER}`
+      ) as HTMLDivElement;
+
+      $anotherContent.innerHTML = `<a href="${PATH.REVIEW_LOCATION}">
+      이 곳이 아니라면...
+    </a>`;
     }
 
     const $ratingStars =

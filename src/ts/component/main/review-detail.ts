@@ -20,14 +20,14 @@ export default class ReviewDetail implements Component {
     ) as HTMLElement;
 
     mainWrapper.innerHTML = /*html*/ `
-    <div class="review-detail-wrapper">
-      <div class="review-detail__title">
+    <div class="${SELECTOR.REVIEW_DETAIL_WRAPPER}">
+      <div class="${SELECTOR.REVIEW_DETAIL_TITLE}">
         <H2>화장실이 어땠나요?</H2>
       </div>
-      <div class="review-detail__content-wrapper">
+      <div class="${SELECTOR.REVIEW_DETAIL_CONTENTS_WRAPPER}">
       </div>
-      <div class="review-detail__button-wrapper">
-        <button class="review-detail__submit-button">
+      <div class="${SELECTOR.REVIEW_DETAIL_BUTTON_WRAPPER}">
+        <button class="${SELECTOR.REVIEW_DETAIL_SUBMIT_BUTTON}">
         <a href="${PATH.HOME}">리뷰 남기기</a> 
         </button>
       </div>
@@ -37,13 +37,10 @@ export default class ReviewDetail implements Component {
 
   init(): void {
     const $main = document.querySelector(
-      `.review-detail-wrapper`
+      `.${SELECTOR.REVIEW_DETAIL_WRAPPER}`
     ) as HTMLDivElement;
     const $contentWrapper = $main.querySelector(
-      `.review-detail__content-wrapper`
-    ) as HTMLDivElement;
-    const $buttonWrapper = $main.querySelector(
-      `.review-detail__button-wrapper`
+      `.${SELECTOR.REVIEW_DETAIL_CONTENTS_WRAPPER}`
     ) as HTMLDivElement;
 
     this.contentsList = this.reviewInfo.getDetailContents();
@@ -66,7 +63,7 @@ export default class ReviewDetail implements Component {
       }, "");
 
       $pairWrapper += /*html*/ `
-        <div class="review-detail__pair-content" id="${i}">
+        <div class="${SELECTOR.REVIEW_DETAIL_PAIR_CONTENT}" id="${i}">
           ${$pairContent}
         </div>
       `;
@@ -82,7 +79,7 @@ export default class ReviewDetail implements Component {
     }, "");
 
     const $nullWrapper = /*html*/ `
-      <div class="review-detail__null-content">
+      <div class="${SELECTOR.REVIEW_DETAIL_NULL_CONTENT}">
         ${$nullContent}
       </div>
     `;

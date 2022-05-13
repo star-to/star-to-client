@@ -10,6 +10,7 @@ import MenuBar from "./component/sidebar/menubar";
 import Bagic from "./component/header/bagic";
 import Review from "./component/main/review";
 import ReviewDetail from "./component/main/review-detail";
+import ReviewLocation from "./component/main/review-location";
 
 export type ComponentFunction = (
   params?: KakaoSearchedPlace[]
@@ -58,6 +59,10 @@ export function createRoutes(params: AppParams): RouteList {
     {
       path: PATH.REVEIW_DETAIL,
       components: [() => new ReviewDetail(action, reviewInfo)],
+    },
+    {
+      path: PATH.REVIEW_LOCATION,
+      components: [() => new ReviewLocation(action, reviewInfo)],
     },
   ];
 }

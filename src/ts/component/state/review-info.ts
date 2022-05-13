@@ -11,12 +11,14 @@ export default class ReviewInfo {
   action: Action;
   star: number;
   placeList: KakaoSearchedPlace[];
+  mainPlaceId: string | null;
   detailContents: DetailContent[];
 
   constructor(action: Action) {
     this.action = action;
     this.star = 0;
     this.placeList = [];
+    this.mainPlaceId = null;
     this.detailContents = [];
   }
 
@@ -40,12 +42,27 @@ export default class ReviewInfo {
     this.setStar(newStar);
   }
 
+  modifyMainPlaceId(newId: string) {
+    this.setMainPlaceId(newId);
+  }
+
+  assignMainPlaceId() {
+    const newList = [...this.placeList];
+    newList.sort((a, b) => Number(a.distance) - Number(b.distance));
+    this.setMainPlaceId(newList[0].id);
+    this.setPlaceList(newList);
+  }
+
   getDetailContents() {
     return [...this.detailContents];
   }
 
   getPlaceList() {
     return [...this.placeList];
+  }
+
+  getMainPlaceId() {
+    return this.mainPlaceId;
   }
 
   getStar() {
@@ -62,5 +79,9 @@ export default class ReviewInfo {
 
   private setStar(newStar: number) {
     this.star = newStar;
+  }
+
+  private setMainPlaceId(newId: string) {
+    this.mainPlaceId = newId;
   }
 }
