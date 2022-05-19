@@ -25,12 +25,17 @@
     .review__content__another {
       width: fit-content;
       margin-left: 55%;
-      background: none;
-      color: rgb(197, 197, 197);
-      border: none;
-      padding: 0;
       cursor: pointer;
-      outline: inherit;
+
+      a, a:hover, a:focus, a:active {
+        text-decoration: none;
+        color: inherit;
+      }
+      
+      a {
+        font-size: 0.7rem;
+        color: rgb(196, 196, 196);
+      }
     }
   }
 

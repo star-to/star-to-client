@@ -47,6 +47,17 @@ export const SELECTOR = {
   REVIEW_BUTTON_WRAPPER: "review__button-wrapper",
   REVIEW_BUTTON_SUBMIT: "review__button__submit",
   REVIEW_BUTTON_NEXTDAY: "review__button__next-day",
+  REVIEW_DETAIL_WRAPPER: "review-detail-wrapper",
+  REVIEW_DETAIL_TITLE: "review-detail__title",
+  REVIEW_DETAIL_CONTENTS_WRAPPER: "review-detail__content-wrapper",
+  REVIEW_DETAIL_PAIR_CONTENT: "review-detail__pair-content",
+  REVIEW_DETAIL_NULL_CONTENT: "review-detail__null-content",
+  REVIEW_DETAIL_BUTTON_WRAPPER: "review-detail__button-wrapper",
+  REVIEW_DETAIL_SUBMIT_BUTTON: "review-detail__submit-button",
+  REVIEW_LOCATION_WRAPPER: "review-location-wrapper",
+  REVIEW_LOCATION_TITLE: "review-location__title",
+  REVIEW_LOCATION_CONTENTS_WRAPPER: "review-location__contents-wrapper",
+  REVIEW_LOCATION_CONTENTS: "review-location__contents",
   SIDEBAR: "sidebar",
   MENUBAR: "menubar",
   MENUBAR_WRAPPER: "menubar-wrapper",
@@ -86,6 +97,7 @@ export const PATH = {
   MY_REVIEW: "/my-review",
   BOOKMARK: "/bookmark",
   REVEIW_DETAIL: "/review-detail",
+  REVIEW_LOCATION: "/review-location",
 };
 
 export const ACTION = {

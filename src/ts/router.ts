@@ -41,6 +41,7 @@ export default class Router {
       this.emitChangeLocation(EVENT.CHANGE_LOCATION, location.href);
     });
 
+    api.createReviewInfo();
     const response = api.fetchChecedkLogin();
     response
       .then((res) => res.json())

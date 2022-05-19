@@ -45,6 +45,12 @@ const api = {
       method: "GET",
     });
   },
+
+  createReviewInfo: () => {
+    return fetch("/api/review-info", {
+      method: "POST",
+    });
+  },
 };
 
 export default api;
