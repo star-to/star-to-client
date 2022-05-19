@@ -1,5 +1,6 @@
 import Action from "../state/action";
 import api from "../../api";
+import { ACTION } from "../../const";
 
 interface GeolocationPosition {
   coords: GeolocationCoordinates;
@@ -25,7 +26,6 @@ export default class MyMap {
   currentPlaceList: KakaoSearchedPlace[];
   infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
   categoryCodes = ["FD6", "CE7"];
-  isLoadedCurrentPlaceList: boolean;
 
   constructor(action: Action) {
     this.action = action;
@@ -37,10 +37,10 @@ export default class MyMap {
     this.place = new kakao.maps.services.Places();
     this.geocoder = new kakao.maps.services.Geocoder();
     this.currentPlaceList = [];
-    this.isLoadedCurrentPlaceList = false;
   }
 
   init() {
+    this.action.createObservers(ACTION.LOAD_PLACE_LIST);
     const initPositionCallback = (options: KakaoMapOption) => {
       if (!options.center) return;
 
@@ -53,7 +53,8 @@ export default class MyMap {
         this.setCurrentPlace(newCurrentPlace);
         cnt++;
 
-        if (cnt === 2) this.isLoadedCurrentPlaceList = true;
+        if (cnt === 2)
+          this.action.notify(ACTION.LOAD_PLACE_LIST, newCurrentPlace);
       };
 
       const categoryOption = {
@@ -193,7 +194,7 @@ export default class MyMap {
     const categorySearchCallback = (searchedPlace: KakaoSearchedPlace[]) => {
       if (searchedPlace.length === 0) return;
       api
-        .fetchPlaceInfo(searchedPlace)
+        .createPlaceInfo(searchedPlace)
         .then((res) => res.json())
         .then(({ result }) => {
           //TODO: 저장할 것이 없었을 경우 빈배열이 넘어옴 !!
@@ -212,10 +213,6 @@ export default class MyMap {
 
   getCurrentPlaceList(): KakaoSearchedPlace[] {
     return this.currentPlaceList;
-  }
-
-  getIsLoadedCurrentPlaceList(): boolean {
-    return this.isLoadedCurrentPlaceList;
   }
 
   private setOptions(newOptions: KakaoMapOption): void {

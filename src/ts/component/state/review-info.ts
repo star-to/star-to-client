@@ -1,5 +1,6 @@
 import Action from "./action";
 import api from "../../api";
+import { ACTION } from "../../const";
 
 export type DetailContent = {
   detail_content_id: number;
@@ -24,7 +25,13 @@ export default class ReviewInfo {
 
   init() {
     //TODO: 리뷰인포가 변경될 경우 userinfo의 리뷰리스트도 업데이트 해야함!!
-    const response = api.fetchReviewContent();
+    this.action.subscribe(
+      ACTION.LOAD_PLACE_LIST,
+      (newPlaceList: KakaoSearchedPlace[]) => {
+        this.setPlaceList(newPlaceList);
+      }
+    );
+    const response = api.readReviewContent();
 
     response
       .then((res) => res.json())

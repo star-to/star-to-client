@@ -100,10 +100,22 @@ export const PATH = {
   REVIEW_LOCATION: "/review-location",
 };
 
+export const API_PATH = {
+  LOGIN_CHECK: "/api/login/check",
+  LOGIN_NAVER: "/api/login/naver",
+  LOGIN_KAKAO: "/api/login/kakao",
+  MY_REVIEW: "/api/my-review",
+  PLACE: "/api/place",
+  BOOKMARK: "/api/bookmark",
+  REVEIW_CONTENT: "/api/review-content",
+  REVIEW_INFO: "/api/review-info",
+};
+
 export const ACTION = {
   MENUBAR_VISIBLE: "visibleMenubar",
   UPDATE_USER_INFO: "updateUserInfo",
   INIT_APP: "initAPP",
+  LOAD_PLACE_LIST: "loadPlaceList",
 };
 
 export const STATIC = {
