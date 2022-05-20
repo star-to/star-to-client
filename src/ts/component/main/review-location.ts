@@ -39,10 +39,11 @@ export default class ReviewLocation implements Component {
       `.review-location__contents`
     ) as HTMLDivElement;
 
+    const mainPlaceId = window.localStorage.getItem("mainPlaceId");
     const placeList = this.reviewInfo.getPlaceList();
 
     const locationList = placeList.reduce((acc, cur) => {
-      if (cur.id === this.reviewInfo.mainPlaceId) return acc;
+      if (cur.id === mainPlaceId) return acc;
       acc += `<button id="${cur.id}">${cur.place_name}</button>`;
       return acc;
     }, "");
@@ -54,7 +55,8 @@ export default class ReviewLocation implements Component {
 
       if ($target.tagName !== "BUTTON") return;
 
-      this.reviewInfo.modifyMainPlaceId($target.id);
+      //TODO: 여기서 리뷰인포의 정보를 변경해도 새로 리뷰페이지에 가면 적용이 안돼 있음
+      window.localStorage.setItem("mainPlaceId", $target.id);
 
       const anchor = document.createElement("a");
       anchor.href = PATH.REVIEW;
