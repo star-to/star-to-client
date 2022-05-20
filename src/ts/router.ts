@@ -41,8 +41,7 @@ export default class Router {
       this.emitChangeLocation(EVENT.CHANGE_LOCATION, location.href);
     });
 
-    api.createReviewInfo();
-    const response = api.fetchChecedkLogin();
+    const response = api.readCheckedLogin();
     response
       .then((res) => res.json())
       .then(({ isLogin }) => {
@@ -51,20 +50,20 @@ export default class Router {
 
         if (isLogin) {
           this.params.action.notify(ACTION.INIT_APP);
-          const timeId = setInterval(() => {
-            const isCompleted = this.params.myMap.getIsLoadedCurrentPlaceList();
 
-            if (!isCompleted) return;
-            clearInterval(timeId);
-
+          const handleSelectPage = () => {
             const placeList = this.params.myMap.getCurrentPlaceList();
             if (pathname === PATH.HOME) {
               pathname = placeList.length > 0 ? PATH.REVIEW : PATH.HOME;
             }
-            this.params.reviewInfo.addPlaceList(placeList);
 
             this.router(pathname);
-          }, 100);
+          };
+
+          this.params.action.subscribe(
+            ACTION.LOAD_PLACE_LIST,
+            handleSelectPage
+          );
 
           return;
         }

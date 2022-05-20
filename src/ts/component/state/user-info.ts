@@ -23,7 +23,7 @@ export default class UserInfo {
   }
 
   lookupBookmark() {
-    const response = api.fetchUserBookmark();
+    const response = api.readUserBookmark();
     response
       .then((res) => res.json())
       .then(({ result }) => {
@@ -35,7 +35,7 @@ export default class UserInfo {
 
   lookupMyReview() {
     //TODO: 사용자 정보 api 요청
-    const response = api.fetchClientReview();
+    const response = api.readClientReview();
     response
       .then((res) => res.json())
       .then((text: State[]) => {
