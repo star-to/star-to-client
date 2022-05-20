@@ -28,7 +28,6 @@ export default class Review implements Component {
         <div class="${SELECTOR.REVIEW_CONTENT_MAIN}">
         </div>
         <div class="${SELECTOR.REVIEW_CONTENT_ANOTHER}">
-          3
         </div>
       </div>
       <div class="${SELECTOR.REVIEW_STAR_WRAPPER}">
@@ -54,11 +53,10 @@ export default class Review implements Component {
   }
 
   init(): void {
-    let mainPlaceId = this.reviewInfo.getMainPlaceId();
+    let mainPlaceId = window.localStorage.getItem("mainPlaceId");
 
     if (!mainPlaceId) {
-      this.reviewInfo.assignMainPlaceId();
-      mainPlaceId = this.reviewInfo.getMainPlaceId();
+      mainPlaceId = this.reviewInfo.assignMainPlaceId();
     }
 
     const placeList = this.reviewInfo.getPlaceList();
