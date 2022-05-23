@@ -5,13 +5,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-bottom: 10%;
 
   .review-detail__title {
     font-size: 1.3rem;
     font-weight: 650;
     padding: 5%;
     color: #ff4c6c;
-    margin-bottom: 10%;
+    margin-bottom: 5%;
   }
 
   .review-detail__content-wrapper {
@@ -30,7 +31,7 @@
       justify-content: space-between;
       margin: 5%;
 
-      > button {
+      button {
         width: 42%;
         border: none;
         cursor: pointer;
@@ -46,8 +47,10 @@
       }
     }
 
-    .toggle {
-      background-color: #ff4c6c;
+    .select {
+      background-color: rgba(255, 76, 108, 0.9);
+      box-shadow: rgba(0, 0, 0, 0.2) 0px 19px 38px,
+        rgba(0, 0, 0, 0.18) 0px 9px 12px;
       color: white;
     }
   }

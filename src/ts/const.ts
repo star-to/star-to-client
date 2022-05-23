@@ -54,6 +54,7 @@ export const SELECTOR = {
   REVIEW_DETAIL_NULL_CONTENT: "review-detail__null-content",
   REVIEW_DETAIL_BUTTON_WRAPPER: "review-detail__button-wrapper",
   REVIEW_DETAIL_SUBMIT_BUTTON: "review-detail__submit-button",
+  REVIEW_DETAIL_SELECT: "select",
   REVIEW_LOCATION_WRAPPER: "review-location-wrapper",
   REVIEW_LOCATION_TITLE: "review-location__title",
   REVIEW_LOCATION_CONTENTS_WRAPPER: "review-location__contents-wrapper",
