@@ -1,6 +1,7 @@
 import Action from "../state/action";
 import api from "../../api";
 import { ACTION } from "../../const";
+import { ReviewPlaceLocation } from "../state/review-info";
 
 interface GeolocationPosition {
   coords: GeolocationCoordinates;
@@ -53,6 +54,7 @@ export default class MyMap {
         let newCurrentPlace = this.getCurrentPlaceList();
         newCurrentPlace = newCurrentPlace === null ? [] : newCurrentPlace;
         newCurrentPlace.push(...placeList);
+
         this.setCurrentPlace(newCurrentPlace);
         cnt++;
 
@@ -65,7 +67,46 @@ export default class MyMap {
         location: options.center as KakaoLatLng,
       };
 
-      this.searchCategory(categoryOption, initKeywordSearch);
+      const response = api.readReviewInfo();
+      response
+        .then((res) => res.json())
+        .then(({ result }) => {
+          //TODO:review info 정보가 있을 경우와 없을 경우로 나누어서 구현!!
+
+          if (result.reviewedList.length === 0) {
+            this.searchCategory(categoryOption, initKeywordSearch);
+            return;
+          }
+
+          result.reviewedList.forEach((placeLocation: ReviewPlaceLocation) => {
+            //TODO: 정확도 떨어질수도 있음 고민해보기!!
+            const reviewedX = placeLocation.x?.match(/^[\d\\.]{4,7}/g) || null;
+            const reviewedY = placeLocation.y?.match(/^[\d\\.]{3,6}/g) || null;
+
+            const currentX =
+              String(options.center?.getLng()).match(/^[\d\\.]{4,7}/g) || null;
+            const currentY =
+              String(options.center?.getLat()).match(/^[\d\\.]{3,6}/g) || null;
+
+            if (
+              reviewedX === null ||
+              reviewedY === null ||
+              currentX === null ||
+              currentY === null
+            )
+              return;
+
+            if (reviewedX[0] === currentX[0] && reviewedY[0] === currentY[0]) {
+              let newCurrentPlace = this.getCurrentPlaceList();
+              newCurrentPlace = [];
+              this.setCurrentPlace(newCurrentPlace);
+              this.action.notify(ACTION.LOAD_PLACE_LIST, newCurrentPlace);
+              return;
+            }
+          });
+
+          this.searchCategory(categoryOption, initKeywordSearch);
+        });
     };
 
     this.findCurrentPosition(initPositionCallback);

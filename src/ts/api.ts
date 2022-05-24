@@ -1,4 +1,4 @@
-import { UserReview } from "./component/state/review-info";
+import { ReviewPlaceLocation, UserReview } from "./component/state/review-info";
 import { API_PATH } from "./const";
 
 const api = {
@@ -51,9 +51,26 @@ const api = {
     });
   },
 
+  readReviewInfo: () => {
+    return fetch(API_PATH.REVIEW_INFO, {
+      method: "GET",
+    });
+  },
+
   createReviewInfo: () => {
     return fetch(API_PATH.REVIEW_INFO, {
       method: "POST",
+    });
+  },
+
+  updateReviewInfo: (data: ReviewPlaceLocation) => {
+    //TODO: 요청 url을 변경할 필요 있음 /place_id 등으로
+    return fetch(API_PATH.REVIEW_INFO, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
     });
   },
 
