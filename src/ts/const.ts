@@ -110,6 +110,7 @@ export const API_PATH = {
   BOOKMARK: "/api/bookmark",
   REVEIW_CONTENT: "/api/review-content",
   REVIEW_INFO: "/api/review-info",
+  USER_REVIEW: "/api/user-review",
 };
 
 export const ACTION = {
@@ -117,6 +118,7 @@ export const ACTION = {
   UPDATE_USER_INFO: "updateUserInfo",
   INIT_APP: "initAPP",
   LOAD_PLACE_LIST: "loadPlaceList",
+  SUBMIT_REVIEW: "submitReview",
 };
 
 export const STATIC = {

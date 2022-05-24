@@ -17,7 +17,9 @@ function main() {
   const userInfo = new UserInfo(action);
   const myMap = new MyMap(action);
   const reviewInfo = new ReviewInfo(action);
+  //TODO: 액선 생성하는 것 여기다 만들기!!
   action.createObservers(ACTION.INIT_APP);
+  action.createObservers(ACTION.SUBMIT_REVIEW);
   myMap.init();
   userInfo.init();
   reviewInfo.init();

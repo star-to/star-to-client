@@ -12,14 +12,15 @@ export default class UserInfo {
   }
 
   init() {
-    this.action.createObservers(ACTION.UPDATE_USER_INFO);
-
     const initUserInfo = () => {
       this.lookupBookmark();
       this.lookupMyReview();
     };
 
     this.action.subscribe(ACTION.INIT_APP, initUserInfo);
+    this.action.subscribe(ACTION.SUBMIT_REVIEW, () => {
+      this.lookupMyReview();
+    });
   }
 
   lookupBookmark() {
@@ -51,6 +52,5 @@ export default class UserInfo {
 
   setState(newState: UserInfomation): void {
     this.state = { ...newState };
-    this.action.notify(ACTION.UPDATE_USER_INFO, newState);
   }
 }

@@ -1,6 +1,6 @@
 import { Component } from "../component";
 import Action from "../state/action";
-import { PATH, SELECTOR } from "../../const";
+import { ACTION, PATH, SELECTOR } from "../../const";
 import ReviewInfo, { DetailContent } from "../state/review-info";
 
 export default class ReviewDetail implements Component {
@@ -118,14 +118,37 @@ export default class ReviewDetail implements Component {
 
     const $nullContent = $contentWrapper.querySelector(
       `.${SELECTOR.REVIEW_DETAIL_NULL_CONTENT}`
-    );
+    ) as HTMLDivElement;
 
-    $nullContent?.addEventListener("click", (e) => {
+    $nullContent.addEventListener("click", (e) => {
       const $targetElement = e.target as HTMLElement;
 
       if ($targetElement.tagName !== "BUTTON") return;
 
-      $targetElement.classList.toggle("select");
+      $targetElement.classList.toggle(SELECTOR.REVIEW_DETAIL_SELECT);
+    });
+
+    const $submitButton = $main.querySelector(
+      `.${SELECTOR.REVIEW_DETAIL_SUBMIT_BUTTON}`
+    ) as HTMLDivElement;
+
+    $submitButton.addEventListener("click", () => {
+      //TODO: 폼을 이용하면 조금 더 깔끔하게 될 것같음!!
+      const $selectList = $contentWrapper.querySelectorAll(
+        `.${SELECTOR.REVIEW_DETAIL_SELECT}`
+      );
+
+      const selectIdList: string[] = [];
+
+      $selectList.forEach(($select) => {
+        selectIdList.push($select.id);
+      });
+
+      this.reviewInfo.assignDetailReview(selectIdList);
+      const res = this.reviewInfo.saveUserReview();
+      res.then((result) => {
+        this.action.notify(ACTION.SUBMIT_REVIEW);
+      });
     });
   }
 }
