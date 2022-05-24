@@ -19,6 +19,7 @@ export default class ReviewInfo {
   userReview: UserReview;
   placeList: KakaoSearchedPlace[];
   detailContents: DetailContent[];
+  mainPlaceId: string;
 
   constructor(action: Action) {
     this.action = action;
@@ -29,10 +30,10 @@ export default class ReviewInfo {
     };
     this.placeList = [];
     this.detailContents = [];
+    this.mainPlaceId = "";
   }
 
   init() {
-    //TODO: 리뷰인포가 변경될 경우 userinfo의 리뷰리스트도 업데이트 해야함!!
     this.action.subscribe(
       ACTION.LOAD_PLACE_LIST,
       (newPlaceList: KakaoSearchedPlace[]) => {
@@ -77,10 +78,14 @@ export default class ReviewInfo {
   assignMainPlaceId(): string {
     const newList = [...this.placeList];
     newList.sort((a, b) => Number(a.distance) - Number(b.distance));
-    this.setPlaceList(newList);
-    window.localStorage.setItem("mainPlaceId", newList[0].id);
 
-    return newList[0].id;
+    this.setPlaceList(newList);
+    this.setMainPlaceId(newList[0].id);
+    return this.mainPlaceId;
+  }
+
+  modifyMainPlaceId(newId: string) {
+    this.setMainPlaceId(newId);
   }
 
   saveUserReview() {
@@ -96,12 +101,20 @@ export default class ReviewInfo {
     return [...this.placeList];
   }
 
+  getMainPlaceId() {
+    return this.mainPlaceId;
+  }
+
   private setPlaceList(newPlaceList: KakaoSearchedPlace[]) {
     this.placeList = [...newPlaceList];
   }
 
   private setDetailContest(newDetailContents: DetailContent[]) {
     this.detailContents = [...newDetailContents];
+  }
+
+  private setMainPlaceId(newId: string) {
+    this.mainPlaceId = newId;
   }
 
   private setUserReveiw(newUserReview: UserReview) {

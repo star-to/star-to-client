@@ -53,9 +53,9 @@ export default class Review implements Component {
   }
 
   init(): void {
-    let mainPlaceId = window.localStorage.getItem("mainPlaceId");
+    let mainPlaceId = this.reviewInfo.getMainPlaceId();
 
-    if (!mainPlaceId) {
+    if (mainPlaceId === "") {
       mainPlaceId = this.reviewInfo.assignMainPlaceId();
     }
 
