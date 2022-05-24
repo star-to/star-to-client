@@ -1,3 +1,4 @@
+import { UserReview } from "./component/state/review-info";
 import { API_PATH } from "./const";
 
 const api = {
@@ -53,6 +54,17 @@ const api = {
   createReviewInfo: () => {
     return fetch(API_PATH.REVIEW_INFO, {
       method: "POST",
+    });
+  },
+
+  createUserReview: (data: UserReview) => {
+    //TODO: 장소 id를 url로 넘겨주는 것도 고민해보기!
+    return fetch(API_PATH.USER_REVIEW, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
     });
   },
 };

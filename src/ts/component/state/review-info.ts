@@ -8,15 +8,25 @@ export type DetailContent = {
   pair_id: number;
 };
 
+export type UserReview = {
+  place_id: string | null;
+  star: number | null;
+  detailReviewIdList: string[];
+};
+
 export default class ReviewInfo {
   action: Action;
-  star: number;
+  userReview: UserReview;
   placeList: KakaoSearchedPlace[];
   detailContents: DetailContent[];
 
   constructor(action: Action) {
     this.action = action;
-    this.star = 0;
+    this.userReview = {
+      place_id: null,
+      star: null,
+      detailReviewIdList: [],
+    };
     this.placeList = [];
     this.detailContents = [];
   }
@@ -43,9 +53,25 @@ export default class ReviewInfo {
     this.setPlaceList(newPlaceList);
   }
 
-  modifyStar(newStar: number) {
-    //TODO: review 페이지에서 submit 버튼을 눌렀을 경우에 이 함수를 호출하도록 구현
-    this.setStar(newStar);
+  assignStarScore(newStar: number) {
+    const newUserReview = { ...this.userReview };
+    newUserReview.star = newStar;
+
+    this.setUserReveiw(newUserReview);
+  }
+
+  assignDetailReview(newDetail: string[]) {
+    const newUserReview = { ...this.userReview };
+    newUserReview.detailReviewIdList = [...newDetail];
+
+    this.setUserReveiw(newUserReview);
+  }
+
+  assignPlaceId(newId: string) {
+    const newUserReview = { ...this.userReview };
+    newUserReview.place_id = newId;
+
+    this.setUserReveiw(newUserReview);
   }
 
   assignMainPlaceId(): string {
@@ -57,16 +83,17 @@ export default class ReviewInfo {
     return newList[0].id;
   }
 
+  saveUserReview() {
+    //TODO: 예와처리 필요함
+    return api.createUserReview(this.userReview);
+  }
+
   getDetailContents() {
     return [...this.detailContents];
   }
 
   getPlaceList() {
     return [...this.placeList];
-  }
-
-  getStar() {
-    return this.star;
   }
 
   private setPlaceList(newPlaceList: KakaoSearchedPlace[]) {
@@ -77,7 +104,7 @@ export default class ReviewInfo {
     this.detailContents = [...newDetailContents];
   }
 
-  private setStar(newStar: number) {
-    this.star = newStar;
+  private setUserReveiw(newUserReview: UserReview) {
+    this.userReview = { ...newUserReview };
   }
 }

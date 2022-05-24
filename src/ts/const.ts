@@ -54,6 +54,7 @@ export const SELECTOR = {
   REVIEW_DETAIL_NULL_CONTENT: "review-detail__null-content",
   REVIEW_DETAIL_BUTTON_WRAPPER: "review-detail__button-wrapper",
   REVIEW_DETAIL_SUBMIT_BUTTON: "review-detail__submit-button",
+  REVIEW_DETAIL_SELECT: "select",
   REVIEW_LOCATION_WRAPPER: "review-location-wrapper",
   REVIEW_LOCATION_TITLE: "review-location__title",
   REVIEW_LOCATION_CONTENTS_WRAPPER: "review-location__contents-wrapper",
@@ -109,6 +110,7 @@ export const API_PATH = {
   BOOKMARK: "/api/bookmark",
   REVEIW_CONTENT: "/api/review-content",
   REVIEW_INFO: "/api/review-info",
+  USER_REVIEW: "/api/user-review",
 };
 
 export const ACTION = {
@@ -116,6 +118,7 @@ export const ACTION = {
   UPDATE_USER_INFO: "updateUserInfo",
   INIT_APP: "initAPP",
   LOAD_PLACE_LIST: "loadPlaceList",
+  SUBMIT_REVIEW: "submitReview",
 };
 
 export const STATIC = {

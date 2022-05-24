@@ -47,6 +47,9 @@ export default class MyMap {
       let cnt = 0;
 
       const initKeywordSearch = (placeList: KakaoSearchedPlace[]) => {
+        //TODO: api 요청 실패 했을 경우 예외처리 필요함
+        api.createPlaceInfo(placeList);
+
         let newCurrentPlace = this.getCurrentPlaceList();
         newCurrentPlace = newCurrentPlace === null ? [] : newCurrentPlace;
         newCurrentPlace.push(...placeList);

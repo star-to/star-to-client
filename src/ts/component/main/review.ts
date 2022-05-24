@@ -62,7 +62,11 @@ export default class Review implements Component {
     const placeList = this.reviewInfo.getPlaceList();
     const mainPlace = placeList.filter((place) => place.id === mainPlaceId)[0];
 
-    const $contentWrapper = document.querySelector(
+    const $main = document.querySelector(
+      `.${SELECTOR.REVIEW_WRAPPER}`
+    ) as HTMLDivElement;
+
+    const $contentWrapper = $main.querySelector(
       `.${SELECTOR.REVIEW_CONTENT_WRAPPER}`
     ) as HTMLDivElement;
 
@@ -86,6 +90,19 @@ export default class Review implements Component {
 
     const starArr = Array.from($ratingStars);
     this.executeRating(starArr);
+
+    const $submitButton = $main.querySelector(
+      `.${SELECTOR.REVIEW_BUTTON_SUBMIT}`
+    ) as HTMLButtonElement;
+
+    $submitButton.addEventListener("click", () => {
+      const starScore = $main.querySelectorAll(`.fas`).length;
+
+      if (!mainPlaceId) return;
+
+      this.reviewInfo.assignStarScore(starScore);
+      this.reviewInfo.assignPlaceId(mainPlaceId);
+    });
   }
 
   executeRating(stars: HTMLElement[]) {
