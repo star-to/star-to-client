@@ -56,7 +56,7 @@ export default class Review implements Component {
     let mainPlaceId = this.reviewInfo.getMainPlaceId();
 
     if (mainPlaceId === "") {
-      mainPlaceId = this.reviewInfo.assignMainPlaceId();
+      mainPlaceId = this.reviewInfo.assignInitPlace();
     }
 
     const placeList = this.reviewInfo.getPlaceList();

@@ -44,7 +44,7 @@ export default class ReviewLocation implements Component {
 
     const locationList = placeList.reduce((acc, cur) => {
       if (cur.id === mainPlaceId) return acc;
-      acc += `<button id="${cur.id}">${cur.place_name}</button>`;
+      acc += `<button id="${cur.id}" data-x="${cur.x}", data-y="${cur.y}">${cur.place_name}</button>`;
       return acc;
     }, "");
 
@@ -55,7 +55,18 @@ export default class ReviewLocation implements Component {
 
       if ($target.tagName !== "BUTTON") return;
 
-      this.reviewInfo.modifyMainPlaceId($target.id);
+      const existPlaceInfo =
+        $target.id && $target.dataset.x && $target.dataset.y;
+
+      if (!existPlaceInfo) return;
+
+      const placeInfo = {
+        id: $target.id,
+        x: $target.dataset.x ?? null,
+        y: $target.dataset.y ?? null,
+      };
+
+      this.reviewInfo.changePlace(placeInfo);
 
       const anchor = document.createElement("a");
       anchor.href = PATH.REVIEW;
