@@ -32,11 +32,11 @@ export default class MyReview implements Component {
     this.fillReveiw(this.getReviewList());
   }
 
-  //TODO: reviewList 형식 바뀜
   fillReveiw(reviewList: State[]): void {
     //TODO: 홈화면에서 구현했던 방식이랑 이 방식중 더 효율적인 것으로 통일!!
     let addHtml = "";
     addHtml += /*html*/ `<div class="${SELECTOR.MY_REVIEW_LIST_WRAPPER}">`;
+    //TODO: 여기 리스트 스크롤 생기는지 확인해보기
 
     reviewList.forEach((review) => {
       const tmp = review.list as State[];
@@ -49,7 +49,7 @@ export default class MyReview implements Component {
             <li class="${SELECTOR.MY_REVIEW_CONTENT}">
               <div class="${SELECTOR.MY_REVIEW_CONTENT_WRAPPER}">
                 <span class="${SELECTOR.MY_REVIEW_CONTENT_NAME}">${
-              cur["placeName"]
+              cur["place_name"]
             }</span>
                 <span class="${
                   SELECTOR.MY_REVIEW_CONTENT_STAR
