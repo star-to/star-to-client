@@ -27,11 +27,14 @@
       margin-left: 55%;
       cursor: pointer;
 
-      a, a:hover, a:focus, a:active {
+      a,
+      a:hover,
+      a:focus,
+      a:active {
         text-decoration: none;
         color: inherit;
       }
-      
+
       a {
         font-size: 0.7rem;
         color: rgb(196, 196, 196);
@@ -110,13 +113,21 @@
 
     .review__button__next-day {
       margin-top: 2%;
-      color: #ff4c6c;
       border: none;
       padding: 1%;
       cursor: pointer;
       outline: inherit;
       background-color: rgba(255, 255, 255, 0);
       font-weight: 550;
+      a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        color: #ff4c6c;
+        text-decoration: none;
+      }
     }
   }
 }

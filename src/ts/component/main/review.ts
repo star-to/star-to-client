@@ -46,7 +46,9 @@ export default class Review implements Component {
         <button class="${SELECTOR.REVIEW_BUTTON_SUBMIT}">
           <a href="${PATH.REVEIW_DETAIL}">별점 주기</a>  
         </button>
-        <button class="${SELECTOR.REVIEW_BUTTON_NEXTDAY}">다음에 하기</button>
+        <button class="${SELECTOR.REVIEW_BUTTON_NEXTDAY}">
+          <a href="${PATH.HOME}">다음에 하기</a>
+        </button>
       </div>
     </div>
     `;
