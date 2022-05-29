@@ -34,7 +34,13 @@ export default class Router {
     window.addEventListener(EVENT.CHANGE_LOCATION, (e: Event) => {
       this.removeElementChild();
       const { pathname, state } = (e as CustomEvent).detail;
-      this.paintPage(this.findPage(pathname), state);
+      const isQuery = /&/.test(pathname);
+
+      const routePath = isQuery
+        ? pathname.match(/^\/[a-zA-Z\-\d]*/g)[0]
+        : pathname;
+
+      this.paintPage(this.findPage(routePath), state);
     });
 
     window.addEventListener("popstate", () => {
@@ -86,6 +92,7 @@ export default class Router {
   emitChangeLocation<T>(eventName: string, url: string, state?: T) {
     const reg = new RegExp(`${location.origin}`, "g");
     const pathname = url.replace(reg, "");
+
     //TODO: 첫 진입에 login은 뒤로 가기에 포함하면 안될 것 같음
     history.pushState(null, pathname, url);
     window.dispatchEvent(
