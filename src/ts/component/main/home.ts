@@ -3,6 +3,15 @@ import MyMap from "./my-map";
 import { SELECTOR, IMG, PATH, ACTION, STATIC } from "../../const";
 import Action from "../state/action";
 
+type PlaceInfo = {
+  id: number;
+  name: string;
+  star: number;
+  comment: number;
+  time: number;
+  bookmark: boolean;
+};
+
 export default class Home implements Component {
   action: Action;
   myMap: MyMap;
@@ -81,12 +90,12 @@ export default class Home implements Component {
     const homeRect = this.home.getBoundingClientRect();
     this.viewHeight = homeRect.bottom;
 
-    const recommendRect = this.recommendLayout.getBoundingClientRect();
-    this.bagicHeight = recommendRect.top;
-
     const recommendList = document.querySelector(
       `.${SELECTOR.RECOMMEND_LIST}`
     ) as HTMLUListElement;
+
+    const recommendRect = this.recommendLayout.getBoundingClientRect();
+    this.bagicHeight = recommendRect.top;
 
     //TODO: 추천 리스트의 개수를 고정할 것인지 정해야함!!
     for (let i = 0; i < 10; i++) {
@@ -185,9 +194,13 @@ export default class Home implements Component {
       };
 
       const handleTouchEnd = (event: TouchEvent) => {
+        if (!this.recommendLayout) return;
         this.home?.removeEventListener("touchmove", handleTouchMove);
         this.home?.removeEventListener("touchend", handleTouchEnd);
-        this.repositionReccommendLayer(event);
+
+        const recommendRect = this.recommendLayout.getBoundingClientRect();
+        const recommendPositionY = recommendRect.top;
+        this.repositionReccommendLayer(event, recommendPositionY);
       };
 
       this.home?.addEventListener("touchmove", handleTouchMove);
@@ -251,14 +264,14 @@ export default class Home implements Component {
     this.recommendLayout.style.transform = `translate3d(0,-${moveY}px,0)`;
   }
 
-  repositionReccommendLayer(e: TouchEvent) {
+  repositionReccommendLayer(e: TouchEvent, recommendPositionY: number) {
     if (this.recommendLayout === null) return;
     //TODO: 위치이동 조절 할 필요가 있음
 
     const currentY = e.changedTouches[0].clientY;
-    const middleHeigth = this.viewHeight / 2;
+    // const middleHeigth = this.viewHeight / 2;
 
-    const isUp = middleHeigth / 2 > currentY;
+    const isUp = recommendPositionY > currentY;
     const moveY = isUp ? this.bagicHeight : 0;
 
     const recommendListWrapper = document.querySelector(
@@ -332,12 +345,3 @@ export default class Home implements Component {
     parentElement.append(newElement);
   }
 }
-
-type PlaceInfo = {
-  id: number;
-  name: string;
-  star: number;
-  comment: number;
-  time: number;
-  bookmark: boolean;
-};
