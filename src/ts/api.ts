@@ -39,6 +39,12 @@ const api = {
     });
   },
 
+  readPlaceInfo: (id: string) => {
+    return fetch(API_PATH.PLACE + `/${id}`, {
+      method: "GET",
+    });
+  },
+
   readUserBookmark: () => {
     return fetch(API_PATH.BOOKMARK, {
       method: "GET",

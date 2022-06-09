@@ -23,15 +23,14 @@ export const SELECTOR = {
   RECOMMEND_MOVE_BUTTON_ICON: "recommend__move-button__icon",
   RECOMMEND_LIST_WRAPPER: "recommend__list-wrapper",
   RECOMMEND_LIST: "recommend__list",
-  RECOMMEND_LIST_CONTENTT: "contents-wrapper",
+  PLACE_CONTENT_WRAPPER: "contents-wrapper",
   CONTENT_NAME: "content__name",
   CONTENT_STAR: "content__star",
   CONTENT_COMMENT: "content__comment",
   CONTENT_TIME: "content__time",
   CONTENT_BOOKMARK: "content__bookmark",
   MY_REVEIW_WRAPPER: "my-review-wrapper",
-  MY_REVIEW_LIST_WRAPPER: "my-reveiw__list-wrapper",
-  MY_REVIEW_LIST: "my-review__list",
+  RECOMMEND_PLACE_WRAPPER: "my-reveiw__list-wrapper",
   MY_REVIEW_DATE: "my-review__date",
   MY_REVIEW_CONTENT: "my-review__content",
   MY_REVIEW_CONTENT_WRAPPER: "my-review__content-wrapper",
@@ -119,6 +118,7 @@ export const ACTION = {
   INIT_APP: "initAPP",
   LOAD_PLACE_LIST: "loadPlaceList",
   SUBMIT_REVIEW: "submitReview",
+  SELECT_PLACE_MARKER: "selectPlaceMarker",
 };
 
 export const STATIC = {

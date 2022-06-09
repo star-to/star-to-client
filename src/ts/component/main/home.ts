@@ -1,30 +1,50 @@
 import { Component } from "../component";
 import MyMap from "./my-map";
+import { SeletedPlaceInfo } from "./my-map";
 import { SELECTOR, IMG, PATH, ACTION, STATIC } from "../../const";
-import Action from "../state/action";
 
-type PlaceInfo = {
-  id: number;
-  name: string;
-  star: number;
-  comment: number;
-  time: number;
-  bookmark: boolean;
-};
+import Action from "../state/action";
+import UserInfo from "../state/user-info";
+import ReviewInfo from "../state/review-info";
+import api from "src/ts/api";
 
 export default class Home implements Component {
   action: Action;
   myMap: MyMap;
-  html: string;
+  userInfo: UserInfo;
+  reviewInfo: ReviewInfo;
   bagicHeight: number;
   viewHeight: number;
   recommendLayout: HTMLDivElement | null;
   home: HTMLDivElement | null;
+  selectPlaceInfo: SeletedPlaceInfo | null;
 
-  constructor(action: Action, myMap: MyMap) {
+  constructor(
+    action: Action,
+    myMap: MyMap,
+    userInfo: UserInfo,
+    reviewInfo: ReviewInfo
+  ) {
     this.action = action;
     // this.mapOption = mapOption;
-    this.html = /*html*/ `
+
+    this.bagicHeight = 0;
+    this.viewHeight = 0;
+    this.recommendLayout = null;
+    this.home = null;
+    this.myMap = myMap;
+    this.userInfo = userInfo;
+    this.reviewInfo = reviewInfo;
+    this.selectPlaceInfo = null;
+  }
+
+  paint(): void {
+    //TODO: 메인 래퍼를 구분할 필요가 있다면 main 에 셀렉터 부여하기
+    const mainWrapper = document.querySelector(
+      `${SELECTOR.MAIN}`
+    ) as HTMLElement;
+
+    mainWrapper.innerHTML = /*html*/ `
     <div class="${SELECTOR.HOME_WRAPPER}">
       <div class="${SELECTOR.HOME_MAP_WRAPPER}">
       </div>
@@ -45,30 +65,20 @@ export default class Home implements Component {
           <div class="${SELECTOR.RECOMMEND_MOVE_BUTTON_ICON}">
           </div>
         </div>
-        <div class="${SELECTOR.RECOMMEND_LIST_WRAPPER}">
-          <ul class="${SELECTOR.RECOMMEND_LIST}">
-          </ul>
+        <div class="${SELECTOR.RECOMMEND_PLACE_WRAPPER}">
+          장소를 클릭 해주세요.
         </div>
       </div>
     </div>`;
-
-    this.bagicHeight = 0;
-    this.viewHeight = 0;
-    this.recommendLayout = null;
-    this.home = null;
-    this.myMap = myMap;
-  }
-
-  paint(): void {
-    //TODO: 메인 래퍼를 구분할 필요가 있다면 main 에 셀렉터 부여하기
-    const mainWrapper = document.querySelector(
-      `${SELECTOR.MAIN}`
-    ) as HTMLElement;
-
-    mainWrapper.innerHTML = this.html;
   }
 
   init(): void {
+    this.action.subscribe(
+      ACTION.SELECT_PLACE_MARKER,
+      (placeInfo: SeletedPlaceInfo) => {
+        this.fillSelectedPlace(placeInfo);
+      }
+    );
     this.recommendLayout = document.querySelector(
       `.${SELECTOR.HOME_RECOMMEND_WRAPPER}`
     ) as HTMLDivElement;
@@ -90,103 +100,8 @@ export default class Home implements Component {
     const homeRect = this.home.getBoundingClientRect();
     this.viewHeight = homeRect.bottom;
 
-    const recommendList = document.querySelector(
-      `.${SELECTOR.RECOMMEND_LIST}`
-    ) as HTMLUListElement;
-
     const recommendRect = this.recommendLayout.getBoundingClientRect();
     this.bagicHeight = recommendRect.top;
-
-    //TODO: 추천 리스트의 개수를 고정할 것인지 정해야함!!
-    for (let i = 0; i < 10; i++) {
-      this.predrawElement("li", recommendList);
-    }
-
-    //TODO: test 데이터
-    const cafeList = [
-      {
-        id: 1,
-        name: "카페마스",
-        star: 4,
-        comment: 12,
-        time: 3,
-        bookmark: true,
-      },
-      {
-        id: 2,
-        name: "투썸플레이스",
-        star: 5,
-        comment: 10,
-        time: 5,
-        bookmark: false,
-      },
-      {
-        id: 3,
-        name: "투썸플레이스",
-        star: 2,
-        comment: 10,
-        time: 5,
-        bookmark: false,
-      },
-      {
-        id: 3,
-        name: "투썸플레이스",
-        star: 1,
-        comment: 10,
-        time: 5,
-        bookmark: false,
-      },
-      {
-        id: 3,
-        name: "투썸플레이스",
-        star: 0,
-        comment: 10,
-        time: 5,
-        bookmark: false,
-      },
-      {
-        id: 3,
-        name: "투썸플레이스",
-        star: 4,
-        comment: 10,
-        time: 5,
-        bookmark: false,
-      },
-      {
-        id: 3,
-        name: "투썸플레이스",
-        star: 4,
-        comment: 10,
-        time: 5,
-        bookmark: false,
-      },
-      {
-        id: 3,
-        name: "투썸플레이스",
-        star: 4,
-        comment: 10,
-        time: 5,
-        bookmark: false,
-      },
-      {
-        id: 3,
-        name: "투썸플레이스",
-        star: 4,
-        comment: 10,
-        time: 5,
-        bookmark: false,
-      },
-      {
-        id: 3,
-        name: "투썸플레이스",
-        star: 4,
-        comment: 10,
-        time: 5,
-        bookmark: false,
-      },
-    ];
-
-    this.fillRecommendList(cafeList);
 
     const handleTouchStart = () => {
       const handleTouchMove = (event: TouchEvent) => {
@@ -266,10 +181,7 @@ export default class Home implements Component {
 
   repositionReccommendLayer(e: TouchEvent, recommendPositionY: number) {
     if (this.recommendLayout === null) return;
-    //TODO: 위치이동 조절 할 필요가 있음
-
     const currentY = e.changedTouches[0].clientY;
-    // const middleHeigth = this.viewHeight / 2;
 
     const isUp = recommendPositionY > currentY;
     const moveY = isUp ? this.bagicHeight : 0;
@@ -284,64 +196,52 @@ export default class Home implements Component {
     this.recommendLayout.style.transform = `translate3d(0,-${moveY}px,0)`;
   }
 
-  fillRecommendList(recommendList: PlaceInfo[]) {
-    //TODO:실제 데이터 받아서 해봐야 함
-    //그 이후에 함수로 분리하거나 클래스로 분리!
+  fillSelectedPlace(placeInfo: SeletedPlaceInfo) {
+    const $placeWrapper = document.querySelector(
+      `.${SELECTOR.RECOMMEND_PLACE_WRAPPER}`
+    ) as HTMLDivElement;
 
-    const liElements = document.querySelectorAll(
-      `.${SELECTOR.RECOMMEND_LIST} li`
-    );
+    this.setSelectPlaceInfo(placeInfo);
+    const bookmarkList = this.userInfo.getBookmarkList();
+    let $starContent = "";
+    const roundStarAvg = Math.round(placeInfo.star_avg);
 
-    for (let i = 0; i < liElements.length; i++) {
-      const { id, name, star, comment, time, bookmark } = recommendList[i];
-
-      const wrapper = document.createElement("a");
-      wrapper.classList.add(SELECTOR.RECOMMEND_LIST_CONTENTT);
-      wrapper.href = PATH.DETAIL;
-      wrapper.dataset.params = `id=${id}`;
-
-      const nameElement = document.createElement("H1");
-      nameElement.innerHTML = name;
-      nameElement.classList.add(SELECTOR.CONTENT_NAME);
-
-      const starElememt = document.createElement("span");
-      starElememt.classList.add(SELECTOR.CONTENT_STAR);
-
-      for (let j = 1; j <= STATIC.MAX_COUTING_STARS; j++) {
-        const starimg = document.createElement("img");
-        starimg.src = star >= j ? IMG.FILL_STAR : IMG.EMPTY_STAR;
-
-        starElememt.append(starimg);
-      }
-
-      const commentElement = document.createElement("span");
-      commentElement.classList.add(SELECTOR.CONTENT_COMMENT);
-      commentElement.innerHTML = `(${comment})`;
-
-      const timeElement = document.createElement("div");
-      timeElement.classList.add(SELECTOR.CONTENT_TIME);
-      timeElement.innerHTML = `${time}분 이내에 도착할 수 있습니다.`;
-
-      const bookmarkElement = document.createElement("span");
-      const bookmarkImage = document.createElement("img");
-      bookmarkImage.src = bookmark ? IMG.FILL_BOOKMARK : IMG.EMPTY_BOOKMARK;
-      bookmarkImage.alt = "bookmark";
-
-      bookmarkElement.append(bookmarkImage);
-      bookmarkElement.classList.add(SELECTOR.CONTENT_BOOKMARK);
-
-      wrapper.append(bookmarkElement);
-      wrapper.append(nameElement);
-      wrapper.append(starElememt);
-      wrapper.append(commentElement);
-      wrapper.append(timeElement);
-
-      liElements[i].append(wrapper);
+    for (let i = 1; i <= 5; i++) {
+      $starContent +=
+        roundStarAvg >= i
+          ? `<img src="${IMG.FILL_STAR}" alt="fill star">`
+          : `<img src="${IMG.EMPTY_STAR}" alt="empty star">`;
     }
+    //TODO: 시간 부분 해결하기!!
+    const $placeContent = /*html*/ `
+      <div class="${SELECTOR.PLACE_CONTENT_WRAPPER}">
+          <img src="${
+            bookmarkList.includes(placeInfo.id)
+              ? IMG.FILL_BOOKMARK
+              : IMG.EMPTY_BOOKMARK
+          }">
+        <span>
+        <h1 class="${SELECTOR.CONTENT_NAME}">${placeInfo.place_name}<h1>
+        <span class="${SELECTOR.CONTENT_STAR}">
+          ${$starContent}
+        </span>
+        <span class="${SELECTOR.CONTENT_COMMENT}">
+          (${placeInfo.review_count})
+        </span>
+        <div class="${
+          SELECTOR.CONTENT_TIME
+        }">~분 이내에 도착할 수 있습니다.</div>
+      </div>
+    `;
+
+    $placeWrapper.innerHTML = $placeContent;
   }
 
-  predrawElement(tagName: string, parentElement: HTMLElement): void {
-    const newElement = document.createElement(tagName);
-    parentElement.append(newElement);
+  getSelectPlaceInfo() {
+    return { ...this.selectPlaceInfo };
+  }
+
+  private setSelectPlaceInfo(newSelectPlaceInfo: SeletedPlaceInfo) {
+    this.selectPlaceInfo = { ...newSelectPlaceInfo };
   }
 }

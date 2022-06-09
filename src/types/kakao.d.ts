@@ -4,6 +4,8 @@ declare namespace kakao {
       constructor(container: Node, options: MapOption);
       setCenter(latlng: LatLng): void;
       getCenter(): LatLng;
+      setMaxLevel(level: number): void;
+      setLevel(level: number): void;
     }
 
     interface MapOption {

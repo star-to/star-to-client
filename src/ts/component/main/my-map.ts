@@ -2,6 +2,13 @@ import Action from "../state/action";
 import api from "../../api";
 import { ACTION } from "../../const";
 import { ReviewPlaceLocation } from "../state/review-info";
+import { State } from "../observable";
+
+export interface SeletedPlaceInfo extends KakaoSearchedPlace {
+  star_avg: number;
+  review_count: number;
+  contentReviewCountList: State;
+}
 
 interface GeolocationPosition {
   coords: GeolocationCoordinates;
@@ -24,7 +31,9 @@ export default class MyMap {
   map: KakaoMap | null;
   place: KakaoPlaces;
   geocoder: KakaoGeocoder;
+  //TODO: 다른데 사용할 수 있도록 고민해보기
   currentPlaceList: KakaoSearchedPlace[];
+
   infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
   categoryCodes = ["FD6", "CE7"];
 
@@ -55,7 +64,7 @@ export default class MyMap {
         newCurrentPlace = newCurrentPlace === null ? [] : newCurrentPlace;
         newCurrentPlace.push(...placeList);
 
-        this.setCurrentPlace(newCurrentPlace);
+        this.setCurrentPlaceList(newCurrentPlace);
         cnt++;
 
         if (cnt === 2)
@@ -99,7 +108,7 @@ export default class MyMap {
             if (reviewedX[0] === currentX[0] && reviewedY[0] === currentY[0]) {
               let newCurrentPlace = this.getCurrentPlaceList();
               newCurrentPlace = [];
-              this.setCurrentPlace(newCurrentPlace);
+              this.setCurrentPlaceList(newCurrentPlace);
               this.action.notify(ACTION.LOAD_PLACE_LIST, newCurrentPlace);
               return;
             }
@@ -118,6 +127,7 @@ export default class MyMap {
 
     const map = new kakao.maps.Map(mapLayout, this.options);
     this.setMap(map);
+    map.setMaxLevel(3);
     this.searchAroundPlace();
 
     kakao.maps.event.addListener(map, "dragend", () => {
@@ -142,11 +152,22 @@ export default class MyMap {
     });
 
     kakao.maps.event.addListener(marker, "click", () => {
-      this.infowindow.setContent(
-        `<div style="padding:5px;font-size:12px;"> ${place.place_name}  </div>`
-      );
+      api
+        .readPlaceInfo(place.id)
+        .then((res) => res.json())
+        .then((placeInfo) => {
+          const joinPlaceInfo = { ...placeInfo, ...place };
 
-      this.infowindow.open(this.map as KakaoMap, marker);
+          this.action.notify(
+            ACTION.SELECT_PLACE_MARKER,
+            joinPlaceInfo as SeletedPlaceInfo
+          );
+
+          this.infowindow.setContent(
+            `<div style="padding:7px;font-size:12px;"> ${place.place_name}  </div>`
+          );
+          this.infowindow.open(this.map as KakaoMap, marker);
+        });
     });
   }
 
@@ -173,6 +194,7 @@ export default class MyMap {
       const x = parseFloat(results[0].x);
       const y = parseFloat(results[0].y);
       const newCenter = new kakao.maps.LatLng(y, x);
+      this.setCurrentPlaceList([]);
       this.moveMapCenter(newCenter);
       this.searchAroundPlace();
     };
@@ -241,10 +263,20 @@ export default class MyMap {
         .createPlaceInfo(searchedPlace)
         .then((res) => res.json())
         .then(({ result }) => {
-          //TODO: 저장할 것이 없었을 경우 빈배열이 넘어옴 !!
+          const newPlaceList = this.getCurrentPlaceList();
+
           for (let i = 0; i < searchedPlace.length; i++) {
+            const isExist = newPlaceList.some(
+              (place) => place.id === searchedPlace[i].id
+            );
+
+            if (isExist) continue;
+
+            newPlaceList.push(searchedPlace[i]);
             this.createMarker(searchedPlace[i]);
           }
+
+          this.setCurrentPlaceList(newPlaceList);
         });
     };
 
@@ -276,7 +308,7 @@ export default class MyMap {
     this.place.setMap(newMap);
   }
 
-  private setCurrentPlace(newCurrentPlace: KakaoSearchedPlace[]): void {
-    this.currentPlaceList = [...newCurrentPlace];
+  private setCurrentPlaceList(newCurrentPlaceList: KakaoSearchedPlace[]): void {
+    this.currentPlaceList = [...newCurrentPlaceList];
   }
 }

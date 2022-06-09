@@ -1,11 +1,16 @@
 import Action from "./action";
 import api from "../../api";
-import { State, UserInfomation } from "../observable";
+import { State } from "../observable";
 import { ACTION } from "../../const";
+
+export type UserInfomation = {
+  bookmark?: string[];
+  review?: State[];
+};
 
 export default class UserInfo {
   action: Action;
-  state: State;
+  state: UserInfomation;
   constructor(action: Action) {
     this.action = action;
     this.state = {};
@@ -46,6 +51,10 @@ export default class UserInfo {
       });
   }
 
+  getBookmarkList() {
+    if (!this.state.bookmark) return [];
+    return [...this.state.bookmark];
+  }
   getState(): UserInfomation {
     return { ...this.state };
   }
