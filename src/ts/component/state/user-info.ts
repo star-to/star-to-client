@@ -23,7 +23,7 @@ export default class UserInfo {
     };
 
     this.action.subscribe(ACTION.INIT_APP, initUserInfo);
-    this.action.subscribe(ACTION.SUBMIT_REVIEW, () => {
+    this.action.subscribe(ACTION.UPDATE_MY_REVIEW, () => {
       this.lookupMyReview();
     });
   }
@@ -51,6 +51,20 @@ export default class UserInfo {
       });
   }
 
+  addBookmark(id: string) {
+    const newState = this.getState();
+    newState.bookmark?.push(id);
+    this.setState(newState);
+  }
+
+  deleteBookmark(id: string) {
+    //TODO: 실질적인 db 데이터를 조회한 것은 아니라서 이렇게 해도 될지 고민
+    const newState = this.getState();
+    if (!newState.bookmark) newState.bookmark = [];
+    newState.bookmark = newState.bookmark.filter((e) => e !== id);
+    this.setState(newState);
+  }
+
   getBookmarkList() {
     if (!this.state.bookmark) return [];
     return [...this.state.bookmark];
@@ -59,7 +73,7 @@ export default class UserInfo {
     return { ...this.state };
   }
 
-  setState(newState: UserInfomation): void {
+  private setState(newState: UserInfomation): void {
     this.state = { ...newState };
   }
 }

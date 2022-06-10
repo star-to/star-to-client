@@ -45,6 +45,22 @@ const api = {
     });
   },
 
+  createUserBookmark: (placeId: string) => {
+    return fetch(API_PATH.BOOKMARK, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ placeId }),
+    });
+  },
+
+  deleteUserbookmark: (placeId: string) => {
+    return fetch(API_PATH.BOOKMARK + `/${placeId}`, {
+      method: "DELETE",
+    });
+  },
+
   readUserBookmark: () => {
     return fetch(API_PATH.BOOKMARK, {
       method: "GET",

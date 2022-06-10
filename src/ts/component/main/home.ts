@@ -5,7 +5,7 @@ import { SELECTOR, IMG, PATH, ACTION, STATIC } from "../../const";
 import Action from "../state/action";
 import UserInfo from "../state/user-info";
 import ReviewInfo from "../state/review-info";
-import api from "src/ts/api";
+import api from "../../api";
 
 export default class Home implements Component {
   action: Action;
@@ -25,8 +25,6 @@ export default class Home implements Component {
     reviewInfo: ReviewInfo
   ) {
     this.action = action;
-    // this.mapOption = mapOption;
-
     this.bagicHeight = 0;
     this.viewHeight = 0;
     this.recommendLayout = null;
@@ -77,7 +75,7 @@ export default class Home implements Component {
     this.action.subscribe(
       ACTION.SELECT_PLACE_MARKER,
       (placeInfo: SeletedPlaceInfo) => {
-        this.fillSelectedPlace(placeInfo);
+        this.initSelectedPlace(placeInfo);
       }
     );
     this.recommendLayout = document.querySelector(
@@ -197,35 +195,34 @@ export default class Home implements Component {
     this.recommendLayout.style.transform = `translate3d(0,-${moveY}px,0)`;
   }
 
-  fillSelectedPlace(placeInfo: SeletedPlaceInfo) {
+  initSelectedPlace(placeInfo: SeletedPlaceInfo) {
     const $simplePlaceInfo = document.querySelector(
       `.${SELECTOR.SIMPLE_PLACE_INFO}`
     ) as HTMLDivElement;
 
     this.setSelectPlaceInfo(placeInfo);
     const bookmarkList = this.userInfo.getBookmarkList();
-    let $starContent = "";
-    const roundStarAvg = Math.round(placeInfo.star_avg);
+    const isBookmark = bookmarkList.includes(placeInfo.id);
+    let starContent = "";
+    const roundStarAvg = Math.ceil(placeInfo.star_avg);
 
     for (let i = 1; i <= 5; i++) {
-      $starContent +=
+      starContent +=
         roundStarAvg >= i
           ? `<img src="${IMG.FILL_STAR}" alt="fill star">`
           : `<img src="${IMG.EMPTY_STAR}" alt="empty star">`;
     }
-    //TODO: 시간 부분 해결하기!!
-    const $placeContent = /*html*/ `
+
+    const placeContent = /*html*/ `
       <div class="${SELECTOR.PLACE_CONTENT_WRAPPER}">
         <span class="${SELECTOR.CONTENT_BOOKMARK}">
           <img src="${
-            bookmarkList.includes(placeInfo.id)
-              ? IMG.FILL_BOOKMARK
-              : IMG.EMPTY_BOOKMARK
-          }" alt="bookmark">
+            isBookmark ? IMG.FILL_BOOKMARK : IMG.EMPTY_BOOKMARK
+          }" data-toggle="${isBookmark}" alt="bookmark"> 
         </span>
         <h1 class="${SELECTOR.CONTENT_NAME}">${placeInfo.place_name}</h1>
         <span class="${SELECTOR.CONTENT_STAR}">
-          ${$starContent}
+          ${starContent}
         </span>
         <span class="${SELECTOR.CONTENT_COMMENT}">
           (${placeInfo.review_count})
@@ -239,7 +236,29 @@ export default class Home implements Component {
       </div>
     `;
 
-    $simplePlaceInfo.innerHTML = $placeContent;
+    $simplePlaceInfo.innerHTML = placeContent;
+
+    const $bookmark = $simplePlaceInfo.querySelector(
+      `.${SELECTOR.CONTENT_BOOKMARK}`
+    ) as HTMLSpanElement;
+    $bookmark.addEventListener("click", (e: Event) => {
+      const $bookmarkImg = e.target as HTMLImageElement;
+      const newToggleBookmark =
+        $bookmarkImg.dataset.toggle === "true" ? false : true;
+
+      $bookmarkImg.dataset.toggle = `${newToggleBookmark}`;
+      $bookmarkImg.src = newToggleBookmark
+        ? IMG.FILL_BOOKMARK
+        : IMG.EMPTY_BOOKMARK;
+
+      if (newToggleBookmark) {
+        api.createUserBookmark(placeInfo.id);
+        this.userInfo.addBookmark(placeInfo.id);
+      } else {
+        api.deleteUserbookmark(placeInfo.id);
+        this.userInfo.deleteBookmark(placeInfo.id);
+      }
+    });
   }
 
   getSelectPlaceInfo() {

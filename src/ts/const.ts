@@ -118,7 +118,7 @@ export const ACTION = {
   UPDATE_USER_INFO: "updateUserInfo",
   INIT_APP: "initAPP",
   LOAD_PLACE_LIST: "loadPlaceList",
-  SUBMIT_REVIEW: "submitReview",
+  UPDATE_MY_REVIEW: "updateMyReview",
   SELECT_PLACE_MARKER: "selectPlaceMarker",
 };
 
