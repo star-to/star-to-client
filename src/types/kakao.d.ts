@@ -68,7 +68,7 @@ declare namespace kakao {
         x: string;
         y: string;
         place_url: string;
-        distance: string;
+        distance: string | number;
       }
 
       interface CategoryOption {
@@ -213,6 +213,23 @@ declare namespace kakao {
       altitude?: number;
       range?: number;
     }
+
+    class Polyline {
+      constructor(options: PolyLineOption);
+      getLength(): number;
+      setPath(path: KakaoLatLng[]): void;
+      getPath(): KakaoLatLng[];
+    }
+
+    interface PolyLineOption {
+      endArrow?: boolean;
+      path: KakaoLatLng[];
+      strokeWeight?: number;
+      strokeColor?: string;
+      strokeOpacity: number;
+      strokeStyle?: string;
+      zIndex?: number;
+    }
   }
 }
 
@@ -235,3 +252,5 @@ type KakaoOption =
   | kakao.maps.MarkerOption
   | kakao.maps.MarkerImageOption
   | kakao.maps.InfoWindowOption;
+type kakaoPolyLine = kakao.maps.Polyline;
+type kakaoPolyLineOption = kakao.maps.PolyLineOption;

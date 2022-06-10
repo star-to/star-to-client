@@ -2,7 +2,6 @@ import { Component } from "../component";
 import MyMap from "./my-map";
 import { SeletedPlaceInfo } from "./my-map";
 import { SELECTOR, IMG, PATH, ACTION, STATIC } from "../../const";
-
 import Action from "../state/action";
 import UserInfo from "../state/user-info";
 import ReviewInfo from "../state/review-info";
@@ -232,7 +231,9 @@ export default class Home implements Component {
           (${placeInfo.review_count})
         </span>
         <div class="${SELECTOR.CONTENT_TIME}">
-        ~분 이내에 도착할 수 있습니다.
+        ${Math.ceil(
+          (placeInfo.distance as number) / 67
+        )}분 이내에 도착할 수 있습니다.
         </div>
       </div>
       </div>

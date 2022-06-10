@@ -33,9 +33,9 @@ export default class MyMap {
   geocoder: KakaoGeocoder;
   //TODO: 다른데 사용할 수 있도록 고민해보기
   currentPlaceList: KakaoSearchedPlace[];
-
   infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
   categoryCodes = ["FD6", "CE7"];
+  polyLine: kakaoPolyLine;
 
   constructor(action: Action) {
     this.action = action;
@@ -47,6 +47,7 @@ export default class MyMap {
     this.place = new kakao.maps.services.Places();
     this.geocoder = new kakao.maps.services.Geocoder();
     this.currentPlaceList = [];
+    this.polyLine = new kakao.maps.Polyline({ path: [], strokeOpacity: 0 });
   }
 
   init() {
@@ -146,9 +147,13 @@ export default class MyMap {
   }
 
   createMarker(place: KakaoSearchedPlace) {
+    const markerLatLng = new kakao.maps.LatLng(
+      Number(place.y),
+      Number(place.x)
+    );
     const marker = new kakao.maps.Marker({
       map: this.map as KakaoMap,
-      position: new kakao.maps.LatLng(Number(place.y), Number(place.x)),
+      position: markerLatLng,
     });
 
     kakao.maps.event.addListener(marker, "click", () => {
@@ -157,6 +162,10 @@ export default class MyMap {
         .then((res) => res.json())
         .then((placeInfo) => {
           const joinPlaceInfo = { ...placeInfo, ...place };
+          if (!this.options.center) return;
+
+          this.setPolylinePath([this.options.center, markerLatLng]);
+          joinPlaceInfo.distance = this.getPolyLineLength();
 
           this.action.notify(
             ACTION.SELECT_PLACE_MARKER,
@@ -233,6 +242,14 @@ export default class MyMap {
     });
   }
 
+  getOptions(): KakaoMapOption {
+    return { ...this.options };
+  }
+
+  getCurrentPlaceList(): KakaoSearchedPlace[] {
+    return this.currentPlaceList;
+  }
+
   private findCurrentPosition = (callback?: PositionCallbackFunction): void => {
     navigator.geolocation.getCurrentPosition(
       (position: GeolocationPosition) => {
@@ -283,21 +300,17 @@ export default class MyMap {
     this.searchCategory({ useMapBounds: true }, categorySearchCallback);
   }
 
-  getOptions(): KakaoMapOption {
-    return { ...this.options };
-  }
-
-  getCurrentPlaceList(): KakaoSearchedPlace[] {
-    return this.currentPlaceList;
-  }
-
-  private setOptions(newOptions: KakaoMapOption): void {
-    this.options = newOptions;
+  private getPolyLineLength(): number {
+    return this.polyLine.getLength();
   }
 
   private getMap(): KakaoMap {
     if (!this.map) throw "ERROR:(Map) map 객체가 비어있습니다.";
     return this.map;
+  }
+
+  private setOptions(newOptions: KakaoMapOption): void {
+    this.options = newOptions;
   }
 
   private setMap(newMap: KakaoMap): void {
@@ -310,5 +323,9 @@ export default class MyMap {
 
   private setCurrentPlaceList(newCurrentPlaceList: KakaoSearchedPlace[]): void {
     this.currentPlaceList = [...newCurrentPlaceList];
+  }
+
+  private setPolylinePath(newPolyLinePath: KakaoLatLng[]) {
+    this.polyLine.setPath(newPolyLinePath);
   }
 }
