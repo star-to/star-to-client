@@ -11,8 +11,3 @@ export type ObserverFunction = (params?: any) => void;
 export type State = {
   [key: string]: string | number | State | State[];
 };
-
-export type UserInfomation = {
-  bookmark?: State[];
-  review?: State[];
-};

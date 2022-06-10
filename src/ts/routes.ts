@@ -38,7 +38,10 @@ export function createRoutes(params: AppParams): RouteList {
     { path: PATH.LOGIN, components: [() => new Login()] },
     {
       path: PATH.HOME,
-      components: [() => new Home(action, myMap), () => new MenuBar(action)],
+      components: [
+        () => new Home(action, myMap, userInfo, reviewInfo),
+        () => new MenuBar(action),
+      ],
     },
     {
       path: PATH.DETAIL,
