@@ -65,8 +65,10 @@ export default class Home implements Component {
           <div class="${SELECTOR.RECOMMEND_MOVE_BUTTON_ICON}">
           </div>
         </div>
-        <div class="${SELECTOR.RECOMMEND_PLACE_WRAPPER}">
-          장소를 클릭 해주세요.
+        <div class="${SELECTOR.PLACE_WRAPPER}">
+          <div class="${SELECTOR.SIMPLE_PLACE_INFO}">
+            장소를 클릭 해주세요.
+          </div>
         </div>
       </div>
     </div>`;
@@ -187,7 +189,7 @@ export default class Home implements Component {
     const moveY = isUp ? this.bagicHeight : 0;
 
     const recommendListWrapper = document.querySelector(
-      `.${SELECTOR.RECOMMEND_LIST_WRAPPER}`
+      `.${SELECTOR.PLACE_WRAPPER}`
     ) as HTMLDivElement;
 
     recommendListWrapper.scrollTop = 0;
@@ -197,8 +199,8 @@ export default class Home implements Component {
   }
 
   fillSelectedPlace(placeInfo: SeletedPlaceInfo) {
-    const $placeWrapper = document.querySelector(
-      `.${SELECTOR.RECOMMEND_PLACE_WRAPPER}`
+    const $simplePlaceInfo = document.querySelector(
+      `.${SELECTOR.SIMPLE_PLACE_INFO}`
     ) as HTMLDivElement;
 
     this.setSelectPlaceInfo(placeInfo);
@@ -215,26 +217,28 @@ export default class Home implements Component {
     //TODO: 시간 부분 해결하기!!
     const $placeContent = /*html*/ `
       <div class="${SELECTOR.PLACE_CONTENT_WRAPPER}">
+        <span class="${SELECTOR.CONTENT_BOOKMARK}">
           <img src="${
             bookmarkList.includes(placeInfo.id)
               ? IMG.FILL_BOOKMARK
               : IMG.EMPTY_BOOKMARK
-          }">
-        <span>
-        <h1 class="${SELECTOR.CONTENT_NAME}">${placeInfo.place_name}<h1>
+          }" alt="bookmark">
+        </span>
+        <h1 class="${SELECTOR.CONTENT_NAME}">${placeInfo.place_name}</h1>
         <span class="${SELECTOR.CONTENT_STAR}">
           ${$starContent}
         </span>
         <span class="${SELECTOR.CONTENT_COMMENT}">
           (${placeInfo.review_count})
         </span>
-        <div class="${
-          SELECTOR.CONTENT_TIME
-        }">~분 이내에 도착할 수 있습니다.</div>
+        <div class="${SELECTOR.CONTENT_TIME}">
+        ~분 이내에 도착할 수 있습니다.
+        </div>
+      </div>
       </div>
     `;
 
-    $placeWrapper.innerHTML = $placeContent;
+    $simplePlaceInfo.innerHTML = $placeContent;
   }
 
   getSelectPlaceInfo() {
