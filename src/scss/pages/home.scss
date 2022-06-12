@@ -114,29 +114,21 @@
       display: flex;
       overflow: hidden;
       align-items: center;
+      flex-direction: column;
 
-      .recommend__list {
-        width: 100%;
-        height: 100%;
-        margin: 1em;
+      .simple-place-info {
+        width: 85%;
+        height: 12%;
+        // margin-bottom: 5%;
+        margin-top: 2%;
+        position: relative;
+        padding: 0.5em;
+        border-radius: 6px;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+        background-color: rgb(247, 247, 247);
         display: flex;
-        flex-direction: column;
+        justify-content: center;
         align-items: center;
-
-        li {
-          width: 90%;
-          height: fit-content;
-          margin-bottom: 5%;
-          margin-top: 5%;
-          position: relative;
-          padding: 0.5em;
-          border-radius: 6px;
-          box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-          background-color: rgb(247, 247, 247);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
       }
     }
   }
