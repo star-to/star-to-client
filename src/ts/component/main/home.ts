@@ -14,7 +14,7 @@ export default class Home implements Component {
   reviewInfo: ReviewInfo;
   bagicHeight: number;
   viewHeight: number;
-  recommendLayout: HTMLDivElement | null;
+  $selectedPlaceInfo: HTMLDivElement | null;
   home: HTMLDivElement | null;
   selectPlaceInfo: SeletedPlaceInfo | null;
 
@@ -27,7 +27,7 @@ export default class Home implements Component {
     this.action = action;
     this.bagicHeight = 0;
     this.viewHeight = 0;
-    this.recommendLayout = null;
+    this.$selectedPlaceInfo = null;
     this.home = null;
     this.myMap = myMap;
     this.userInfo = userInfo;
@@ -57,8 +57,8 @@ export default class Home implements Component {
       <div class="${SELECTOR.MAP_MY_DIRECTION_BUTTON}">
         <img src="${IMG.MY_LOCATION}" alt="current location button">
       </div>
-      <div class="${SELECTOR.HOME_RECOMMEND_WRAPPER}">
-        <div class="${SELECTOR.RECOMMEND_MOVE_BUTTON}">
+      <div class="${SELECTOR.HOME_PLACE_INFO_WRAPPER}">
+        <div class="${SELECTOR.PLACE_INFO_MOVE_BUTTON}">
           <div class="${SELECTOR.RECOMMEND_MOVE_BUTTON_ICON}">
           </div>
         </div>
@@ -78,8 +78,8 @@ export default class Home implements Component {
         this.initSelectedPlace(placeInfo);
       }
     );
-    this.recommendLayout = document.querySelector(
-      `.${SELECTOR.HOME_RECOMMEND_WRAPPER}`
+    this.$selectedPlaceInfo = document.querySelector(
+      `.${SELECTOR.HOME_PLACE_INFO_WRAPPER}`
     ) as HTMLDivElement;
 
     this.home = document.querySelector(
@@ -93,31 +93,25 @@ export default class Home implements Component {
     this.myMap.createMap(mapLayout);
 
     const layoutMoveButton = document.querySelector(
-      `.${SELECTOR.RECOMMEND_MOVE_BUTTON}`
+      `.${SELECTOR.PLACE_INFO_MOVE_BUTTON}`
     ) as HTMLDivElement;
 
     const homeRect = this.home.getBoundingClientRect();
     this.viewHeight = homeRect.bottom;
 
-    const recommendRect = this.recommendLayout.getBoundingClientRect();
-    this.bagicHeight = recommendRect.top;
+    const selectedRect = this.$selectedPlaceInfo.getBoundingClientRect();
+    this.bagicHeight = selectedRect.top;
 
     const handleTouchStart = () => {
-      const handleTouchMove = (event: TouchEvent) => {
-        this.moveReccommendLayer(event);
-      };
-
       const handleTouchEnd = (event: TouchEvent) => {
-        if (!this.recommendLayout) return;
-        this.home?.removeEventListener("touchmove", handleTouchMove);
+        if (!this.$selectedPlaceInfo) return;
         this.home?.removeEventListener("touchend", handleTouchEnd);
 
-        const recommendRect = this.recommendLayout.getBoundingClientRect();
-        const recommendPositionY = recommendRect.top;
-        this.repositionReccommendLayer(event, recommendPositionY);
+        const rect = this.$selectedPlaceInfo.getBoundingClientRect();
+        const selectedPositionY = rect.top;
+        this.repositionSelectedPlaceInfo(event, selectedPositionY);
       };
 
-      this.home?.addEventListener("touchmove", handleTouchMove);
       this.home?.addEventListener("touchend", handleTouchEnd);
     };
 
@@ -171,28 +165,29 @@ export default class Home implements Component {
     });
   }
 
+  //TODO: 이동할 일이 생길 수도 있음!!
   moveReccommendLayer(e: TouchEvent) {
-    if (this.recommendLayout === null) return;
+    if (this.$selectedPlaceInfo === null) return;
 
     const moveY = this.bagicHeight - e.changedTouches[0].clientY;
-    this.recommendLayout.style.transform = `translate3d(0,-${moveY}px,0)`;
+    this.$selectedPlaceInfo.style.transform = `translate3d(0,-${moveY}px,0)`;
   }
 
-  repositionReccommendLayer(e: TouchEvent, recommendPositionY: number) {
-    if (this.recommendLayout === null) return;
-    const currentY = e.changedTouches[0].clientY;
+  repositionSelectedPlaceInfo(e: TouchEvent, currentPositionY: number) {
+    if (this.$selectedPlaceInfo === null) return;
+    const movePositionY = e.changedTouches[0].clientY;
 
-    const isUp = recommendPositionY > currentY;
+    const isUp = currentPositionY > movePositionY;
     const moveY = isUp ? this.bagicHeight : 0;
 
-    const recommendListWrapper = document.querySelector(
+    const placeInfoWrapper = document.querySelector(
       `.${SELECTOR.PLACE_WRAPPER}`
     ) as HTMLDivElement;
 
-    recommendListWrapper.scrollTop = 0;
-    recommendListWrapper.style.overflow = isUp ? "scroll" : "hidden";
+    placeInfoWrapper.scrollTop = 0;
+    placeInfoWrapper.style.overflow = isUp ? "scroll" : "hidden";
 
-    this.recommendLayout.style.transform = `translate3d(0,-${moveY}px,0)`;
+    this.$selectedPlaceInfo.style.transform = `translate3d(0,-${moveY}px,0)`;
   }
 
   initSelectedPlace(placeInfo: SeletedPlaceInfo) {
@@ -242,6 +237,7 @@ export default class Home implements Component {
       `.${SELECTOR.CONTENT_BOOKMARK}`
     ) as HTMLSpanElement;
     $bookmark.addEventListener("click", (e: Event) => {
+      e.stopPropagation();
       const $bookmarkImg = e.target as HTMLImageElement;
       const newToggleBookmark =
         $bookmarkImg.dataset.toggle === "true" ? false : true;
