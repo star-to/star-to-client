@@ -1,5 +1,4 @@
 @import "../component/sidebar-menubar.scss";
-@import "../component//button-content.scss";
 
 .home-wrapper {
   width: 100%;
@@ -88,7 +87,7 @@
     top: 78%;
     width: 100%;
     height: 100%;
-    transition: transform 0.1s ease-out;
+    transition: transform 0.2s ease-out;
     align-items: center;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 1px 15px;
 
@@ -129,6 +128,103 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        .contents-wrapper {
+          width: 100%;
+          height: 100%;
+          padding-top: 2%;
+          padding-left: 4%;
+          font-size: 0.7em;
+
+          .content__name {
+            margin-top: 2%;
+            margin-bottom: 5%;
+            font-weight: 600;
+            font-size: 1em;
+          }
+
+          .content__comment {
+            width: 10%;
+            margin-bottom: 4%;
+            font-weight: 600;
+            color: rgb(90, 51, 7);
+          }
+
+          .content__bookmark {
+            position: absolute;
+            padding: 0;
+            top: 0;
+            left: 84%;
+            img {
+              object-fit: contain;
+            }
+          }
+
+          .content__star {
+            width: 50%;
+            height: 10%;
+            img {
+              object-fit: scale-down;
+              padding: 0;
+              margin-right: 0.25em;
+            }
+          }
+          .content__time {
+            width: 100%;
+            margin-top: 2%;
+          }
+        }
+      }
+
+      .detail-place-info {
+        width: 85%;
+        height: 95%;
+        margin-top: 5%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .contents-wrapper {
+          width: 90%;
+          height: 100%;
+          font-size: 1em;
+          position: relative;
+
+          .content__bookmark {
+            position: absolute;
+            left: 90%;
+          }
+
+          .content__name {
+            font-weight: 600;
+            font-size: 1.2em;
+            margin-bottom: 3%;
+          }
+
+          .content__star {
+            width: 50%;
+            height: 10%;
+            img {
+              object-fit: scale-down;
+              padding: 0;
+              margin-right: 0.25em;
+            }
+          }
+
+          .content__comment {
+            width: 10%;
+            margin-bottom: 4%;
+            font-weight: 600;
+            color: rgb(90, 51, 7);
+            font-size: 0.8em;
+          }
+
+          .content__time {
+            width: 100%;
+            margin-top: 6%;
+            font-size: 0.8em;
+            margin-bottom: 6%;
+          }
+        }
       }
     }
   }

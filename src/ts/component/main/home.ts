@@ -7,6 +7,8 @@ import UserInfo from "../state/user-info";
 import ReviewInfo from "../state/review-info";
 import api from "../../api";
 
+type MoveParameter = "up" | "down" | number;
+
 export default class Home implements Component {
   action: Action;
   myMap: MyMap;
@@ -109,8 +111,10 @@ export default class Home implements Component {
 
         const rect = this.$selectedPlaceInfo.getBoundingClientRect();
         const selectedPositionY = rect.top;
-        this.repositionSelectedPlaceInfo(event, selectedPositionY);
+        this.repositionPlaceInfoLayer(event, selectedPositionY);
       };
+
+      //TODO: touchmove 이벤트에 대해서도 구현 필요함!
 
       this.home?.addEventListener("touchend", handleTouchEnd);
     };
@@ -165,32 +169,11 @@ export default class Home implements Component {
     });
   }
 
-  //TODO: 이동할 일이 생길 수도 있음!!
-  moveReccommendLayer(e: TouchEvent) {
-    if (this.$selectedPlaceInfo === null) return;
-
-    const moveY = this.bagicHeight - e.changedTouches[0].clientY;
-    this.$selectedPlaceInfo.style.transform = `translate3d(0,-${moveY}px,0)`;
+  getSelectPlaceInfo() {
+    return { ...this.selectPlaceInfo };
   }
 
-  repositionSelectedPlaceInfo(e: TouchEvent, currentPositionY: number) {
-    if (this.$selectedPlaceInfo === null) return;
-    const movePositionY = e.changedTouches[0].clientY;
-
-    const isUp = currentPositionY > movePositionY;
-    const moveY = isUp ? this.bagicHeight : 0;
-
-    const placeInfoWrapper = document.querySelector(
-      `.${SELECTOR.PLACE_WRAPPER}`
-    ) as HTMLDivElement;
-
-    placeInfoWrapper.scrollTop = 0;
-    placeInfoWrapper.style.overflow = isUp ? "scroll" : "hidden";
-
-    this.$selectedPlaceInfo.style.transform = `translate3d(0,-${moveY}px,0)`;
-  }
-
-  initSelectedPlace(placeInfo: SeletedPlaceInfo) {
+  private initSelectedPlace(placeInfo: SeletedPlaceInfo) {
     const $simplePlaceInfo = document.querySelector(
       `.${SELECTOR.SIMPLE_PLACE_INFO}`
     ) as HTMLDivElement;
@@ -236,29 +219,93 @@ export default class Home implements Component {
     const $bookmark = $simplePlaceInfo.querySelector(
       `.${SELECTOR.CONTENT_BOOKMARK}`
     ) as HTMLSpanElement;
+
     $bookmark.addEventListener("click", (e: Event) => {
       e.stopPropagation();
       const $bookmarkImg = e.target as HTMLImageElement;
-      const newToggleBookmark =
-        $bookmarkImg.dataset.toggle === "true" ? false : true;
 
-      $bookmarkImg.dataset.toggle = `${newToggleBookmark}`;
-      $bookmarkImg.src = newToggleBookmark
-        ? IMG.FILL_BOOKMARK
-        : IMG.EMPTY_BOOKMARK;
+      this.toogleBookmark($bookmarkImg);
+    });
 
-      if (newToggleBookmark) {
-        api.createUserBookmark(placeInfo.id);
-        this.userInfo.addBookmark(placeInfo.id);
-      } else {
-        api.deleteUserbookmark(placeInfo.id);
-        this.userInfo.deleteBookmark(placeInfo.id);
-      }
+    $simplePlaceInfo.addEventListener("click", (e: Event) => {
+      this.movePlaceInfoLayer("up");
     });
   }
 
-  getSelectPlaceInfo() {
-    return { ...this.selectPlaceInfo };
+  private toogleBookmark($targetElement: HTMLImageElement) {
+    const { id: placeId } = this.getSelectPlaceInfo();
+
+    if (!placeId) return;
+
+    const newToggleBookmark =
+      $targetElement.dataset.toggle === "true" ? false : true;
+
+    $targetElement.dataset.toggle = `${newToggleBookmark}`;
+    $targetElement.src = newToggleBookmark
+      ? IMG.FILL_BOOKMARK
+      : IMG.EMPTY_BOOKMARK;
+
+    //TODO: 이 기능 분리 해야할 지 고민해보기
+    if (newToggleBookmark) {
+      api.createUserBookmark(placeId);
+      this.userInfo.addBookmark(placeId);
+    } else {
+      api.deleteUserbookmark(placeId);
+      this.userInfo.deleteBookmark(placeId);
+    }
+  }
+
+  private repositionPlaceInfoLayer(e: TouchEvent, currentPositionY: number) {
+    if (this.$selectedPlaceInfo === null) return;
+    const movePositionY = e.changedTouches[0].clientY;
+
+    const upOrDown = currentPositionY > movePositionY ? "up" : "down";
+
+    const $placeInfoWrapper = this.$selectedPlaceInfo.querySelector(
+      `.${SELECTOR.PLACE_WRAPPER}`
+    ) as HTMLDivElement;
+
+    $placeInfoWrapper.scrollTop = 0;
+    $placeInfoWrapper.style.overflow = upOrDown === "up" ? "scroll" : "hidden";
+
+    this.movePlaceInfoLayer(upOrDown);
+  }
+
+  private modifyPlaceInfoStyle($target: HTMLElement, isUp: boolean) {
+    isUp
+      ? this.toggleClassName(
+          $target,
+          [SELECTOR.DETAIL_PLACE_INFO],
+          [SELECTOR.SIMPLE_PLACE_INFO]
+        )
+      : this.toggleClassName(
+          $target,
+          [SELECTOR.SIMPLE_PLACE_INFO],
+          [SELECTOR.DETAIL_PLACE_INFO]
+        );
+  }
+
+  private toggleClassName(
+    $target: HTMLElement,
+    addList?: string[],
+    removeList?: string[]
+  ) {
+    removeList?.forEach((name) => $target.classList.remove(name));
+    addList?.forEach((name) => $target.classList.add(name));
+  }
+
+  private movePlaceInfoLayer(move: MoveParameter) {
+    if (this.$selectedPlaceInfo === null) return;
+
+    if (move === "up" || move === "down") {
+      const $placeInfo = this.$selectedPlaceInfo.querySelector(
+        `.${SELECTOR.PLACE_WRAPPER} div`
+      ) as HTMLElement;
+      this.modifyPlaceInfoStyle($placeInfo, move === "up");
+    }
+
+    const moveY = move === "up" ? this.bagicHeight : 0;
+    this.$selectedPlaceInfo.style.transform = `translate3d(0,-${moveY}px,0)`;
   }
 
   private setSelectPlaceInfo(newSelectPlaceInfo: SeletedPlaceInfo) {

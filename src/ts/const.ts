@@ -23,6 +23,7 @@ export const SELECTOR = {
   RECOMMEND_MOVE_BUTTON_ICON: "recommend__move-button__icon",
   PLACE_WRAPPER: "recommend__list-wrapper",
   SIMPLE_PLACE_INFO: "simple-place-info",
+  DETAIL_PLACE_INFO: "detail-place-info",
   PLACE_CONTENT_WRAPPER: "contents-wrapper",
   CONTENT_NAME: "content__name",
   CONTENT_STAR: "content__star",
