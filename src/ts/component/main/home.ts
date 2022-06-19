@@ -461,9 +461,7 @@ export default class Home implements Component {
           [SELECTOR.DETAIL_CONTENT_WRAPPER],
           [SELECTOR.NONE]
         );
-        if ($detailContentWrapper.innerHTML.replace(/\s+/g, "") === "") {
-          this.addPlaceInfoElement();
-        }
+        this.addPlaceInfoElement();
       } else {
         this.toggleClassName(
           $detailContentWrapper,
