@@ -9,6 +9,13 @@ import api from "../../api";
 
 type MoveParameter = "up" | "down" | number;
 
+interface DetailPlaceInfo {
+  id: string;
+  count: number | undefined;
+  pair_id: number | undefined;
+  content: string | undefined;
+}
+
 export default class Home implements Component {
   action: Action;
   myMap: MyMap;
@@ -67,6 +74,8 @@ export default class Home implements Component {
         <div class="${SELECTOR.PLACE_WRAPPER}">
           <div class="${SELECTOR.SIMPLE_PLACE_INFO}">
             장소를 클릭 해주세요.
+          </div>
+          <div class="${SELECTOR.TOGGLE_PLACE_INFO} ${SELECTOR.NONE}">
           </div>
         </div>
       </div>
@@ -228,7 +237,7 @@ export default class Home implements Component {
     });
 
     $simplePlaceInfo.addEventListener("click", (e: Event) => {
-      this.movePlaceInfoLayer("up");
+      this.changePlaceInfoLayer("up");
     });
   }
 
@@ -268,7 +277,7 @@ export default class Home implements Component {
     $placeInfoWrapper.scrollTop = 0;
     $placeInfoWrapper.style.overflow = upOrDown === "up" ? "scroll" : "hidden";
 
-    this.movePlaceInfoLayer(upOrDown);
+    this.changePlaceInfoLayer(upOrDown);
   }
 
   private modifyPlaceInfoStyle($target: HTMLElement, isUp: boolean) {
@@ -294,14 +303,174 @@ export default class Home implements Component {
     addList?.forEach((name) => $target.classList.add(name));
   }
 
-  private movePlaceInfoLayer(move: MoveParameter) {
+  private addPlaceInfoElement() {
+    if (!this.selectPlaceInfo) return;
+
+    const detailContents = this.reviewInfo.getDetailContents();
+    const tmp: DetailPlaceInfo[] = [];
+    const pairIdSet = new Set<number>();
+    const detailReviewBoard = Object.keys(
+      this.selectPlaceInfo.contentReviewCountList
+    ).reduce((acc, key) => {
+      const contentObject = detailContents.find(
+        (content) => content.detail_content_id === Number(key)
+      );
+      if (!contentObject) return acc;
+      if (contentObject.pair_id !== null) pairIdSet.add(contentObject.pair_id);
+
+      const newObject = {
+        id: key,
+        count: this.selectPlaceInfo?.contentReviewCountList[key],
+        pair_id: contentObject.pair_id,
+        content: contentObject.content,
+      };
+
+      acc.push(newObject);
+
+      return acc;
+    }, tmp);
+
+    const existDetailReview = detailReviewBoard.every(
+      (info) => info.count !== 0
+    );
+
+    const pairIdList = Array.from(pairIdSet);
+
+    let pairReview = "";
+
+    if (!existDetailReview) {
+      pairReview = pairIdList.reduce((acc, pairId) => {
+        const pairContents = detailReviewBoard.filter(
+          (e) => e.pair_id === pairId
+        );
+
+        if (pairContents.length === 0) return acc;
+
+        const positiveCount = pairContents[0].count ?? 0;
+        const nagativeCount = pairContents[1].count ?? 0;
+
+        if (positiveCount === 0 && nagativeCount === 0) return acc;
+
+        const positiveRatio = Math.ceil(
+          (positiveCount / (positiveCount + nagativeCount)) * 100
+        );
+
+        acc += /*html*/ `
+          <li class="${SELECTOR.PAIR_REVIEW}" id=${pairId}>
+            <div class="${SELECTOR.PAIR_CONTENT}">
+              <div class="${SELECTOR.POSITIVE_CONTENT}">
+                <span class="${SELECTOR.TITLE}">${pairContents[0].content}</span>
+                <span class="${SELECTOR.COUNT}">${pairContents[0].count}</span>
+              </div>
+              <div class="${SELECTOR.NAGATIVE_CONTENT}">
+                <span class="${SELECTOR.COUNT}">${pairContents[1].count}</span>
+                <span class="${SELECTOR.TITLE}">${pairContents[1].content}</span>
+              </div>
+            </div>
+            <div class="${SELECTOR.RATIO_BAR}">
+              <div class="${SELECTOR.POSITIVE_RATIO}" style="width:${positiveRatio}%"></div>
+              <div class="${SELECTOR.NAGATIVE_RATIO}"></div>
+            </div>
+          </li>
+        `;
+        return acc;
+      }, "");
+    }
+
+    const pairReviewHTML =
+      pairReview === ""
+        ? pairReview
+        : /*html*/ `
+      <ul class="${SELECTOR.CONTENT_REVIEW_LIST}">
+        ${pairReview}
+      </ul>
+    `;
+
+    const nullContents = detailReviewBoard.filter(
+      (e) => e.pair_id === null && e.count !== 0
+    );
+
+    const nullReview =
+      nullContents.length === 0
+        ? ""
+        : nullContents.reduce((acc, cur) => {
+            acc += /*html */ `
+          <li class="${SELECTOR.NULL_CONTENT}" id=${cur.id}>
+            <span class="${SELECTOR.TITLE}">${cur.content}</span>
+            <span class="${SELECTOR.COUNT}">${cur.count}</span>
+          </li>
+        `;
+            return acc;
+          }, ``);
+
+    const nullReviewHtml =
+      nullReview === ""
+        ? nullReview
+        : /*html*/ `
+    <ul class="${SELECTOR.NULL_REVIEW_LIST}">
+    ${nullReview}
+    </ul>
+    `;
+
+    const hmtl = /*html*/ `
+      <div class="${SELECTOR.DETAIL_CONTENT}">
+        <div class="${SELECTOR.CONTENT_ADDRESS}">
+          <span class="${SELECTOR.CONTENT_ADDRESS_NAME}">
+          ${this.selectPlaceInfo?.road_address_name}
+          </span>
+          <span class="${SELECTOR.CONTENT_ADDRESS_COPY}">
+            복사
+          </span>
+        </div>
+        <div class="${SELECTOR.CONTENT_LINE}">
+        </div>
+        <div class="${SELECTOR.CONTENT_REVIEW_WRAPPER}">
+          ${pairReviewHTML}
+          ${
+            pairReview === "" && nullReview === ""
+              ? "등록된 상세리뷰가 없습니다."
+              : ""
+          }
+          ${nullReviewHtml}
+        </div>
+      </div>
+    `;
+    const $detailContentWrapper = this.$selectedPlaceInfo?.querySelector(
+      `.${SELECTOR.DETAIL_CONTENT_WRAPPER}`
+    ) as HTMLDivElement;
+
+    $detailContentWrapper.innerHTML = hmtl;
+  }
+
+  private changePlaceInfoLayer(move: MoveParameter) {
     if (this.$selectedPlaceInfo === null) return;
+    const $detailContentWrapper = this.$selectedPlaceInfo?.querySelector(
+      `.${SELECTOR.TOGGLE_PLACE_INFO}`
+    ) as HTMLDivElement;
 
     if (move === "up" || move === "down") {
       const $placeInfo = this.$selectedPlaceInfo.querySelector(
         `.${SELECTOR.PLACE_WRAPPER} div`
       ) as HTMLElement;
       this.modifyPlaceInfoStyle($placeInfo, move === "up");
+
+      //TODO:  이 부분 깔끔하게 변경할 수 있을 것 같은데 고민해보기
+      if (move === "up") {
+        this.toggleClassName(
+          $detailContentWrapper,
+          [SELECTOR.DETAIL_CONTENT_WRAPPER],
+          [SELECTOR.NONE]
+        );
+        if ($detailContentWrapper.innerHTML.replace(/\s+/g, "") === "") {
+          this.addPlaceInfoElement();
+        }
+      } else {
+        this.toggleClassName(
+          $detailContentWrapper,
+          [SELECTOR.NONE],
+          [SELECTOR.DETAIL_CONTENT_WRAPPER]
+        );
+      }
     }
 
     const moveY = move === "up" ? this.bagicHeight : 0;
