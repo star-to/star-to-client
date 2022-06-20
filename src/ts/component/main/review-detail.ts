@@ -148,9 +148,9 @@ export default class ReviewDetail implements Component {
       this.reviewInfo.addReveiwPlace();
       //TODO: Submit_Review 구독 해야할지 고민해보기
       const res = this.reviewInfo.saveUserReview();
-      res.then((result) => {
-        this.action.notify(ACTION.SUBMIT_REVIEW);
-      });
+      // res.then((result) => {
+      //   this.action.notify(ACTION.SUBMIT_REVIEW);
+      // });
     });
   }
 }

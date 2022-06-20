@@ -7,7 +7,7 @@ import { State } from "../observable";
 export interface SeletedPlaceInfo extends KakaoSearchedPlace {
   star_avg: number;
   review_count: number;
-  contentReviewCountList: State;
+  contentReviewCountList: { [key: string]: number };
 }
 
 interface GeolocationPosition {

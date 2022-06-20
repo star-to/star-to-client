@@ -7,6 +7,15 @@ import UserInfo from "../state/user-info";
 import ReviewInfo from "../state/review-info";
 import api from "../../api";
 
+type MoveParameter = "up" | "down" | number;
+
+interface DetailPlaceInfo {
+  id: string;
+  count: number | undefined;
+  pair_id: number | undefined;
+  content: string | undefined;
+}
+
 export default class Home implements Component {
   action: Action;
   myMap: MyMap;
@@ -14,7 +23,7 @@ export default class Home implements Component {
   reviewInfo: ReviewInfo;
   bagicHeight: number;
   viewHeight: number;
-  recommendLayout: HTMLDivElement | null;
+  $selectedPlaceInfo: HTMLDivElement | null;
   home: HTMLDivElement | null;
   selectPlaceInfo: SeletedPlaceInfo | null;
 
@@ -27,7 +36,7 @@ export default class Home implements Component {
     this.action = action;
     this.bagicHeight = 0;
     this.viewHeight = 0;
-    this.recommendLayout = null;
+    this.$selectedPlaceInfo = null;
     this.home = null;
     this.myMap = myMap;
     this.userInfo = userInfo;
@@ -57,14 +66,16 @@ export default class Home implements Component {
       <div class="${SELECTOR.MAP_MY_DIRECTION_BUTTON}">
         <img src="${IMG.MY_LOCATION}" alt="current location button">
       </div>
-      <div class="${SELECTOR.HOME_RECOMMEND_WRAPPER}">
-        <div class="${SELECTOR.RECOMMEND_MOVE_BUTTON}">
+      <div class="${SELECTOR.HOME_PLACE_INFO_WRAPPER}">
+        <div class="${SELECTOR.PLACE_INFO_MOVE_BUTTON}">
           <div class="${SELECTOR.RECOMMEND_MOVE_BUTTON_ICON}">
           </div>
         </div>
         <div class="${SELECTOR.PLACE_WRAPPER}">
           <div class="${SELECTOR.SIMPLE_PLACE_INFO}">
             장소를 클릭 해주세요.
+          </div>
+          <div class="${SELECTOR.TOGGLE_PLACE_INFO} ${SELECTOR.NONE}">
           </div>
         </div>
       </div>
@@ -78,8 +89,8 @@ export default class Home implements Component {
         this.initSelectedPlace(placeInfo);
       }
     );
-    this.recommendLayout = document.querySelector(
-      `.${SELECTOR.HOME_RECOMMEND_WRAPPER}`
+    this.$selectedPlaceInfo = document.querySelector(
+      `.${SELECTOR.HOME_PLACE_INFO_WRAPPER}`
     ) as HTMLDivElement;
 
     this.home = document.querySelector(
@@ -93,31 +104,27 @@ export default class Home implements Component {
     this.myMap.createMap(mapLayout);
 
     const layoutMoveButton = document.querySelector(
-      `.${SELECTOR.RECOMMEND_MOVE_BUTTON}`
+      `.${SELECTOR.PLACE_INFO_MOVE_BUTTON}`
     ) as HTMLDivElement;
 
     const homeRect = this.home.getBoundingClientRect();
     this.viewHeight = homeRect.bottom;
 
-    const recommendRect = this.recommendLayout.getBoundingClientRect();
-    this.bagicHeight = recommendRect.top;
+    const selectedRect = this.$selectedPlaceInfo.getBoundingClientRect();
+    this.bagicHeight = selectedRect.top;
 
     const handleTouchStart = () => {
-      const handleTouchMove = (event: TouchEvent) => {
-        this.moveReccommendLayer(event);
-      };
-
       const handleTouchEnd = (event: TouchEvent) => {
-        if (!this.recommendLayout) return;
-        this.home?.removeEventListener("touchmove", handleTouchMove);
+        if (!this.$selectedPlaceInfo) return;
         this.home?.removeEventListener("touchend", handleTouchEnd);
 
-        const recommendRect = this.recommendLayout.getBoundingClientRect();
-        const recommendPositionY = recommendRect.top;
-        this.repositionReccommendLayer(event, recommendPositionY);
+        const rect = this.$selectedPlaceInfo.getBoundingClientRect();
+        const selectedPositionY = rect.top;
+        this.repositionPlaceInfoLayer(event, selectedPositionY);
       };
 
-      this.home?.addEventListener("touchmove", handleTouchMove);
+      //TODO: touchmove 이벤트에 대해서도 구현 필요함!
+
       this.home?.addEventListener("touchend", handleTouchEnd);
     };
 
@@ -171,31 +178,11 @@ export default class Home implements Component {
     });
   }
 
-  moveReccommendLayer(e: TouchEvent) {
-    if (this.recommendLayout === null) return;
-
-    const moveY = this.bagicHeight - e.changedTouches[0].clientY;
-    this.recommendLayout.style.transform = `translate3d(0,-${moveY}px,0)`;
+  getSelectPlaceInfo() {
+    return { ...this.selectPlaceInfo };
   }
 
-  repositionReccommendLayer(e: TouchEvent, recommendPositionY: number) {
-    if (this.recommendLayout === null) return;
-    const currentY = e.changedTouches[0].clientY;
-
-    const isUp = recommendPositionY > currentY;
-    const moveY = isUp ? this.bagicHeight : 0;
-
-    const recommendListWrapper = document.querySelector(
-      `.${SELECTOR.PLACE_WRAPPER}`
-    ) as HTMLDivElement;
-
-    recommendListWrapper.scrollTop = 0;
-    recommendListWrapper.style.overflow = isUp ? "scroll" : "hidden";
-
-    this.recommendLayout.style.transform = `translate3d(0,-${moveY}px,0)`;
-  }
-
-  initSelectedPlace(placeInfo: SeletedPlaceInfo) {
+  private initSelectedPlace(placeInfo: SeletedPlaceInfo) {
     const $simplePlaceInfo = document.querySelector(
       `.${SELECTOR.SIMPLE_PLACE_INFO}`
     ) as HTMLDivElement;
@@ -241,28 +228,251 @@ export default class Home implements Component {
     const $bookmark = $simplePlaceInfo.querySelector(
       `.${SELECTOR.CONTENT_BOOKMARK}`
     ) as HTMLSpanElement;
+
     $bookmark.addEventListener("click", (e: Event) => {
+      e.stopPropagation();
       const $bookmarkImg = e.target as HTMLImageElement;
-      const newToggleBookmark =
-        $bookmarkImg.dataset.toggle === "true" ? false : true;
 
-      $bookmarkImg.dataset.toggle = `${newToggleBookmark}`;
-      $bookmarkImg.src = newToggleBookmark
-        ? IMG.FILL_BOOKMARK
-        : IMG.EMPTY_BOOKMARK;
+      this.toogleBookmark($bookmarkImg);
+    });
 
-      if (newToggleBookmark) {
-        api.createUserBookmark(placeInfo.id);
-        this.userInfo.addBookmark(placeInfo.id);
-      } else {
-        api.deleteUserbookmark(placeInfo.id);
-        this.userInfo.deleteBookmark(placeInfo.id);
-      }
+    $simplePlaceInfo.addEventListener("click", (e: Event) => {
+      this.changePlaceInfoLayer("up");
     });
   }
 
-  getSelectPlaceInfo() {
-    return { ...this.selectPlaceInfo };
+  private toogleBookmark($targetElement: HTMLImageElement) {
+    const { id: placeId } = this.getSelectPlaceInfo();
+
+    if (!placeId) return;
+
+    const newToggleBookmark =
+      $targetElement.dataset.toggle === "true" ? false : true;
+
+    $targetElement.dataset.toggle = `${newToggleBookmark}`;
+    $targetElement.src = newToggleBookmark
+      ? IMG.FILL_BOOKMARK
+      : IMG.EMPTY_BOOKMARK;
+
+    //TODO: 이 기능 분리 해야할 지 고민해보기
+    if (newToggleBookmark) {
+      api.createUserBookmark(placeId);
+      this.userInfo.addBookmark(placeId);
+    } else {
+      api.deleteUserbookmark(placeId);
+      this.userInfo.deleteBookmark(placeId);
+    }
+  }
+
+  private repositionPlaceInfoLayer(e: TouchEvent, currentPositionY: number) {
+    if (this.$selectedPlaceInfo === null) return;
+    const movePositionY = e.changedTouches[0].clientY;
+
+    const upOrDown = currentPositionY > movePositionY ? "up" : "down";
+
+    const $placeInfoWrapper = this.$selectedPlaceInfo.querySelector(
+      `.${SELECTOR.PLACE_WRAPPER}`
+    ) as HTMLDivElement;
+
+    $placeInfoWrapper.scrollTop = 0;
+    $placeInfoWrapper.style.overflow = upOrDown === "up" ? "scroll" : "hidden";
+
+    this.changePlaceInfoLayer(upOrDown);
+  }
+
+  private modifyPlaceInfoStyle($target: HTMLElement, isUp: boolean) {
+    isUp
+      ? this.toggleClassName(
+          $target,
+          [SELECTOR.DETAIL_PLACE_INFO],
+          [SELECTOR.SIMPLE_PLACE_INFO]
+        )
+      : this.toggleClassName(
+          $target,
+          [SELECTOR.SIMPLE_PLACE_INFO],
+          [SELECTOR.DETAIL_PLACE_INFO]
+        );
+  }
+
+  private toggleClassName(
+    $target: HTMLElement,
+    addList?: string[],
+    removeList?: string[]
+  ) {
+    removeList?.forEach((name) => $target.classList.remove(name));
+    addList?.forEach((name) => $target.classList.add(name));
+  }
+
+  private addPlaceInfoElement() {
+    if (!this.selectPlaceInfo) return;
+
+    const detailContents = this.reviewInfo.getDetailContents();
+    const tmp: DetailPlaceInfo[] = [];
+    const pairIdSet = new Set<number>();
+    const detailReviewBoard = Object.keys(
+      this.selectPlaceInfo.contentReviewCountList
+    ).reduce((acc, key) => {
+      const contentObject = detailContents.find(
+        (content) => content.detail_content_id === Number(key)
+      );
+      if (!contentObject) return acc;
+      if (contentObject.pair_id !== null) pairIdSet.add(contentObject.pair_id);
+
+      const newObject = {
+        id: key,
+        count: this.selectPlaceInfo?.contentReviewCountList[key],
+        pair_id: contentObject.pair_id,
+        content: contentObject.content,
+      };
+
+      acc.push(newObject);
+
+      return acc;
+    }, tmp);
+
+    const existDetailReview = detailReviewBoard.every(
+      (info) => info.count !== 0
+    );
+
+    const pairIdList = Array.from(pairIdSet);
+
+    let pairReview = "";
+
+    if (!existDetailReview) {
+      pairReview = pairIdList.reduce((acc, pairId) => {
+        const pairContents = detailReviewBoard.filter(
+          (e) => e.pair_id === pairId
+        );
+
+        if (pairContents.length === 0) return acc;
+
+        const positiveCount = pairContents[0].count ?? 0;
+        const nagativeCount = pairContents[1].count ?? 0;
+
+        if (positiveCount === 0 && nagativeCount === 0) return acc;
+
+        const positiveRatio = Math.ceil(
+          (positiveCount / (positiveCount + nagativeCount)) * 100
+        );
+
+        acc += /*html*/ `
+          <li class="${SELECTOR.PAIR_REVIEW}" id=${pairId}>
+            <div class="${SELECTOR.PAIR_CONTENT}">
+              <div class="${SELECTOR.POSITIVE_CONTENT}">
+                <span class="${SELECTOR.TITLE}">${pairContents[0].content}</span>
+                <span class="${SELECTOR.COUNT}">${pairContents[0].count}</span>
+              </div>
+              <div class="${SELECTOR.NAGATIVE_CONTENT}">
+                <span class="${SELECTOR.COUNT}">${pairContents[1].count}</span>
+                <span class="${SELECTOR.TITLE}">${pairContents[1].content}</span>
+              </div>
+            </div>
+            <div class="${SELECTOR.RATIO_BAR}">
+              <div class="${SELECTOR.POSITIVE_RATIO}" style="width:${positiveRatio}%"></div>
+              <div class="${SELECTOR.NAGATIVE_RATIO}"></div>
+            </div>
+          </li>
+        `;
+        return acc;
+      }, "");
+    }
+
+    const pairReviewHTML =
+      pairReview === ""
+        ? pairReview
+        : /*html*/ `
+      <ul class="${SELECTOR.CONTENT_REVIEW_LIST}">
+        ${pairReview}
+      </ul>
+    `;
+
+    const nullContents = detailReviewBoard.filter(
+      (e) => e.pair_id === null && e.count !== 0
+    );
+
+    const nullReview =
+      nullContents.length === 0
+        ? ""
+        : nullContents.reduce((acc, cur) => {
+            acc += /*html */ `
+          <li class="${SELECTOR.NULL_CONTENT}" id=${cur.id}>
+            <span class="${SELECTOR.TITLE}">${cur.content}</span>
+            <span class="${SELECTOR.COUNT}">${cur.count}</span>
+          </li>
+        `;
+            return acc;
+          }, ``);
+
+    const nullReviewHtml =
+      nullReview === ""
+        ? nullReview
+        : /*html*/ `
+    <ul class="${SELECTOR.NULL_REVIEW_LIST}">
+    ${nullReview}
+    </ul>
+    `;
+
+    const hmtl = /*html*/ `
+      <div class="${SELECTOR.DETAIL_CONTENT}">
+        <div class="${SELECTOR.CONTENT_ADDRESS}">
+          <span class="${SELECTOR.CONTENT_ADDRESS_NAME}">
+          ${this.selectPlaceInfo?.road_address_name}
+          </span>
+          <span class="${SELECTOR.CONTENT_ADDRESS_COPY}">
+            복사
+          </span>
+        </div>
+        <div class="${SELECTOR.CONTENT_LINE}">
+        </div>
+        <div class="${SELECTOR.CONTENT_REVIEW_WRAPPER}">
+          ${pairReviewHTML}
+          ${
+            pairReview === "" && nullReview === ""
+              ? "등록된 상세리뷰가 없습니다."
+              : ""
+          }
+          ${nullReviewHtml}
+        </div>
+      </div>
+    `;
+    const $detailContentWrapper = this.$selectedPlaceInfo?.querySelector(
+      `.${SELECTOR.DETAIL_CONTENT_WRAPPER}`
+    ) as HTMLDivElement;
+
+    $detailContentWrapper.innerHTML = hmtl;
+  }
+
+  private changePlaceInfoLayer(move: MoveParameter) {
+    if (this.$selectedPlaceInfo === null) return;
+    const $detailContentWrapper = this.$selectedPlaceInfo?.querySelector(
+      `.${SELECTOR.TOGGLE_PLACE_INFO}`
+    ) as HTMLDivElement;
+
+    if (move === "up" || move === "down") {
+      const $placeInfo = this.$selectedPlaceInfo.querySelector(
+        `.${SELECTOR.PLACE_WRAPPER} div`
+      ) as HTMLElement;
+      this.modifyPlaceInfoStyle($placeInfo, move === "up");
+
+      //TODO:  이 부분 깔끔하게 변경할 수 있을 것 같은데 고민해보기
+      if (move === "up") {
+        this.toggleClassName(
+          $detailContentWrapper,
+          [SELECTOR.DETAIL_CONTENT_WRAPPER],
+          [SELECTOR.NONE]
+        );
+        this.addPlaceInfoElement();
+      } else {
+        this.toggleClassName(
+          $detailContentWrapper,
+          [SELECTOR.NONE],
+          [SELECTOR.DETAIL_CONTENT_WRAPPER]
+        );
+      }
+    }
+
+    const moveY = move === "up" ? this.bagicHeight : 0;
+    this.$selectedPlaceInfo.style.transform = `translate3d(0,-${moveY}px,0)`;
   }
 
   private setSelectPlaceInfo(newSelectPlaceInfo: SeletedPlaceInfo) {
