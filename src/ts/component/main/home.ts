@@ -73,7 +73,7 @@ export default class Home implements Component {
         </div>
         <div class="${SELECTOR.PLACE_WRAPPER}">
           <div class="${SELECTOR.SIMPLE_PLACE_INFO}">
-            장소를 클릭 해주세요.
+            <h1 style="font-size:0.8em;">장소를 클릭 해주세요.</h1>
           </div>
           <div class="${SELECTOR.TOGGLE_PLACE_INFO} ${SELECTOR.NONE}">
           </div>
