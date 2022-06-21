@@ -24,6 +24,7 @@ export default class Home implements Component {
   bagicHeight: number;
   viewHeight: number;
   $selectedPlaceInfo: HTMLDivElement | null;
+  $searchInput: HTMLInputElement | null;
   home: HTMLDivElement | null;
   selectPlaceInfo: SeletedPlaceInfo | null;
 
@@ -37,6 +38,7 @@ export default class Home implements Component {
     this.bagicHeight = 0;
     this.viewHeight = 0;
     this.$selectedPlaceInfo = null;
+    this.$searchInput = null;
     this.home = null;
     this.myMap = myMap;
     this.userInfo = userInfo;
@@ -97,6 +99,13 @@ export default class Home implements Component {
       `.${SELECTOR.HOME_WRAPPER}`
     ) as HTMLDivElement;
 
+    this.home.addEventListener("click", (e) => {
+      const $event = e.target as HTMLElement;
+      if ($event.tagName === "INPUT") return;
+
+      this.emitBlurSearchInput();
+    });
+
     const mapLayout = document.querySelector(
       `.${SELECTOR.HOME_MAP_WRAPPER}`
     ) as Node;
@@ -154,27 +163,28 @@ export default class Home implements Component {
 
     mylocationButton.addEventListener("click", handleMyLocation);
 
-    const searchInputButton = document.querySelector(
+    const $searchInputButton = document.querySelector(
       `.${SELECTOR.SEARCH_INPUT_BUTTON}`
     ) as HTMLButtonElement;
 
-    const searchInput = document.querySelector(
+    this.$searchInput = document.querySelector(
       `.${SELECTOR.SEARCH_KEYWORD}`
     ) as HTMLInputElement;
 
     const handleKeywordSearch = (e: Event) => {
       //TODO: 정규삭 추가하기
       e.preventDefault();
-      const keyword = searchInput.value;
+      if (!this.$searchInput) return;
 
+      const keyword = this.$searchInput.value;
       this.myMap.moveToSearchedPlace(keyword);
     };
 
-    searchInputButton.addEventListener("click", handleKeywordSearch);
-    searchInput.addEventListener("keyup", (e: KeyboardEvent) => {
+    $searchInputButton.addEventListener("click", handleKeywordSearch);
+    this.$searchInput.addEventListener("keyup", (e: KeyboardEvent) => {
       if (e.key !== "Enter") return;
       e.preventDefault();
-      searchInputButton.click();
+      $searchInputButton.click();
     });
   }
 
@@ -488,5 +498,10 @@ export default class Home implements Component {
 
   private setSelectPlaceInfo(newSelectPlaceInfo: SeletedPlaceInfo) {
     this.selectPlaceInfo = { ...newSelectPlaceInfo };
+  }
+
+  private emitBlurSearchInput() {
+    if (!this.$searchInput) return;
+    this.$searchInput.blur();
   }
 }
