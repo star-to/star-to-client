@@ -7,9 +7,9 @@ export default class Bagic implements Component {
   constructor() {
     this.html = /*html*/ `
     <div class="${SELECTOR.BAGIC_WRAPPER}">
-        <div class="${SELECTOR.BAGIC_HOME_BUTTON}" data-link="/home">
+        <a href="/" class="${SELECTOR.BAGIC_HOME_BUTTON}">
             <img src="${IMG.HOME_LOGO}" alt="logo home button">
-        </div>
+        </a>
     </div>
     `;
   }

@@ -24,6 +24,7 @@ export default class Home implements Component {
   bagicHeight: number;
   viewHeight: number;
   $selectedPlaceInfo: HTMLDivElement | null;
+  $searchInput: HTMLInputElement | null;
   home: HTMLDivElement | null;
   selectPlaceInfo: SeletedPlaceInfo | null;
 
@@ -37,6 +38,7 @@ export default class Home implements Component {
     this.bagicHeight = 0;
     this.viewHeight = 0;
     this.$selectedPlaceInfo = null;
+    this.$searchInput = null;
     this.home = null;
     this.myMap = myMap;
     this.userInfo = userInfo;
@@ -73,7 +75,7 @@ export default class Home implements Component {
         </div>
         <div class="${SELECTOR.PLACE_WRAPPER}">
           <div class="${SELECTOR.SIMPLE_PLACE_INFO}">
-            장소를 클릭 해주세요.
+            <h1 style="font-size:0.8em;">장소를 클릭 해주세요.</h1>
           </div>
           <div class="${SELECTOR.TOGGLE_PLACE_INFO} ${SELECTOR.NONE}">
           </div>
@@ -96,6 +98,13 @@ export default class Home implements Component {
     this.home = document.querySelector(
       `.${SELECTOR.HOME_WRAPPER}`
     ) as HTMLDivElement;
+
+    this.home.addEventListener("click", (e) => {
+      const $event = e.target as HTMLElement;
+      if ($event.tagName === "INPUT") return;
+
+      this.emitBlurSearchInput();
+    });
 
     const mapLayout = document.querySelector(
       `.${SELECTOR.HOME_MAP_WRAPPER}`
@@ -154,27 +163,28 @@ export default class Home implements Component {
 
     mylocationButton.addEventListener("click", handleMyLocation);
 
-    const searchInputButton = document.querySelector(
+    const $searchInputButton = document.querySelector(
       `.${SELECTOR.SEARCH_INPUT_BUTTON}`
     ) as HTMLButtonElement;
 
-    const searchInput = document.querySelector(
+    this.$searchInput = document.querySelector(
       `.${SELECTOR.SEARCH_KEYWORD}`
     ) as HTMLInputElement;
 
     const handleKeywordSearch = (e: Event) => {
       //TODO: 정규삭 추가하기
       e.preventDefault();
-      const keyword = searchInput.value;
+      if (!this.$searchInput) return;
 
+      const keyword = this.$searchInput.value;
       this.myMap.moveToSearchedPlace(keyword);
     };
 
-    searchInputButton.addEventListener("click", handleKeywordSearch);
-    searchInput.addEventListener("keyup", (e: KeyboardEvent) => {
+    $searchInputButton.addEventListener("click", handleKeywordSearch);
+    this.$searchInput.addEventListener("keyup", (e: KeyboardEvent) => {
       if (e.key !== "Enter") return;
       e.preventDefault();
-      searchInputButton.click();
+      $searchInputButton.click();
     });
   }
 
@@ -440,6 +450,17 @@ export default class Home implements Component {
     ) as HTMLDivElement;
 
     $detailContentWrapper.innerHTML = hmtl;
+
+    const $addressCopy = $detailContentWrapper.querySelector(
+      `.${SELECTOR.CONTENT_ADDRESS_COPY}`
+    ) as HTMLSpanElement;
+
+    $addressCopy.addEventListener("click", () => {
+      if (!this.selectPlaceInfo) return;
+
+      Android.copyToClipboard(this.selectPlaceInfo.road_address_name);
+      Android.showToast("주소가 복사 됐습니다.");
+    });
   }
 
   private changePlaceInfoLayer(move: MoveParameter) {
@@ -477,5 +498,10 @@ export default class Home implements Component {
 
   private setSelectPlaceInfo(newSelectPlaceInfo: SeletedPlaceInfo) {
     this.selectPlaceInfo = { ...newSelectPlaceInfo };
+  }
+
+  private emitBlurSearchInput() {
+    if (!this.$searchInput) return;
+    this.$searchInput.blur();
   }
 }
