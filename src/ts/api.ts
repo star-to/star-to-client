@@ -2,6 +2,7 @@ import { ReviewPlaceLocation, UserReview } from "./component/state/review-info";
 import { API_PATH } from "./const";
 
 const api = {
+  //TODO:로그아웃, 로그인 서버를 별도로 둬야할까?
   readCheckedLogin: () => {
     return fetch(API_PATH.LOGIN_CHECK, {
       method: "GET",
@@ -21,7 +22,11 @@ const api = {
     });
   },
 
-  //TODO: 카카오 api 요청해서 분석해야함
+  fetchLogout: () => {
+    return fetch(API_PATH.LOGOUT, {
+      method: "GET",
+    });
+  },
 
   readClientReview: () => {
     return fetch(API_PATH.MY_REVIEW, {

@@ -87,6 +87,7 @@ export const SELECTOR = {
   MENUBAR_CONTENTS: "menubar__contents",
   MENUBAR_CONTENTS_MY_REVIEW: "menubar__contents__my-review",
   MENUBAR_CONTENTS_BOOKMARK: "menubar__contents__bookmark",
+  MENUBAR_CONTENTS_LOGOUT: "menubar__contents__logout",
   MENUBAR_OVERLAY: "menubar__overlay",
   FOOTER: "footer",
   NONE: "none",
@@ -132,6 +133,7 @@ export const API_PATH = {
   REVEIW_CONTENT: "/api/review-content",
   REVIEW_INFO: "/api/review-info",
   USER_REVIEW: "/api/user-review",
+  LOGOUT: "/api/logout",
 };
 
 export const ACTION = {
