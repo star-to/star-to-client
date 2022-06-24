@@ -3,7 +3,7 @@ import MyMap from "./my-map";
 import { SeletedPlaceInfo } from "./my-map";
 import { SELECTOR, IMG, PATH, ACTION, STATIC } from "../../const";
 import Action from "../state/action";
-import UserInfo from "../state/user-info";
+import UserInfo, { BookmarkPlaceInfo } from "../state/user-info";
 import ReviewInfo from "../state/review-info";
 import api from "../../api";
 
@@ -199,7 +199,7 @@ export default class Home implements Component {
 
     this.setSelectPlaceInfo(placeInfo);
     const bookmarkList = this.userInfo.getBookmarkList();
-    const isBookmark = bookmarkList.includes(placeInfo.id);
+    const isBookmark = bookmarkList.some((e) => e.place_id === placeInfo.id);
     let starContent = "";
     const roundStarAvg = Math.ceil(placeInfo.star_avg);
 
@@ -252,7 +252,13 @@ export default class Home implements Component {
   }
 
   private toogleBookmark($targetElement: HTMLImageElement) {
-    const { id: placeId } = this.getSelectPlaceInfo();
+    const {
+      id: placeId,
+      x,
+      y,
+      place_name,
+      star_avg,
+    } = this.getSelectPlaceInfo();
 
     if (!placeId) return;
 
@@ -267,7 +273,14 @@ export default class Home implements Component {
     //TODO: 이 기능 분리 해야할 지 고민해보기
     if (newToggleBookmark) {
       api.createUserBookmark(placeId);
-      this.userInfo.addBookmark(placeId);
+      const placeInfo = {
+        place_id: placeId,
+        place_name: place_name ?? "",
+        position_x: x ?? "",
+        position_y: y ?? "",
+        star_average: star_avg ?? 0,
+      };
+      this.userInfo.addBookmark(placeInfo);
     } else {
       api.deleteUserbookmark(placeId);
       this.userInfo.deleteBookmark(placeId);

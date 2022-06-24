@@ -4,8 +4,16 @@ import { State } from "../observable";
 import { ACTION } from "../../const";
 
 export type UserInfomation = {
-  bookmark?: string[];
+  bookmark?: BookmarkPlaceInfo[];
   review?: State[];
+};
+
+export type BookmarkPlaceInfo = {
+  place_id: string;
+  place_name: string;
+  position_x: string;
+  position_y: string;
+  star_average: number;
 };
 
 export default class UserInfo {
@@ -51,9 +59,9 @@ export default class UserInfo {
       });
   }
 
-  addBookmark(id: string) {
+  addBookmark(placeInfo: BookmarkPlaceInfo) {
     const newState = this.getState();
-    newState.bookmark?.push(id);
+    newState.bookmark?.push(placeInfo);
     this.setState(newState);
   }
 
@@ -61,14 +69,15 @@ export default class UserInfo {
     //TODO: 실질적인 db 데이터를 조회한 것은 아니라서 이렇게 해도 될지 고민
     const newState = this.getState();
     if (!newState.bookmark) newState.bookmark = [];
-    newState.bookmark = newState.bookmark.filter((e) => e !== id);
+    newState.bookmark = newState.bookmark.filter((e) => e.place_id !== id);
     this.setState(newState);
   }
 
-  getBookmarkList() {
+  getBookmarkList(): BookmarkPlaceInfo[] {
     if (!this.state.bookmark) return [];
     return [...this.state.bookmark];
   }
+
   getState(): UserInfomation {
     return { ...this.state };
   }

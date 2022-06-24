@@ -1,8 +1,9 @@
 import { Component } from "../component";
 import Action from "../state/action";
-import { SELECTOR, IMG, ACTION } from "../../const";
-import { State, UserInfomation } from "../observable";
+import { SELECTOR, IMG } from "../../const";
+import { State } from "../observable";
 import UserInfo from "../state/user-info";
+import { UserInfomation } from "../state/user-info";
 
 export default class MyReview implements Component {
   action: Action;
