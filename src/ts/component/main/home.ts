@@ -1,11 +1,12 @@
 import { Component } from "../component";
 import MyMap from "./my-map";
 import { SeletedPlaceInfo } from "./my-map";
-import { SELECTOR, IMG, PATH, ACTION, STATIC } from "../../const";
+import { SELECTOR, IMG, ACTION } from "../../const";
 import Action from "../state/action";
-import UserInfo, { BookmarkPlaceInfo } from "../state/user-info";
+import UserInfo from "../state/user-info";
 import ReviewInfo from "../state/review-info";
 import api from "../../api";
+import util from "../util";
 
 type MoveParameter = "up" | "down" | number;
 
@@ -200,15 +201,7 @@ export default class Home implements Component {
     this.setSelectPlaceInfo(placeInfo);
     const bookmarkList = this.userInfo.getBookmarkList();
     const isBookmark = bookmarkList.some((e) => e.place_id === placeInfo.id);
-    let starContent = "";
     const roundStarAvg = Math.ceil(placeInfo.star_avg);
-
-    for (let i = 1; i <= 5; i++) {
-      starContent +=
-        roundStarAvg >= i
-          ? `<img src="${IMG.FILL_STAR}" alt="fill star">`
-          : `<img src="${IMG.EMPTY_STAR}" alt="empty star">`;
-    }
 
     const placeContent = /*html*/ `
       <div class="${SELECTOR.PLACE_CONTENT_WRAPPER}">
@@ -219,7 +212,7 @@ export default class Home implements Component {
         </span>
         <h1 class="${SELECTOR.CONTENT_NAME}">${placeInfo.place_name}</h1>
         <span class="${SELECTOR.CONTENT_STAR}">
-          ${starContent}
+          ${util.paintStar(roundStarAvg)}
         </span>
         <span class="${SELECTOR.CONTENT_COMMENT}">
           (${placeInfo.review_count})
