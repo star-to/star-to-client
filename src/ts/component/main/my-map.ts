@@ -2,7 +2,6 @@ import Action from "../state/action";
 import api from "../../api";
 import { ACTION } from "../../const";
 import { ReviewPlaceLocation } from "../state/review-info";
-import { State } from "../observable";
 
 export interface SeletedPlaceInfo extends KakaoSearchedPlace {
   star_avg: number;

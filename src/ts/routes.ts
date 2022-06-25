@@ -11,6 +11,7 @@ import Bagic from "./component/header/bagic";
 import Review from "./component/main/review";
 import ReviewDetail from "./component/main/review-detail";
 import ReviewLocation from "./component/main/review-location";
+import Bookmark from "./component/main/bookmark";
 
 export type ComponentFunction = (
   params?: KakaoSearchedPlace[]
@@ -50,9 +51,9 @@ export function createRoutes(params: AppParams): RouteList {
     {
       path: PATH.MY_REVIEW,
       components: [
+        () => new Bagic(),
         () => new MyReview(action, userInfo),
         () => new MenuBar(action),
-        () => new Bagic(),
       ],
     },
     {
@@ -66,6 +67,14 @@ export function createRoutes(params: AppParams): RouteList {
     {
       path: PATH.REVIEW_LOCATION,
       components: [() => new ReviewLocation(action, reviewInfo)],
+    },
+    {
+      path: PATH.BOOKMARK,
+      components: [
+        () => new Bagic(),
+        () => new Bookmark(action, userInfo),
+        () => new MenuBar(action),
+      ],
     },
   ];
 }

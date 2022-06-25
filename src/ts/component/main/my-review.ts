@@ -1,8 +1,11 @@
 import { Component } from "../component";
 import Action from "../state/action";
-import { SELECTOR, IMG, ACTION } from "../../const";
-import { State, UserInfomation } from "../observable";
+import { SELECTOR } from "../../const";
+import util from "../util";
+import { State } from "../observable";
 import UserInfo from "../state/user-info";
+
+import { UserInfomation } from "../state/user-info";
 
 export default class MyReview implements Component {
   action: Action;
@@ -53,7 +56,7 @@ export default class MyReview implements Component {
             }</span>
                 <span class="${
                   SELECTOR.MY_REVIEW_CONTENT_STAR
-                }">${this.paintStar(cur["star"] as number)}</span>
+                }">${util.paintStar(cur["star"] as number)}</span>
               </div>
             </li>
             `;
@@ -70,18 +73,6 @@ export default class MyReview implements Component {
     ) as HTMLDivElement;
 
     reviewWrapper.innerHTML = addHtml;
-  }
-
-  paintStar(count: number): string {
-    let starElement = "";
-
-    for (let j = 1; j <= 5; j++) {
-      starElement += /*html*/ `
-        <img src="${count >= j ? IMG.FILL_STAR : IMG.EMPTY_STAR}">
-      `;
-    }
-
-    return starElement;
   }
 
   getReviewList(): State[] {

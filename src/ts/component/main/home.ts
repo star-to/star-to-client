@@ -1,11 +1,11 @@
 import { Component } from "../component";
 import MyMap from "./my-map";
 import { SeletedPlaceInfo } from "./my-map";
-import { SELECTOR, IMG, PATH, ACTION, STATIC } from "../../const";
+import { SELECTOR, IMG, ACTION } from "../../const";
 import Action from "../state/action";
 import UserInfo from "../state/user-info";
 import ReviewInfo from "../state/review-info";
-import api from "../../api";
+import util from "../util";
 
 type MoveParameter = "up" | "down" | number;
 
@@ -188,27 +188,20 @@ export default class Home implements Component {
     });
   }
 
-  getSelectPlaceInfo() {
-    return { ...this.selectPlaceInfo };
+  getSelectPlaceInfo(): SeletedPlaceInfo {
+    return { ...(this.selectPlaceInfo as SeletedPlaceInfo) };
+    //TODO: 에러처리 필요함!!
   }
 
-  private initSelectedPlace(placeInfo: SeletedPlaceInfo) {
+  private initSelectedPlace(placeInfo: SeletedPlaceInfo): void {
     const $simplePlaceInfo = document.querySelector(
       `.${SELECTOR.SIMPLE_PLACE_INFO}`
     ) as HTMLDivElement;
 
     this.setSelectPlaceInfo(placeInfo);
     const bookmarkList = this.userInfo.getBookmarkList();
-    const isBookmark = bookmarkList.includes(placeInfo.id);
-    let starContent = "";
+    const isBookmark = bookmarkList.some((e) => e.place_id === placeInfo.id);
     const roundStarAvg = Math.ceil(placeInfo.star_avg);
-
-    for (let i = 1; i <= 5; i++) {
-      starContent +=
-        roundStarAvg >= i
-          ? `<img src="${IMG.FILL_STAR}" alt="fill star">`
-          : `<img src="${IMG.EMPTY_STAR}" alt="empty star">`;
-    }
 
     const placeContent = /*html*/ `
       <div class="${SELECTOR.PLACE_CONTENT_WRAPPER}">
@@ -219,7 +212,7 @@ export default class Home implements Component {
         </span>
         <h1 class="${SELECTOR.CONTENT_NAME}">${placeInfo.place_name}</h1>
         <span class="${SELECTOR.CONTENT_STAR}">
-          ${starContent}
+          ${util.paintStar(roundStarAvg)}
         </span>
         <span class="${SELECTOR.CONTENT_COMMENT}">
           (${placeInfo.review_count})
@@ -242,8 +235,17 @@ export default class Home implements Component {
     $bookmark.addEventListener("click", (e: Event) => {
       e.stopPropagation();
       const $bookmarkImg = e.target as HTMLImageElement;
+      const { id, place_name, x, y, star_avg } = this.getSelectPlaceInfo();
 
-      this.toogleBookmark($bookmarkImg);
+      const newPlaceInfo = {
+        place_id: id,
+        place_name,
+        position_x: x,
+        position_y: y,
+        star_average: star_avg,
+      };
+
+      this.userInfo.toggleBookmark($bookmarkImg, newPlaceInfo);
     });
 
     $simplePlaceInfo.addEventListener("click", (e: Event) => {
@@ -251,30 +253,10 @@ export default class Home implements Component {
     });
   }
 
-  private toogleBookmark($targetElement: HTMLImageElement) {
-    const { id: placeId } = this.getSelectPlaceInfo();
-
-    if (!placeId) return;
-
-    const newToggleBookmark =
-      $targetElement.dataset.toggle === "true" ? false : true;
-
-    $targetElement.dataset.toggle = `${newToggleBookmark}`;
-    $targetElement.src = newToggleBookmark
-      ? IMG.FILL_BOOKMARK
-      : IMG.EMPTY_BOOKMARK;
-
-    //TODO: 이 기능 분리 해야할 지 고민해보기
-    if (newToggleBookmark) {
-      api.createUserBookmark(placeId);
-      this.userInfo.addBookmark(placeId);
-    } else {
-      api.deleteUserbookmark(placeId);
-      this.userInfo.deleteBookmark(placeId);
-    }
-  }
-
-  private repositionPlaceInfoLayer(e: TouchEvent, currentPositionY: number) {
+  private repositionPlaceInfoLayer(
+    e: TouchEvent,
+    currentPositionY: number
+  ): void {
     if (this.$selectedPlaceInfo === null) return;
     const movePositionY = e.changedTouches[0].clientY;
 
@@ -290,7 +272,7 @@ export default class Home implements Component {
     this.changePlaceInfoLayer(upOrDown);
   }
 
-  private modifyPlaceInfoStyle($target: HTMLElement, isUp: boolean) {
+  private modifyPlaceInfoStyle($target: HTMLElement, isUp: boolean): void {
     isUp
       ? this.toggleClassName(
           $target,
@@ -308,12 +290,12 @@ export default class Home implements Component {
     $target: HTMLElement,
     addList?: string[],
     removeList?: string[]
-  ) {
+  ): void {
     removeList?.forEach((name) => $target.classList.remove(name));
     addList?.forEach((name) => $target.classList.add(name));
   }
 
-  private addPlaceInfoElement() {
+  private addPlaceInfoElement(): void {
     if (!this.selectPlaceInfo) return;
 
     const detailContents = this.reviewInfo.getDetailContents();
@@ -463,7 +445,7 @@ export default class Home implements Component {
     });
   }
 
-  private changePlaceInfoLayer(move: MoveParameter) {
+  private changePlaceInfoLayer(move: MoveParameter): void {
     if (this.$selectedPlaceInfo === null) return;
     const $detailContentWrapper = this.$selectedPlaceInfo?.querySelector(
       `.${SELECTOR.TOGGLE_PLACE_INFO}`
@@ -496,11 +478,11 @@ export default class Home implements Component {
     this.$selectedPlaceInfo.style.transform = `translate3d(0,-${moveY}px,0)`;
   }
 
-  private setSelectPlaceInfo(newSelectPlaceInfo: SeletedPlaceInfo) {
+  private setSelectPlaceInfo(newSelectPlaceInfo: SeletedPlaceInfo): void {
     this.selectPlaceInfo = { ...newSelectPlaceInfo };
   }
 
-  private emitBlurSearchInput() {
+  private emitBlurSearchInput(): void {
     if (!this.$searchInput) return;
     this.$searchInput.blur();
   }
