@@ -1,7 +1,7 @@
 import Action from "./action";
 import api from "../../api";
 import { State } from "../observable";
-import { ACTION } from "../../const";
+import { ACTION, IMG } from "../../const";
 
 export type UserInfomation = {
   bookmark?: BookmarkPlaceInfo[];
@@ -71,6 +71,46 @@ export default class UserInfo {
     if (!newState.bookmark) newState.bookmark = [];
     newState.bookmark = newState.bookmark.filter((e) => e.place_id !== id);
     this.setState(newState);
+  }
+
+  //TODO: 돔객체를 변경하기 때문에 여기 있으면 안될것같음!
+  toggleBookmark(
+    $targetElement: HTMLImageElement,
+    placeInfo: BookmarkPlaceInfo
+  ): void {
+    const {
+      place_id: placeId,
+      position_x: x,
+      position_y: y,
+      place_name,
+      star_average: star_avg,
+    } = placeInfo;
+
+    if (!placeId) return;
+
+    const newToggleBookmark =
+      $targetElement.dataset.toggle === "true" ? false : true;
+
+    $targetElement.dataset.toggle = `${newToggleBookmark}`;
+    $targetElement.src = newToggleBookmark
+      ? IMG.FILL_BOOKMARK
+      : IMG.EMPTY_BOOKMARK;
+
+    //TODO: 이 기능 분리 해야할 지 고민해보기
+    if (newToggleBookmark) {
+      api.createUserBookmark(placeId);
+      const addPlaceInfo = {
+        place_id: placeId,
+        place_name: place_name ?? "",
+        position_x: x ?? "",
+        position_y: y ?? "",
+        star_average: star_avg ?? 0,
+      };
+      this.addBookmark(addPlaceInfo);
+    } else {
+      api.deleteUserbookmark(placeId);
+      this.deleteBookmark(placeId);
+    }
   }
 
   getBookmarkList(): BookmarkPlaceInfo[] {
