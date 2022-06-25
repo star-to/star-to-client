@@ -26,7 +26,9 @@ export default class Bookmark implements Component {
     ) as HTMLElement;
 
     mainWrapper.innerHTML = /*html*/ `
-        <div class="${SELECTOR.BOOKMARK_WRAPPER}"></div>
+        <div class="${SELECTOR.BOOKMARK_WRAPPER}">
+            <h2 style="font-size:0.8em; font-weight:600;">추가한 즐겨찾기 목록이 없습니다.<h2>
+        </div>
     `;
 
     this.$bookmarkWrapper = document.querySelector(
@@ -38,6 +40,9 @@ export default class Bookmark implements Component {
     if (!this.$bookmarkWrapper) return;
 
     const bookmarkBoard: BookmarkPlaceInfo[] = this.userInfo.getBookmarkList();
+
+    if (bookmarkBoard.length === 0) return;
+
     const bookmarkString = bookmarkBoard.reduce((acc, placeInfo) => {
       const {
         place_id: placId,
@@ -85,7 +90,10 @@ export default class Bookmark implements Component {
         `.${SELECTOR.BOOKMARK_CONTENT_IMG}`
       ) || [];
 
-    if ($bookmarkButtonList.length === 0) return;
+    if ($bookmarkButtonList.length === 0) {
+      this.$bookmarkWrapper.style.justifyContent = "center";
+      return;
+    }
 
     $bookmarkButtonList.forEach(($bookmarkButton) => {
       $bookmarkButton.addEventListener("click", (e: Event) => {
