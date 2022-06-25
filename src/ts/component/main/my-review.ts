@@ -26,6 +26,7 @@ export default class MyReview implements Component {
 
     mainWrapper.innerHTML = /*html*/ `
       <div class="${SELECTOR.MY_REVEIW_WRAPPER}">
+        <h2 style="font-size:0.8em; font-weight:600">작성한 리뷰가 없습니다.</h2>
       </div>
       `;
   }
@@ -37,9 +38,11 @@ export default class MyReview implements Component {
 
   fillReveiw(reviewList: State[]): void {
     //TODO: 홈화면에서 구현했던 방식이랑 이 방식중 더 효율적인 것으로 통일!!
+    if (reviewList.length === 0) return;
+
     let addHtml = "";
+
     addHtml += /*html*/ `<div class="${SELECTOR.MY_REVIEW_LIST_WRAPPER}">`;
-    //TODO: 여기 리스트 스크롤 생기는지 확인해보기
 
     reviewList.forEach((review) => {
       const tmp = review.list as State[];
