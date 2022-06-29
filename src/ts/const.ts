@@ -150,6 +150,8 @@ export const ACTION = {
   LOAD_PLACE_LIST: "loadPlaceList",
   UPDATE_MY_REVIEW: "updateMyReview",
   SELECT_PLACE_MARKER: "selectPlaceMarker",
+  PLACE_LAYER_UP: "placeLayerUp",
+  PLACE_LAYER_DOWN: "placeLayerDown",
 };
 
 export const STATIC = {

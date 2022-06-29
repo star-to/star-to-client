@@ -33,6 +33,8 @@ function main() {
   action.createObservers(ACTION.INIT_APP);
   action.createObservers(ACTION.UPDATE_MY_REVIEW);
   action.createObservers(ACTION.SELECT_PLACE_MARKER);
+  action.createObservers(ACTION.PLACE_LAYER_DOWN);
+  action.createObservers(ACTION.PLACE_LAYER_UP);
   myMap.init();
   userInfo.init();
   reviewInfo.init();

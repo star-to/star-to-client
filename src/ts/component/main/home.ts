@@ -25,7 +25,7 @@ export default class Home implements Component {
   viewHeight: number;
   $selectedPlaceInfo: HTMLDivElement | null;
   $searchInput: HTMLInputElement | null;
-  home: HTMLDivElement | null;
+  $home: HTMLDivElement | null;
   selectPlaceInfo: SeletedPlaceInfo | null;
 
   constructor(
@@ -39,7 +39,7 @@ export default class Home implements Component {
     this.viewHeight = 0;
     this.$selectedPlaceInfo = null;
     this.$searchInput = null;
-    this.home = null;
+    this.$home = null;
     this.myMap = myMap;
     this.userInfo = userInfo;
     this.reviewInfo = reviewInfo;
@@ -95,54 +95,62 @@ export default class Home implements Component {
       `.${SELECTOR.HOME_PLACE_INFO_WRAPPER}`
     ) as HTMLDivElement;
 
-    this.home = document.querySelector(
+    this.$home = document.querySelector(
       `.${SELECTOR.HOME_WRAPPER}`
     ) as HTMLDivElement;
 
-    this.home.addEventListener("click", (e) => {
+    this.$home.addEventListener("click", (e) => {
       const $event = e.target as HTMLElement;
       if ($event.tagName === "INPUT") return;
 
       this.emitBlurSearchInput();
     });
 
-    const mapLayout = document.querySelector(
+    const $mapLayout = document.querySelector(
       `.${SELECTOR.HOME_MAP_WRAPPER}`
     ) as Node;
 
-    this.myMap.createMap(mapLayout);
+    this.myMap.createMap($mapLayout);
 
-    const layoutMoveButton = document.querySelector(
-      `.${SELECTOR.PLACE_INFO_MOVE_BUTTON}`
-    ) as HTMLDivElement;
-
-    const homeRect = this.home.getBoundingClientRect();
+    const homeRect = this.$home.getBoundingClientRect();
     this.viewHeight = homeRect.bottom;
 
     const selectedRect = this.$selectedPlaceInfo.getBoundingClientRect();
     this.bagicHeight = selectedRect.top;
 
+    const $layoutMoveButton = document.querySelector(
+      `.${SELECTOR.PLACE_INFO_MOVE_BUTTON}`
+    ) as HTMLDivElement;
+
     const handleTouchStart = () => {
       const handleTouchEnd = (event: TouchEvent) => {
         if (!this.$selectedPlaceInfo) return;
-        this.home?.removeEventListener("touchend", handleTouchEnd);
+        this.$home?.removeEventListener("touchend", handleTouchEnd);
 
         const rect = this.$selectedPlaceInfo.getBoundingClientRect();
         const selectedPositionY = rect.top;
         this.repositionPlaceInfoLayer(event, selectedPositionY);
       };
 
-      //TODO: touchmove 이벤트에 대해서도 구현 필요함!
-
-      this.home?.addEventListener("touchend", handleTouchEnd);
+      this.$home?.addEventListener("touchend", handleTouchEnd);
     };
 
-    layoutMoveButton.addEventListener("touchstart", handleTouchStart);
+    $layoutMoveButton.addEventListener("touchstart", handleTouchStart);
+
+    this.action.subscribe(ACTION.PLACE_LAYER_UP, () => {
+      $layoutMoveButton.removeEventListener("touchstart", handleTouchStart);
+      this.$home?.addEventListener("touchstart", handleTouchStart);
+    });
+
+    this.action.subscribe(ACTION.PLACE_LAYER_DOWN, () => {
+      this.$home?.removeEventListener("touchstart", handleTouchStart);
+      $layoutMoveButton.addEventListener("touchstart", handleTouchStart);
+    });
 
     //TODO: menubar toggle button click event
     //분리 해야할지 생각해보기!
 
-    const visibleMenubarButton = document.querySelector(
+    const $visibleMenubarButton = document.querySelector(
       `.${SELECTOR.MENUBAR_TOGGLE_BUTTON}`
     ) as HTMLButtonElement;
 
@@ -151,9 +159,9 @@ export default class Home implements Component {
       this.action.notify(ACTION.MENUBAR_VISIBLE);
     };
 
-    visibleMenubarButton.addEventListener("click", handleVisibleMenubar);
+    $visibleMenubarButton.addEventListener("click", handleVisibleMenubar);
 
-    const mylocationButton = document.querySelector(
+    const $mylocationButton = document.querySelector(
       `.${SELECTOR.MAP_MY_DIRECTION_BUTTON}`
     ) as HTMLDivElement;
 
@@ -161,7 +169,7 @@ export default class Home implements Component {
       this.myMap.moveCurrentPosition();
     };
 
-    mylocationButton.addEventListener("click", handleMyLocation);
+    $mylocationButton.addEventListener("click", handleMyLocation);
 
     const $searchInputButton = document.querySelector(
       `.${SELECTOR.SEARCH_INPUT_BUTTON}`
@@ -246,6 +254,10 @@ export default class Home implements Component {
       };
 
       this.userInfo.toggleBookmark($bookmarkImg, newPlaceInfo);
+    });
+
+    $bookmark.addEventListener("touchend", (e: Event) => {
+      e.stopPropagation();
     });
 
     $simplePlaceInfo.addEventListener("click", (e: Event) => {
@@ -457,7 +469,7 @@ export default class Home implements Component {
       ) as HTMLElement;
       this.modifyPlaceInfoStyle($placeInfo, move === "up");
 
-      //TODO:  이 부분 깔끔하게 변경할 수 있을 것 같은데 고민해보기
+      //TODO:  이 부분 다 액션에 넣기
       if (move === "up") {
         this.toggleClassName(
           $detailContentWrapper,
@@ -465,12 +477,14 @@ export default class Home implements Component {
           [SELECTOR.NONE]
         );
         this.addPlaceInfoElement();
+        this.action.notify(ACTION.PLACE_LAYER_UP);
       } else {
         this.toggleClassName(
           $detailContentWrapper,
           [SELECTOR.NONE],
           [SELECTOR.DETAIL_CONTENT_WRAPPER]
         );
+        this.action.notify(ACTION.PLACE_LAYER_DOWN);
       }
     }
 
