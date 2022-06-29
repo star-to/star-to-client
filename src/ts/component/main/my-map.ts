@@ -36,6 +36,7 @@ export default class MyMap {
   infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
   categoryCodes = ["FD6", "CE7"];
   polyLine: kakaoPolyLine;
+  geolocationId: number;
 
   constructor(action: Action, mapInfo: MapInfo) {
     this.action = action;
@@ -47,8 +48,8 @@ export default class MyMap {
     this.map = null;
     this.place = new kakao.maps.services.Places();
     this.geocoder = new kakao.maps.services.Geocoder();
-    // this.currentPlaceList = [];
     this.polyLine = new kakao.maps.Polyline({ path: [], strokeOpacity: 0 });
+    this.geolocationId = -1;
   }
 
   init(): void {
@@ -56,6 +57,7 @@ export default class MyMap {
     const initPositionCallback = (options: KakaoMapOption) => {
       if (!options.center) return;
 
+      this.geolocationId = this.startWatchPosition();
       let cnt = 0;
 
       const initKeywordSearch = (placeList: KakaoSearchedPlace[]) => {
@@ -185,28 +187,22 @@ export default class MyMap {
   }
 
   moveCurrentPosition(): void {
-    const updateCenterCallback = (options: KakaoMapOption): void => {
-      if (!options.center) return;
-      const { center } = options;
-      try {
-        this.moveMapCenter(center);
-        this.searchAroundPlace();
-      } catch (e) {
-        // TODO: 에러 객체를 만들어서 에러 타입별로 행동을 다르게 해야할 듯
-        // eslint-disable-next-line no-console
-        console.error(e);
-      }
-    };
-    this.findCurrentPosition(updateCenterCallback);
+    const currentPosition = this.mapInfo.getCurrentPosition();
+    if (!currentPosition) return;
+    const { x, y } = currentPosition;
+    const center = new kakao.maps.LatLng(Number(x), Number(y));
+    this.moveMapCenter(center);
   }
 
   moveToSearchedPlace(keyword: string): void {
+    this.stopWatchPosition();
     const keywordSearchCallback = (results: KakaoSearchedPlace[]): void => {
       //TODO:status 체크하는 코드 추가하기
       if (results.length === 0) return;
       const x = parseFloat(results[0].x);
       const y = parseFloat(results[0].y);
       const newCenter = new kakao.maps.LatLng(y, x);
+      this.mapInfo.modifyCenterPosition(y, x);
       this.mapInfo.initArroundPlaceList();
       this.moveMapCenter(newCenter);
       this.searchAroundPlace();
@@ -250,30 +246,6 @@ export default class MyMap {
     return { ...this.options };
   }
 
-  private findCurrentPosition = (callback?: PositionCallbackFunction): void => {
-    navigator.geolocation.getCurrentPosition(
-      (position: GeolocationPosition) => {
-        const newOptions = this.getOptions();
-        newOptions.center = new kakao.maps.LatLng(
-          position.coords.latitude,
-          position.coords.longitude
-        );
-        this.setOptions(newOptions);
-        this.mapInfo.modifyCurrentPosition(
-          position.coords.latitude,
-          position.coords.longitude
-        );
-        if (!callback) return;
-        callback(newOptions);
-      },
-      (error) => {
-        //TODO: 에러처리 필요함
-        alert(JSON.stringify(error));
-      },
-      { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
-    );
-  };
-
   private searchAroundPlace(): void {
     const currentMap = this.getMap();
     this.setPlaceMap(currentMap);
@@ -308,6 +280,50 @@ export default class MyMap {
     };
 
     this.searchCategory({ useMapBounds: true }, categorySearchCallback);
+  }
+
+  private findCurrentPosition = (callback?: PositionCallbackFunction): void => {
+    navigator.geolocation.getCurrentPosition(
+      (position: GeolocationPosition) => {
+        const newOptions = this.getOptions();
+        newOptions.center = new kakao.maps.LatLng(
+          position.coords.latitude,
+          position.coords.longitude
+        );
+        this.setOptions(newOptions);
+        this.mapInfo.modifyCurrentPosition(
+          position.coords.latitude,
+          position.coords.longitude
+        );
+        if (!callback) return;
+        callback(newOptions);
+      },
+      (error) => {
+        //TODO: 에러처리 필요함
+        alert(JSON.stringify(error));
+      },
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
+    );
+  };
+
+  private startWatchPosition(callback?: PositionCallbackFunction): number {
+    return navigator.geolocation.watchPosition(
+      (position: GeolocationPosition) => {
+        this.mapInfo.modifyCurrentPosition(
+          position.coords.latitude,
+          position.coords.longitude
+        );
+      },
+      (error) => {
+        //TODO: 에러처리 필요함
+        alert(JSON.stringify(error));
+      },
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
+    );
+  }
+
+  private stopWatchPosition(): void {
+    navigator.geolocation.clearWatch(this.geolocationId);
   }
 
   private binarySearch<T>(list: T[], value: T): T | -1 {

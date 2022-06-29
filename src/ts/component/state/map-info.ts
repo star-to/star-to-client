@@ -47,7 +47,8 @@ export default class MapInfo {
     this.setCurrentPosition(newPosition);
   }
 
-  modifyCenterPosition(newPosition: MapPositon): void {
+  modifyCenterPosition(x: number, y: number): void {
+    const newPosition = { x: String(x), y: String(y) };
     this.setCenterPosition(newPosition);
   }
 
