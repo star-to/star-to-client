@@ -58,7 +58,7 @@ export default class Router {
           this.params.action.notify(ACTION.INIT_APP);
 
           const handleSelectPage = () => {
-            const placeList = this.params.myMap.getCurrentPlaceList();
+            const placeList = this.params.mapInfo.getArroundPlaceList();
             if (pathname === PATH.HOME) {
               pathname = placeList.length > 0 ? PATH.REVIEW : PATH.HOME;
             }
@@ -78,7 +78,7 @@ export default class Router {
       });
   }
 
-  router<T>(path: string, state?: T) {
+  router<T>(path: string, state?: T): void {
     const url = location.origin;
 
     if (!state) {
@@ -89,7 +89,7 @@ export default class Router {
     this.emitChangeLocation<T>(EVENT.CHANGE_LOCATION, `${url}${path}`, state);
   }
 
-  emitChangeLocation<T>(eventName: string, url: string, state?: T) {
+  emitChangeLocation<T>(eventName: string, url: string, state?: T): void {
     const reg = new RegExp(`${location.origin}`, "g");
     const pathname = url.replace(reg, "");
 
