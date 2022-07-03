@@ -15,13 +15,12 @@ export type AppParams = {
 };
 
 function main() {
-  //TODO: 안드로이드로 접속했는지 확인 하는 코드!! 플레이 스토어에 업로드 후 주석해제 에정
-  // try {
-  //   Android;
-  // } catch (error) {
-  //   location.href = "/web.html";
-  //   return;
-  // }
+  try {
+    Android;
+  } catch (error) {
+    location.href = "/web.html";
+    return;
+  }
 
   const action = new Action();
   const userInfo = new UserInfo(action);
@@ -29,7 +28,6 @@ function main() {
   const reviewInfo = new ReviewInfo(action);
   const myMap = new MyMap(action, mapInfo);
 
-  //TODO: 액선 생성하는 것 여기다 만들기!!
   action.createObservers(ACTION.INIT_APP);
   action.createObservers(ACTION.UPDATE_MY_REVIEW);
   action.createObservers(ACTION.SELECT_PLACE_MARKER);
