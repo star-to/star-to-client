@@ -1,11 +1,28 @@
-# Star To
+# STAR-TO-CLIENT
+<br />  
 
-- [디자인](https://www.figma.com/file/wTh9UDlkJX3VAn3XOvrVDN/star-to?node-id=0%3A1)
-- [DB 설계](https://drive.google.com/file/d/16KSJA3qt78fLS-g7zYcHNJEgtIN_u6A4/view?usp=sharing)
+:point_right: [발견한 이슈](https://github.com/star-to/star-to-client/issues)
+<br />  
 
----
+<br />  
 
-## 참고링크
+### 추가할 기능
 
-- [multiple github accounts SSH-1](https://stackoverflow.com/questions/59621263/permission-denied-with-mutiple-github-accounts)
-- [multiple github accounts SSH-2](https://stackoverflow.com/questions/4565700/how-to-specify-the-private-ssh-key-to-use-when-executing-shell-command-on-git/29754018#29754018)
+- [ ] 카페, 음식점 분리해서 맵에 노출
+- [ ] 리뷰가 있는 장소의 마커는 다른 이미지로 노출
+- [ ] 길찾기 버튼 생성 => 카카오 맵으로 이동
+- [ ] 사용자의 리뷰를 유도할 수 있는 앱 push 기능
+- [ ] 현재 장소를 나타내는 이미지 맵에 추가
+- [ ] 회원탈퇴
+
+<br />  
+
+<br />  
+
+### 수정하고 싶은 것 (refactoring)
+
+- [ ] 한 컴포넌트에 너무 많은 기능들이 들어가 있어서 분리 하고 싶음
+- [ ] DOM을 변경하는 부분을 좀 더 통일성 있게 변경하고 싶음
+- [ ] 모델을 모델의 기능만 하도록 분리하고 싶음
+<br />  
+
