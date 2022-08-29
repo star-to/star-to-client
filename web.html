@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link href="./style.css" rel="stylesheet" /> -->
+    <title>STAR-TO</title>
+  </head>
+  <body>
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+      }
+
+      body {
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      @keyframes gradient {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      article {
+        width: 70%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        /* justify-content: center; */
+        align-items: center;
+        color: white;
+        font-size: 1.3rem;
+        font-weight: 700;
+      }
+
+      article h1 {
+        font-size: 2em;
+        font-weight: 900;
+        margin-top: 15%;
+        color: rgb(255, 215, 177);
+      }
+
+      article a {
+        padding: 0.8em 2.5em 0.8em 2.5em;
+        border-radius: 2em;
+        background-color: rgb(255, 215, 177);
+        color: rgb(0, 0, 0);
+        font-weight: 800;
+        text-decoration: none;
+        text-transform: uppercase;
+        margin-top: 8%;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+      }
+    </style>
+    <article>
+      <h1>STAR-TO</h1>
+      <p>카페, 음식점 화장실 별점어플 STAR-TO를 방문해 주셔서 감사합니다!</p>
+      <p>Google Play에서 다운받을 수 있습니다.</p>
+      <p>별점을 매겨주세요!!</p>
+      <a
+        href="https://play.google.com/store/apps/details?id=com.starto.myapplication"
+        >지금 시작하기</a
+      >
+    </article>
+  </body>
+</html>
