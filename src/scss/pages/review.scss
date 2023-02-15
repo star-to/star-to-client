@@ -1,0 +1,133 @@
+.review-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10%;
+
+  .review__content-wrapper {
+    width: 80%;
+    height: 20%;
+    margin-bottom: 5%;
+
+    .review__content__main {
+      height: fit-content;
+      font-size: 1.3rem;
+      font-weight: 550;
+      padding: 5% 5% 0 5%;
+      text-align: center;
+      word-break: keep-all;
+      line-height: 130%;
+    }
+
+    .review__content__another {
+      width: fit-content;
+      margin-left: 55%;
+      cursor: pointer;
+
+      a,
+      a:hover,
+      a:focus,
+      a:active {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      a {
+        font-size: 0.7rem;
+        color: rgb(196, 196, 196);
+      }
+    }
+  }
+
+  .review__star-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: 20%;
+    align-items: center;
+    margin-bottom: 20%;
+
+    .review__star__title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      padding: 5%;
+      margin-bottom: 5%;
+      color: #ff4c6c;
+    }
+
+    .review__star {
+      height: 50%;
+      width: 80%;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+
+      .rating__star {
+        text-align: center;
+        cursor: pointer;
+        width: 20%;
+        font-size: 1.6rem;
+        color: rgb(255, 239, 15);
+      }
+    }
+  }
+
+  .review__button-wrapper {
+    width: 80%;
+    height: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .review__button__submit {
+      width: 90%;
+      height: 50%;
+      border-radius: 1rem;
+      padding: 0;
+      border: none;
+      cursor: pointer;
+      outline: inherit;
+      background-color: #ff4c6c;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 90%;
+        height: 100%;
+        color: white;
+        text-decoration: none;
+      }
+    }
+
+    .review__button__next-day {
+      margin-top: 2%;
+      border: none;
+      padding: 1%;
+      cursor: pointer;
+      outline: inherit;
+      background-color: rgba(255, 255, 255, 0);
+      font-weight: 550;
+      a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        color: #ff4c6c;
+        text-decoration: none;
+      }
+    }
+  }
+}

@@ -2,3 +2,7 @@ node_modules
 static/**
 .vscode
 .idea
+dist/**
+.vercel
+localhost*.pem
+script.sh
