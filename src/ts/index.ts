@@ -1,10 +1,10 @@
-import Router from "./router";
-import Action from "./component/state/action";
-import UserInfo from "./component/state/user-info";
-import MyMap from "./component/main/my-map";
-import MapInfo from "./component/state/map-info";
-import ReviewInfo from "./component/state/review-info";
 import { ACTION } from "./const";
+import Action from "./component/state/action";
+import MapInfo from "./component/state/map-info";
+import MyMap from "./component/main/my-map";
+import ReviewInfo from "./component/state/review-info";
+import Router from "./router";
+import UserInfo from "./component/state/user-info";
 
 export type AppParams = {
   action: Action;
@@ -15,12 +15,12 @@ export type AppParams = {
 };
 
 function main() {
-  try {
-    Android;
-  } catch (error) {
-    location.href = "/web.html";
-    return;
-  }
+  // try {
+  //   Android;
+  // } catch (error) {
+  //   location.href = "/web.html";
+  //   return;
+  // }
 
   const action = new Action();
   const userInfo = new UserInfo(action);

@@ -1,8 +1,8 @@
-import Action from "../state/action";
-import api from "../../api";
 import { ACTION } from "../../const";
-import { ReviewPlaceLocation } from "../state/review-info";
+import Action from "../state/action";
 import MapInfo from "../state/map-info";
+import { ReviewPlaceLocation } from "../state/review-info";
+import api from "../../api";
 
 export interface SeletedPlaceInfo extends KakaoSearchedPlace {
   star_avg: number;
@@ -300,7 +300,14 @@ export default class MyMap {
       },
       (error) => {
         //TODO: 에러처리 필요함
-        alert(JSON.stringify(error));
+        // eslint-disable-next-line no-console
+        console.log(
+          "getCurrentPositionError",
+          error,
+          error.code,
+          error.message
+        );
+        // alert(JSON.stringify(error));
       },
       { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
     );
@@ -316,7 +323,9 @@ export default class MyMap {
       },
       (error) => {
         //TODO: 에러처리 필요함
-        alert(JSON.stringify(error));
+        // eslint-disable-next-line no-console
+        console.log(error, error.code, error.message);
+        // alert(JSON.stringify(error));
       },
       { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
     );
