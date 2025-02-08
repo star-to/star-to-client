@@ -1,11 +1,10 @@
-import { Component } from "../component";
-import Action from "../state/action";
-import { SELECTOR } from "../../const";
-import util from "../util";
-import { State } from "../observable";
-import UserInfo from "../state/user-info";
+import UserInfo,{ UserInfomation } from "@component/state/user-info";
 
-import { UserInfomation } from "../state/user-info";
+import Action from "@component/state/action";
+import { Component } from "@component/component";
+import { SELECTOR } from "@/ts/const";
+import { State } from "@component/observable";
+import util from "@component/util";
 
 export default class MyReview implements Component {
   action: Action;

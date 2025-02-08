@@ -1,4 +1,4 @@
-import { Observable, ObserverFunction } from "../observable";
+import { Observable, ObserverFunction } from "@component/observable";
 
 export default class Action implements Observable {
   private observers: Observers;

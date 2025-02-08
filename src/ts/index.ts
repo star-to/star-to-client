@@ -1,10 +1,10 @@
-import { ACTION } from "./const";
-import Action from "./component/state/action";
-import MapInfo from "./component/state/map-info";
-import MyMap from "./component/main/my-map";
-import ReviewInfo from "./component/state/review-info";
-import Router from "./router";
-import UserInfo from "./component/state/user-info";
+import { ACTION } from "@/ts/const";
+import Action from "@component/state/action";
+import MapInfo from "@component/state/map-info";
+import MyMap from "@component/main/my-map";
+import ReviewInfo from "@component/state/review-info";
+import Router from "@/ts/router";
+import UserInfo from "@component/state/user-info";
 
 export type AppParams = {
   action: Action;

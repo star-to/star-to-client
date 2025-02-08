@@ -1,7 +1,8 @@
-import { SELECTOR, EVENT, PATH, ACTION } from "./const";
-import { ComponentFunction, createRoutes, Params, RouteList } from "./routes";
+import { ACTION, EVENT, PATH, SELECTOR } from "@/ts/const";
+import { ComponentFunction, Params, RouteList, createRoutes } from "@/ts/routes";
+
 import { AppParams } from ".";
-import api from "./api";
+import api from "@/ts/api";
 
 export default class Router {
   params: AppParams;

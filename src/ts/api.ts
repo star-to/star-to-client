@@ -1,5 +1,6 @@
-import { ReviewPlaceLocation, UserReview } from "./component/state/review-info";
-import { API_PATH } from "./const";
+import { ReviewPlaceLocation, UserReview } from "@component/state/review-info";
+
+import { API_PATH } from "@/ts/const";
 
 const api = {
   //TODO:로그아웃, 로그인 서버를 별도로 둬야할까?

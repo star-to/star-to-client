@@ -1,6 +1,7 @@
-import { Component } from "../component";
-import { IMG, SELECTOR } from "../../const";
-import api from "../../api";
+import { IMG, SELECTOR } from "@/ts/const";
+
+import { Component } from "@component/component";
+import api from "@/ts/api";
 
 export default class Login implements Component {
   private html: string;

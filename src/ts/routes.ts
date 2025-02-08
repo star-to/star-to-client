@@ -1,17 +1,17 @@
-import { Component } from "./component/component";
-import { PATH } from "./const";
-import { AppParams } from "./index";
-import Loading from "./component/main/loading";
-import Login from "./component/main/login";
-import Home from "./component/main/home";
-import Detail from "./component/main/detail";
-import MyReview from "./component/main/my-review";
-import MenuBar from "./component/sidebar/menubar";
-import Bagic from "./component/header/bagic";
-import Review from "./component/main/review";
-import ReviewDetail from "./component/main/review-detail";
-import ReviewLocation from "./component/main/review-location";
-import Bookmark from "./component/main/bookmark";
+import { AppParams } from "@/ts/index";
+import Bagic from "@component/header/bagic";
+import Bookmark from "@component/main/bookmark";
+import { Component } from "@component/component";
+import Detail from "@component/main/detail";
+import Home from "@component/main/home";
+import Loading from "@component/main/loading";
+import Login from "@component/main/login";
+import MenuBar from "@component/sidebar/menubar";
+import MyReview from "@component/main/my-review";
+import { PATH } from "@/ts/const";
+import Review from "@component/main/review";
+import ReviewDetail from "@component/main/review-detail";
+import ReviewLocation from "@component/main/review-location";
 
 export type ComponentFunction = (
   params?: KakaoSearchedPlace[]

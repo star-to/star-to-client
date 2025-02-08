@@ -1,8 +1,8 @@
-import { ACTION } from "../../const";
-import Action from "../state/action";
-import MapInfo from "../state/map-info";
-import { ReviewPlaceLocation } from "../state/review-info";
-import api from "../../api";
+import { ACTION } from "@/ts/const";
+import Action from "@component/state/action";
+import MapInfo from "@component/state/map-info";
+import { ReviewPlaceLocation } from "@component/state/review-info";
+import api from "@/ts/api";
 
 export interface SeletedPlaceInfo extends KakaoSearchedPlace {
   star_avg: number;

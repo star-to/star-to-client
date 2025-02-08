@@ -1,4 +1,4 @@
-import Action from "./action";
+import Action from "@component/state/action";
 
 export interface MapPositon {
   x: string;

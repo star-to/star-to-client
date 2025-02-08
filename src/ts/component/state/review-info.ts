@@ -1,6 +1,6 @@
-import Action from "./action";
-import api from "../../api";
-import { ACTION } from "../../const";
+import { ACTION } from "@/ts/const";
+import Action from "@component/state/action";
+import api from "@/ts/api";
 
 export type DetailContent = {
   detail_content_id: number;

@@ -1,8 +1,9 @@
-import { Component } from "../component";
-import Action from "../state/action";
-import UserInfo, { BookmarkPlaceInfo } from "../state/user-info";
-import { IMG, SELECTOR } from "../../const";
-import util from "../util";
+import { IMG, SELECTOR } from "@/ts/const";
+import UserInfo, { BookmarkPlaceInfo } from "@component/state/user-info";
+
+import Action from "@component/state/action";
+import { Component } from "@component/component";
+import util from "@component/util";
 
 export default class Bookmark implements Component {
   action: Action;

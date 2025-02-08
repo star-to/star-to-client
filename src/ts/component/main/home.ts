@@ -1,13 +1,12 @@
-import { ACTION, IMG, SELECTOR } from "../../const";
+import { ACTION, IMG, SELECTOR } from "@/ts/const";
+import MyMap, {SeletedPlaceInfo} from "@component/main/my-map";
 
-import Action from "../state/action";
-import { Component } from "../component";
-import MyMap from "./my-map";
-import ReviewInfo from "../state/review-info";
-import { SeletedPlaceInfo } from "./my-map";
-import SvgMapCurrentLocation from "../../../assets/map/map-location.svg"
-import UserInfo from "../state/user-info";
-import util from "../util";
+import Action from "@component/state/action";
+import { Component } from "@component/component";
+import ReviewInfo from "@component/state/review-info";
+import SvgMapCurrentLocation from "@/assets/map/map-location.svg"
+import UserInfo from "@component/state/user-info";
+import util from "@component/util";
 
 type MoveParameter = "up" | "down" | number;
 

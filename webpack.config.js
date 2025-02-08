@@ -20,14 +20,14 @@ module.exports = {
       inject: false,
       filename: "../../index.html",
     }),
-    new WebpackShellPluginNext({
-      onAfterDone: {
-        scripts: ["bash script.sh"],
-        blocking: false,
-        parallel: false,
-        logging: false,
-      },
-    }),
+    // new WebpackShellPluginNext({
+    //   onAfterDone: {
+    //     scripts: ["bash script.sh"],
+    //     blocking: false,
+    //     parallel: false,
+    //     logging: false,
+    //   },
+    // }),
   ],
   module: {
     rules: [
@@ -49,6 +49,10 @@ module.exports = {
   },
   resolve: {
     extensions: [".ts", ".js"],
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+      '@component':path.resolve(__dirname, 'src/ts/component')
+    },
   },
   devtool: "source-map",
   mode: "development",

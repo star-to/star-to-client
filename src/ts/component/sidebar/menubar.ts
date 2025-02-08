@@ -1,7 +1,8 @@
-import { Component } from "../component";
-import { SELECTOR, ACTION, PATH } from "../../const";
-import Action from "../state/action";
-import api from "../../api";
+import { ACTION, PATH, SELECTOR } from "@/ts/const";
+
+import Action from "@component/state/action";
+import { Component } from "@component/component";
+import api from "@/ts/api";
 
 export default class MenuBar implements Component {
   html: string;

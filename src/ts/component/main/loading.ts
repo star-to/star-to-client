@@ -1,6 +1,7 @@
-import { SELECTOR, IMG } from "../../const";
-import { Component } from "../component";
-import Action from "../state/action";
+import { IMG, SELECTOR } from "@/ts/const";
+
+import Action from "@component/state/action";
+import { Component } from "@component/component";
 
 export default class Loading implements Component {
   private html: string;

@@ -19,7 +19,12 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "typeRoots": ["src/ts/types"],
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "@component/*":["src/ts/component/*"]
+
+    }    
   },
   "include": ["src/ts/*", "src/types"]
 }

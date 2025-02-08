@@ -1,6 +1,6 @@
-import Action from "../state/action";
-import { Component } from "../component";
-import { SELECTOR } from "../../const";
+import Action from "@component/state/action";
+import { Component } from "@component/component";
+import { SELECTOR } from "@/ts/const";
 
 export default class Detail implements Component {
   action: Action;

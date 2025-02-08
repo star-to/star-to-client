@@ -1,5 +1,6 @@
-import { IMG, SELECTOR } from "../../const";
-import { Component } from "../component";
+import { IMG, SELECTOR } from "@/ts/const";
+
+import { Component } from "@component/component";
 
 export default class Bagic implements Component {
   html: string;

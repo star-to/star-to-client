@@ -1,7 +1,8 @@
-import { Component } from "../component";
-import Action from "../state/action";
-import { PATH, SELECTOR } from "../../const";
-import ReviewInfo from "../state/review-info";
+import { PATH, SELECTOR } from "@/ts/const";
+
+import Action from "@component/state/action";
+import { Component } from "@component/component";
+import ReviewInfo from "@component/state/review-info";
 
 export default class ReviewLocation implements Component {
   action: Action;

@@ -1,8 +1,9 @@
-import { Component } from "../component";
-import Action from "../state/action";
-import { PATH, SELECTOR } from "../../const";
-import MyMap from "./my-map";
-import ReviewInfo from "../state/review-info";
+import { PATH, SELECTOR } from "@/ts/const";
+
+import Action from "@component/state/action";
+import { Component } from "@component/component";
+import MyMap from "@component/main/my-map";
+import ReviewInfo from "@component/state/review-info";
 
 export default class Review implements Component {
   action: Action;

@@ -1,7 +1,8 @@
-import Action from "./action";
-import api from "../../api";
-import { State } from "../observable";
-import { ACTION, IMG } from "../../const";
+import { ACTION, IMG } from "@/ts/const";
+
+import Action from "@component/state/action";
+import { State } from "@component/observable";
+import api from "@/ts/api";
 
 export type UserInfomation = {
   bookmark?: BookmarkPlaceInfo[];
