@@ -1,10 +1,12 @@
+import { ACTION, IMG, SELECTOR } from "../../const";
+
+import Action from "../state/action";
 import { Component } from "../component";
 import MyMap from "./my-map";
-import { SeletedPlaceInfo } from "./my-map";
-import { SELECTOR, IMG, ACTION } from "../../const";
-import Action from "../state/action";
-import UserInfo from "../state/user-info";
 import ReviewInfo from "../state/review-info";
+import { SeletedPlaceInfo } from "./my-map";
+import SvgMapCurrentLocation from "../../../assets/map/map-location.svg"
+import UserInfo from "../state/user-info";
 import util from "../util";
 
 type MoveParameter = "up" | "down" | number;
@@ -66,7 +68,7 @@ export default class Home implements Component {
         </button>
       </div>
       <div class="${SELECTOR.MAP_MY_DIRECTION_BUTTON}">
-        <img src="${IMG.MY_LOCATION}" alt="current location button">
+      ${SvgMapCurrentLocation}
       </div>
       <div class="${SELECTOR.HOME_PLACE_INFO_WRAPPER}">
         <div class="${SELECTOR.PLACE_INFO_MOVE_BUTTON}">
@@ -106,6 +108,7 @@ export default class Home implements Component {
       this.emitBlurSearchInput();
     });
 
+    // <object data="/assets/map/happy.svg" width="300" height="300"></object>
     const $mapLayout = document.querySelector(
       `.${SELECTOR.HOME_MAP_WRAPPER}`
     ) as Node;

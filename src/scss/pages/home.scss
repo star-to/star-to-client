@@ -17,12 +17,13 @@
 
   .map__my-direction-button {
     position: absolute;
-    background-color: rgba(255, 76, 108, 0.6);
-    color: white;
+    background-color: white;
     font-weight: 600;
     font-size: 0.8em;
     top: 70%;
-    left: 45%;
+    margin-right: 1em;
+    right: 0;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     width: 2em;
     height: 2em;
     padding: 1%;
