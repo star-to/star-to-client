@@ -6,6 +6,10 @@ html {
   width: 100vw;
   height: 100vh;
   background-color: rgb(226, 226, 226);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-use-select: none;
+  user-select: none;
   
 }
 
