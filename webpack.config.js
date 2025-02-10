@@ -19,15 +19,16 @@ module.exports = {
       template: "./src/html/index.html",
       inject: false,
       filename: "../../index.html",
+      favicon: "./src/assets/icon/favicon.ico",
     }),
-    // new WebpackShellPluginNext({
-    //   onAfterDone: {
-    //     scripts: ["bash script.sh"],
-    //     blocking: false,
-    //     parallel: false,
-    //     logging: false,
-    //   },
-    // }),
+    new WebpackShellPluginNext({
+      onAfterDone: {
+        scripts: ["bash script.sh"],
+        blocking: false,
+        parallel: false,
+        logging: false,
+      },
+    }),
   ],
   module: {
     rules: [
