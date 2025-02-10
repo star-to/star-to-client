@@ -40,6 +40,8 @@ declare namespace kakao {
       getLng(): number;
     }
 
+
+
     namespace services {
       class Places {
         constructor(map?: Map);
@@ -177,7 +179,7 @@ declare namespace kakao {
     }
 
     class MarkerImage {
-      constructor(src: string, size: Size, options: MarkerImageOption);
+      constructor(src: string, size: Size, options?: MarkerImageOption);
     }
 
     interface MarkerImageOption {

@@ -1,4 +1,5 @@
-import { ACTION } from "@/ts/const";
+import { ACTION, IMG } from "@/ts/const";
+
 import Action from "@component/state/action";
 import MapInfo from "@component/state/map-info";
 import { ReviewPlaceLocation } from "@component/state/review-info";
@@ -157,9 +158,12 @@ export default class MyMap {
       Number(place.y),
       Number(place.x)
     );
+    const imageSize = new kakao.maps.Size(32, 36); // 마커이미지의 크기입니다
+    const markerImage = new kakao.maps.MarkerImage(IMG.MAP_MARKER,imageSize )
     const marker = new kakao.maps.Marker({
       map: this.map as KakaoMap,
       position: markerLatLng,
+      image: markerImage
     });
 
     kakao.maps.event.addListener(marker, "click", () => {
