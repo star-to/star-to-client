@@ -1,12 +1,12 @@
 import { ACTION, IMG, SELECTOR } from "@/ts/const";
-import MyMap, {SeletedPlaceInfo} from "@component/main/my-map";
+import MyMap, { SeletedPlaceInfo } from "@component/main/my-map";
 
 import Action from "@component/state/action";
 import { Component } from "@component/component";
 import ReviewInfo from "@component/state/review-info";
-import SvgMapCurrentLocation from "@/assets/map/map-location.svg"
+import SvgMapCurrentLocation from "@/assets/map/map-location.svg";
 import UserInfo from "@component/state/user-info";
-import {paintStar} from "@component/util";
+import { paintStar } from "@component/util";
 
 type MoveParameter = "up" | "down" | number;
 
@@ -119,34 +119,7 @@ export default class Home implements Component {
     const selectedRect = this.$selectedPlaceInfo.getBoundingClientRect();
     this.bagicHeight = selectedRect.top;
 
-    const $layoutMoveButton = document.querySelector(
-      `.${SELECTOR.PLACE_INFO_MOVE_BUTTON}`
-    ) as HTMLDivElement;
-
-    const handleTouchStart = () => {
-      const handleTouchEnd = (event: TouchEvent) => {
-        if (!this.$selectedPlaceInfo) return;
-        this.$home?.removeEventListener("touchend", handleTouchEnd);
-
-        const rect = this.$selectedPlaceInfo.getBoundingClientRect();
-        const selectedPositionY = rect.top;
-        this.repositionPlaceInfoLayer(event, selectedPositionY);
-      };
-
-      this.$home?.addEventListener("touchend", handleTouchEnd);
-    };
-
-    $layoutMoveButton.addEventListener("touchstart", handleTouchStart);
-
-    this.action.subscribe(ACTION.PLACE_LAYER_UP, () => {
-      $layoutMoveButton.removeEventListener("touchstart", handleTouchStart);
-      this.$home?.addEventListener("touchstart", handleTouchStart);
-    });
-
-    this.action.subscribe(ACTION.PLACE_LAYER_DOWN, () => {
-      this.$home?.removeEventListener("touchstart", handleTouchStart);
-      $layoutMoveButton.addEventListener("touchstart", handleTouchStart);
-    });
+    this.setupBottomSheetEvents();
 
     //TODO: menubar toggle button click event
     //분리 해야할지 생각해보기!
@@ -200,6 +173,78 @@ export default class Home implements Component {
   getSelectPlaceInfo(): SeletedPlaceInfo {
     return { ...(this.selectPlaceInfo as SeletedPlaceInfo) };
     //TODO: 에러처리 필요함!!
+  }
+
+  private setupBottomSheetEvents(): void {
+    const $layoutMoveButton = document.querySelector(
+      `.${SELECTOR.PLACE_INFO_MOVE_BUTTON}`
+    ) as HTMLDivElement;
+
+    //터치 이벤트가 존재하는 기기의 바텀시트 이벤트
+    // TODO: touch move 시 움직임을 따라가고 있지 않아서 수정 필요해 보임
+    const handleTouchStart = () => {
+      const handleTouchEnd = (event: TouchEvent) => {
+        if (!this.$selectedPlaceInfo) return;
+        this.$home?.removeEventListener("touchend", handleTouchEnd);
+
+        const rect = this.$selectedPlaceInfo.getBoundingClientRect();
+        const selectedPositionY = rect.top;
+        this.repositionPlaceInfoLayer(event, selectedPositionY);
+      };
+
+      this.$home?.addEventListener("touchend", handleTouchEnd);
+    };
+
+    $layoutMoveButton.addEventListener("touchstart", handleTouchStart);
+
+    this.action.subscribe(ACTION.PLACE_LAYER_UP, () => {
+      $layoutMoveButton.removeEventListener("touchstart", handleTouchStart);
+      this.$home?.addEventListener("touchstart", handleTouchStart);
+    });
+
+    this.action.subscribe(ACTION.PLACE_LAYER_DOWN, () => {
+      this.$home?.removeEventListener("touchstart", handleTouchStart);
+      $layoutMoveButton.addEventListener("touchstart", handleTouchStart);
+    });
+
+    //터치 이벤트가 존재하지 않는 기기의 바텀시트 이벤트
+    //TODO: 액션 추가, reposition 추가
+    const handleMouseDown = (event: MouseEvent) => {
+      event.preventDefault();
+
+      if (!this.$selectedPlaceInfo) return;
+
+      const moveAt = (pageY: number) => {
+        if (!this.$selectedPlaceInfo) return;
+        this.$selectedPlaceInfo.style.top = pageY - shiftY + "px";
+      };
+
+      let shiftY =
+        event.clientY - this.$selectedPlaceInfo.getBoundingClientRect().top;
+
+      moveAt(event.pageY);
+
+      const handleMouseMove = (event: MouseEvent) => {
+        event.preventDefault();
+        moveAt(event.pageY);
+      };
+
+      document.addEventListener("mousemove", handleMouseMove);
+
+      const handleMouseUp = () => {
+        if (!this.$selectedPlaceInfo) return;
+
+        document.removeEventListener("mousemove", handleMouseMove);
+        this.$selectedPlaceInfo.removeEventListener("mouseup", handleMouseUp);
+      };
+
+      this.$selectedPlaceInfo.addEventListener("mouseup", handleMouseUp);
+    };
+
+    this.$selectedPlaceInfo?.addEventListener("mousedown", handleMouseDown);
+    this.$selectedPlaceInfo?.addEventListener("dragstart", (e) => {
+      e.preventDefault();
+    });
   }
 
   private initSelectedPlace(placeInfo: SeletedPlaceInfo): void {
