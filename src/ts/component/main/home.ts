@@ -6,7 +6,7 @@ import { Component } from "@component/component";
 import ReviewInfo from "@component/state/review-info";
 import SvgMapCurrentLocation from "@/assets/map/map-location.svg"
 import UserInfo from "@component/state/user-info";
-import util from "@component/util";
+import {paintStar} from "@component/util";
 
 type MoveParameter = "up" | "down" | number;
 
@@ -107,7 +107,6 @@ export default class Home implements Component {
       this.emitBlurSearchInput();
     });
 
-    // <object data="/assets/map/happy.svg" width="300" height="300"></object>
     const $mapLayout = document.querySelector(
       `.${SELECTOR.HOME_MAP_WRAPPER}`
     ) as Node;
@@ -222,7 +221,7 @@ export default class Home implements Component {
         </span>
         <h1 class="${SELECTOR.CONTENT_NAME}">${placeInfo.place_name}</h1>
         <span class="${SELECTOR.CONTENT_STAR}">
-          ${util.paintStar(roundStarAvg)}
+          ${paintStar(roundStarAvg)}
         </span>
         <span class="${SELECTOR.CONTENT_COMMENT}">
           (${placeInfo.review_count})

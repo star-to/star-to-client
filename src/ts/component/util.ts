@@ -1,17 +1,15 @@
 import { IMG } from "../const";
 
-const util = {
-  paintStar: (count: number): string => {
-    let starElement = "";
+const paintStar =  (count: number): string => {
+  let starElement = "";
 
-    for (let j = 1; j <= 5; j++) {
-      starElement += /*html*/ `
-            <img src="${count >= j ? IMG.FILL_STAR : IMG.EMPTY_STAR}">
-          `;
-    }
+  for (let j = 1; j <= 5; j++) {
+    starElement += /*html*/ `
+          <img src="${count >= j ? IMG.FILL_STAR : IMG.EMPTY_STAR}">
+        `;
+  }
 
-    return starElement;
-  },
-};
+  return starElement;
+}
 
-export default util;
+export {paintStar} ;
