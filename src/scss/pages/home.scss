@@ -78,6 +78,7 @@
   }
 
   .recommend-wrapper {
+    will-change: transform;
     background-color: white;
     position: absolute;
     display: flex;

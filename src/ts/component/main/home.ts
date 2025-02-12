@@ -183,13 +183,16 @@ export default class Home implements Component {
     //터치 이벤트가 존재하는 기기의 바텀시트 이벤트
     // TODO: touch move 시 움직임을 따라가고 있지 않아서 수정 필요해 보임
     const handleTouchStart = () => {
-      const handleTouchEnd = (event: TouchEvent) => {
+      const handleTouchEnd = (e: TouchEvent) => {
         if (!this.$selectedPlaceInfo) return;
         this.$home?.removeEventListener("touchend", handleTouchEnd);
 
         const rect = this.$selectedPlaceInfo.getBoundingClientRect();
         const selectedPositionY = rect.top;
-        this.repositionPlaceInfoLayer(event, selectedPositionY);
+        this.repositionPlaceInfoLayer(
+          selectedPositionY,
+          e.changedTouches[0].clientY
+        );
       };
 
       this.$home?.addEventListener("touchend", handleTouchEnd);
@@ -208,43 +211,54 @@ export default class Home implements Component {
     });
 
     //터치 이벤트가 존재하지 않는 기기의 바텀시트 이벤트
-    //TODO: 액션 추가, reposition 추가
-    const handleMouseDown = (event: MouseEvent) => {
-      event.preventDefault();
-
+    const handleMouseDown = (e: MouseEvent) => {
       if (!this.$selectedPlaceInfo) return;
 
-      const moveAt = (pageY: number) => {
+      const startClientY = e.clientY;
+
+      const moveAt = (movedClientY: number) => {
         if (!this.$selectedPlaceInfo) return;
-        this.$selectedPlaceInfo.style.top = pageY - shiftY + "px";
+
+        const transformMatrix = window.getComputedStyle(
+          this.$selectedPlaceInfo
+        ).transform;
+        let translateY = 0;
+
+        if (transformMatrix !== "none") {
+          const matrixValues = transformMatrix
+            .match(/matrix.*\((.+)\)/)?.[1]
+            .split(", ");
+          if (matrixValues) {
+            translateY = parseFloat(matrixValues[5]);
+          }
+        }
+
+        if (movedClientY >= startClientY || -translateY > this.bagicHeight)
+          return;
+
+        this.$selectedPlaceInfo.style.transform = `translate3d(0,${
+          movedClientY - startClientY
+        }px,0)`;
       };
 
-      let shiftY =
-        event.clientY - this.$selectedPlaceInfo.getBoundingClientRect().top;
+      const handleMouseMove = (e: MouseEvent) => {
+        moveAt(e.clientY);
+      };
 
-      moveAt(event.pageY);
+      const handleMouseUp = (e: MouseEvent) => {
+        if (!this.$selectedPlaceInfo) return;
 
-      const handleMouseMove = (event: MouseEvent) => {
-        event.preventDefault();
-        moveAt(event.pageY);
+        this.repositionPlaceInfoLayer(startClientY, e.clientY);
+
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
       };
 
       document.addEventListener("mousemove", handleMouseMove);
-
-      const handleMouseUp = () => {
-        if (!this.$selectedPlaceInfo) return;
-
-        document.removeEventListener("mousemove", handleMouseMove);
-        this.$selectedPlaceInfo.removeEventListener("mouseup", handleMouseUp);
-      };
-
-      this.$selectedPlaceInfo.addEventListener("mouseup", handleMouseUp);
+      document.addEventListener("mouseup", handleMouseUp);
     };
 
     this.$selectedPlaceInfo?.addEventListener("mousedown", handleMouseDown);
-    this.$selectedPlaceInfo?.addEventListener("dragstart", (e) => {
-      e.preventDefault();
-    });
   }
 
   private initSelectedPlace(placeInfo: SeletedPlaceInfo): void {
@@ -312,13 +326,11 @@ export default class Home implements Component {
   }
 
   private repositionPlaceInfoLayer(
-    e: TouchEvent,
-    currentPositionY: number
+    startPositionY: number,
+    movedPositionY: number
   ): void {
     if (this.$selectedPlaceInfo === null) return;
-    const movePositionY = e.changedTouches[0].clientY;
-
-    const upOrDown = currentPositionY > movePositionY ? "up" : "down";
+    const upOrDown = startPositionY > movedPositionY ? "up" : "down";
 
     const $placeInfoWrapper = this.$selectedPlaceInfo.querySelector(
       `.${SELECTOR.PLACE_WRAPPER}`
