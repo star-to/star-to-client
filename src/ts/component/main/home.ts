@@ -507,9 +507,12 @@ export default class Home implements Component {
 
     $addressCopy.addEventListener("click", () => {
       if (!this.selectPlaceInfo) return;
+      const address = this.selectPlaceInfo.road_address_name;
+      navigator.clipboard.writeText(address);
 
-      Android.showToast("주소가 복사 됐습니다.");
-      Android.copyToClipboard(this.selectPlaceInfo.road_address_name);
+      //TODO: 복사  팝업 필요
+      // Android.showToast("주소가 복사 됐습니다.");
+      // Android.copyToClipboard(this.selectPlaceInfo.road_address_name);
     });
 
     $addressCopy.addEventListener("touchend", (e: Event) => {
