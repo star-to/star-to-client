@@ -44,15 +44,15 @@ module.exports = {
       },
       {
         test: /\.svg$/i,
-        use: 'raw-loader',
+        use: "raw-loader",
       },
     ],
   },
   resolve: {
     extensions: [".ts", ".js"],
     alias: {
-      '@': path.resolve(__dirname, 'src'),
-      '@component':path.resolve(__dirname, 'src/ts/component')
+      "@": path.resolve(__dirname, "src"),
+      "@component": path.resolve(__dirname, "src/ts/component"),
     },
   },
   devtool: "source-map",

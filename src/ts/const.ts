@@ -113,7 +113,8 @@ export const IMG = {
     "https://star-to.s3.ap-northeast-2.amazonaws.com/img/empty-bookmark.png",
   PLUS: "https://star-to.s3.ap-northeast-2.amazonaws.com/img/plus.png",
   HOME_LOGO: "https://star-to.s3.ap-northeast-2.amazonaws.com/img/logo.png",
-  MAP_MARKER: "https://star-to.s3.ap-northeast-2.amazonaws.com/img/map-marker.png",
+  MAP_MARKER:
+    "https://star-to.s3.ap-northeast-2.amazonaws.com/img/map-marker.png",
   SEARCH: "https://star-to.s3.ap-northeast-2.amazonaws.com/img/search.png",
 };
 

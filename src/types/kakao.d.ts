@@ -40,8 +40,6 @@ declare namespace kakao {
       getLng(): number;
     }
 
-
-
     namespace services {
       class Places {
         constructor(map?: Map);

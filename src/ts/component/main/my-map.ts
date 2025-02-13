@@ -159,11 +159,11 @@ export default class MyMap {
       Number(place.x)
     );
     const imageSize = new kakao.maps.Size(32, 36); // 마커이미지의 크기입니다
-    const markerImage = new kakao.maps.MarkerImage(IMG.MAP_MARKER,imageSize )
+    const markerImage = new kakao.maps.MarkerImage(IMG.MAP_MARKER, imageSize);
     const marker = new kakao.maps.Marker({
       map: this.map as KakaoMap,
       position: markerLatLng,
-      image: markerImage
+      image: markerImage,
     });
 
     kakao.maps.event.addListener(marker, "click", () => {

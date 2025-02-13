@@ -1,5 +1,10 @@
 import { ACTION, EVENT, PATH, SELECTOR } from "@/ts/const";
-import { ComponentFunction, Params, RouteList, createRoutes } from "@/ts/routes";
+import {
+  ComponentFunction,
+  Params,
+  RouteList,
+  createRoutes,
+} from "@/ts/routes";
 
 import { AppParams } from ".";
 import api from "@/ts/api";

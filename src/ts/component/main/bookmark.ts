@@ -3,7 +3,7 @@ import UserInfo, { BookmarkPlaceInfo } from "@component/state/user-info";
 
 import Action from "@component/state/action";
 import { Component } from "@component/component";
-import {paintStar} from "@component/util";
+import { paintStar } from "@component/util";
 
 export default class Bookmark implements Component {
   action: Action;

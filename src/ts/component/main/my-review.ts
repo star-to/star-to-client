@@ -1,10 +1,10 @@
-import UserInfo,{ UserInfomation } from "@component/state/user-info";
+import UserInfo, { UserInfomation } from "@component/state/user-info";
 
 import Action from "@component/state/action";
 import { Component } from "@component/component";
 import { SELECTOR } from "@/ts/const";
 import { State } from "@component/observable";
-import util from "@component/util";
+import { paintStar } from "@component/util";
 
 export default class MyReview implements Component {
   action: Action;
@@ -56,9 +56,9 @@ export default class MyReview implements Component {
                 <span class="${SELECTOR.MY_REVIEW_CONTENT_NAME}">${
               cur["place_name"]
             }</span>
-                <span class="${
-                  SELECTOR.MY_REVIEW_CONTENT_STAR
-                }">${util.paintStar(cur["star"] as number)}</span>
+                <span class="${SELECTOR.MY_REVIEW_CONTENT_STAR}">${paintStar(
+              cur["star"] as number
+            )}</span>
               </div>
             </li>
             `;
