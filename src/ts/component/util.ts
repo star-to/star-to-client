@@ -1,6 +1,6 @@
 import { IMG } from "../const";
 
-const paintStar =  (count: number): string => {
+const paintStar = (count: number): string => {
   let starElement = "";
 
   for (let j = 1; j <= 5; j++) {
@@ -10,6 +10,10 @@ const paintStar =  (count: number): string => {
   }
 
   return starElement;
-}
+};
 
-export {paintStar} ;
+const isTouchDevice = (): boolean => {
+  return navigator.maxTouchPoints > 0;
+};
+
+export { paintStar, isTouchDevice };

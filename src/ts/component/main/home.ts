@@ -1,12 +1,12 @@
 import { ACTION, IMG, SELECTOR } from "@/ts/const";
 import MyMap, { SeletedPlaceInfo } from "@component/main/my-map";
+import { isTouchDevice, paintStar } from "@component/util";
 
 import Action from "@component/state/action";
 import { Component } from "@component/component";
 import ReviewInfo from "@component/state/review-info";
 import SvgMapCurrentLocation from "@/assets/map/map-location.svg";
 import UserInfo from "@component/state/user-info";
-import { paintStar } from "@component/util";
 
 type MoveParameter = "up" | "down" | number;
 
@@ -180,85 +180,87 @@ export default class Home implements Component {
       `.${SELECTOR.PLACE_INFO_MOVE_BUTTON}`
     ) as HTMLDivElement;
 
-    //터치 이벤트가 존재하는 기기의 바텀시트 이벤트
-    // TODO: touch move 시 움직임을 따라가고 있지 않아서 수정 필요해 보임
-    const handleTouchStart = () => {
-      const handleTouchEnd = (e: TouchEvent) => {
-        if (!this.$selectedPlaceInfo) return;
-        this.$home?.removeEventListener("touchend", handleTouchEnd);
+    if (isTouchDevice()) {
+      //터치 이벤트가 존재하는 기기의 바텀시트 이벤트
+      // TODO: touch move 시 움직임을 따라가고 있지 않아서 수정 필요해 보임
+      const handleTouchStart = () => {
+        const handleTouchEnd = (e: TouchEvent) => {
+          if (!this.$selectedPlaceInfo) return;
+          this.$home?.removeEventListener("touchend", handleTouchEnd);
 
-        const rect = this.$selectedPlaceInfo.getBoundingClientRect();
-        const selectedPositionY = rect.top;
-        this.repositionPlaceInfoLayer(
-          selectedPositionY,
-          e.changedTouches[0].clientY
-        );
+          const rect = this.$selectedPlaceInfo.getBoundingClientRect();
+          const selectedPositionY = rect.top;
+          this.repositionPlaceInfoLayer(
+            selectedPositionY,
+            e.changedTouches[0].clientY
+          );
+        };
+
+        this.$home?.addEventListener("touchend", handleTouchEnd);
       };
 
-      this.$home?.addEventListener("touchend", handleTouchEnd);
-    };
-
-    $layoutMoveButton.addEventListener("touchstart", handleTouchStart);
-
-    this.action.subscribe(ACTION.PLACE_LAYER_UP, () => {
-      $layoutMoveButton.removeEventListener("touchstart", handleTouchStart);
-      this.$home?.addEventListener("touchstart", handleTouchStart);
-    });
-
-    this.action.subscribe(ACTION.PLACE_LAYER_DOWN, () => {
-      this.$home?.removeEventListener("touchstart", handleTouchStart);
       $layoutMoveButton.addEventListener("touchstart", handleTouchStart);
-    });
 
-    //터치 이벤트가 존재하지 않는 기기의 바텀시트 이벤트
-    const handleMouseDown = (e: MouseEvent) => {
-      if (!this.$selectedPlaceInfo) return;
+      this.action.subscribe(ACTION.PLACE_LAYER_UP, () => {
+        $layoutMoveButton.removeEventListener("touchstart", handleTouchStart);
+        this.$home?.addEventListener("touchstart", handleTouchStart);
+      });
 
-      const startClientY = e.clientY;
-
-      const moveAt = (movedClientY: number) => {
+      this.action.subscribe(ACTION.PLACE_LAYER_DOWN, () => {
+        this.$home?.removeEventListener("touchstart", handleTouchStart);
+        $layoutMoveButton.addEventListener("touchstart", handleTouchStart);
+      });
+    } else {
+      //터치 이벤트가 존재하지 않는 기기의 바텀시트 이벤트
+      const handleMouseDown = (e: MouseEvent) => {
         if (!this.$selectedPlaceInfo) return;
 
-        const transformMatrix = window.getComputedStyle(
-          this.$selectedPlaceInfo
-        ).transform;
-        let translateY = 0;
+        const startClientY = e.clientY;
 
-        if (transformMatrix !== "none") {
-          const matrixValues = transformMatrix
-            .match(/matrix.*\((.+)\)/)?.[1]
-            .split(", ");
-          if (matrixValues) {
-            translateY = parseFloat(matrixValues[5]);
+        const moveAt = (movedClientY: number) => {
+          if (!this.$selectedPlaceInfo) return;
+
+          const transformMatrix = window.getComputedStyle(
+            this.$selectedPlaceInfo
+          ).transform;
+          let translateY = 0;
+
+          if (transformMatrix !== "none") {
+            const matrixValues = transformMatrix
+              .match(/matrix.*\((.+)\)/)?.[1]
+              .split(", ");
+            if (matrixValues) {
+              translateY = parseFloat(matrixValues[5]);
+            }
           }
-        }
 
-        if (movedClientY >= startClientY || -translateY > this.bagicHeight)
-          return;
+          if (movedClientY >= startClientY || -translateY > this.bagicHeight)
+            return;
 
-        this.$selectedPlaceInfo.style.transform = `translate3d(0,${
-          movedClientY - startClientY
-        }px,0)`;
+          this.$selectedPlaceInfo.style.transform = `translate3d(0,${
+            movedClientY - startClientY
+          }px,0)`;
+        };
+
+        const handleMouseMove = (e: MouseEvent) => {
+          moveAt(e.clientY);
+        };
+
+        const handleMouseUp = (e: MouseEvent) => {
+          if (!this.$selectedPlaceInfo) return;
+
+          this.repositionPlaceInfoLayer(startClientY, e.clientY);
+
+          document.removeEventListener("mousemove", handleMouseMove);
+          document.removeEventListener("mouseup", handleMouseUp);
+        };
+
+        document.addEventListener("mousemove", handleMouseMove);
+        document.addEventListener("mouseup", handleMouseUp);
       };
 
-      const handleMouseMove = (e: MouseEvent) => {
-        moveAt(e.clientY);
-      };
-
-      const handleMouseUp = (e: MouseEvent) => {
-        if (!this.$selectedPlaceInfo) return;
-
-        this.repositionPlaceInfoLayer(startClientY, e.clientY);
-
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
-      };
-
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-    };
-
-    this.$selectedPlaceInfo?.addEventListener("mousedown", handleMouseDown);
+      this.$selectedPlaceInfo?.addEventListener("mousedown", handleMouseDown);
+    }
   }
 
   private initSelectedPlace(placeInfo: SeletedPlaceInfo): void {
