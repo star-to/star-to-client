@@ -213,8 +213,6 @@ export default class Home implements Component {
     } else {
       //터치 이벤트가 존재하지 않는 기기의 바텀시트 이벤트
       const handleMouseDown = (e: MouseEvent) => {
-        if (!this.$selectedPlaceInfo) return;
-
         const startClientY = e.clientY;
 
         const moveAt = (movedClientY: number) => {
@@ -247,8 +245,6 @@ export default class Home implements Component {
         };
 
         const handleMouseUp = (e: MouseEvent) => {
-          if (!this.$selectedPlaceInfo) return;
-
           this.repositionPlaceInfoLayer(startClientY, e.clientY);
 
           document.removeEventListener("mousemove", handleMouseMove);
@@ -259,7 +255,7 @@ export default class Home implements Component {
         document.addEventListener("mouseup", handleMouseUp);
       };
 
-      this.$selectedPlaceInfo?.addEventListener("mousedown", handleMouseDown);
+      $layoutMoveButton.addEventListener("mousedown", handleMouseDown);
     }
   }
 
