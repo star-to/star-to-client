@@ -16,4 +16,15 @@ const isTouchDevice = (): boolean => {
   return navigator.maxTouchPoints > 0;
 };
 
-export { paintStar, isTouchDevice };
+const debounce = <T extends (...args: any[]) => void>(
+  func: T,
+  delay = 300
+): ((...args: Parameters<T>) => void) => {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+
+  return (...args: Parameters<T>) => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => func(...args), delay);
+  };
+};
+export { paintStar, isTouchDevice, debounce };

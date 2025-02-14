@@ -5,6 +5,7 @@ import MyMap from "@component/main/my-map";
 import ReviewInfo from "@component/state/review-info";
 import Router from "@/ts/router";
 import UserInfo from "@component/state/user-info";
+import { debounce } from "@component/util";
 
 export type AppParams = {
   action: Action;
@@ -49,3 +50,11 @@ function main() {
 window.addEventListener("DOMContentLoaded", () => {
   main();
 });
+
+const handleResize = debounce(() => {
+  if (window.confirm("화면 크기가 변경되었습니다.")) {
+    location.reload();
+  }
+});
+
+window.addEventListener("resize", handleResize);
