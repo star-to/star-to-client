@@ -22,9 +22,8 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
-      "@component/*":["src/ts/component/*"]
-
-    }    
+      "@component/*": ["src/ts/component/*"]
+    }
   },
-  "include": ["src/ts/*", "src/types"]
+  "include": ["src", "src/types"]
 }
