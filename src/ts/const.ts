@@ -98,6 +98,10 @@ export const SELECTOR = {
   MENUBAR_OVERLAY: "menubar__overlay",
   FOOTER: "footer",
   NONE: "none",
+  MODAL: "modal",
+  TOAST: "toast",
+  TOAST_CONTENT: "toast__content",
+  TOAST_ACTIVE: "toast-active",
 };
 
 export const IMG = {

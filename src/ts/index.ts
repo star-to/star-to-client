@@ -4,6 +4,7 @@ import MapInfo from "@component/state/map-info";
 import MyMap from "@component/main/my-map";
 import ReviewInfo from "@component/state/review-info";
 import Router from "@/ts/router";
+import Toast from "@component/modals/toast";
 import UserInfo from "@component/state/user-info";
 import { debounce } from "@component/util";
 
@@ -52,9 +53,11 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 const handleResize = debounce(() => {
-  if (window.confirm("화면 크기가 변경되었습니다.")) {
-    location.reload();
-  }
+  Toast.show(
+    "화면 크기가 변경되었습니다! 화면을 다시 불러오겠습니다.",
+    2000,
+    () => location.reload()
+  );
 });
 
 window.addEventListener("resize", handleResize);
