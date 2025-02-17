@@ -6,6 +6,7 @@ import Action from "@component/state/action";
 import { Component } from "@component/component";
 import ReviewInfo from "@component/state/review-info";
 import SvgMapCurrentLocation from "@/assets/map/map-location.svg";
+import Toast from "@component/modals/toast";
 import UserInfo from "@component/state/user-info";
 
 type MoveParameter = "up" | "down" | number;
@@ -510,9 +511,7 @@ export default class Home implements Component {
       const address = this.selectPlaceInfo.road_address_name;
       navigator.clipboard.writeText(address);
 
-      //TODO: 복사  팝업 필요
-      // Android.showToast("주소가 복사 됐습니다.");
-      // Android.copyToClipboard(this.selectPlaceInfo.road_address_name);
+      Toast.show("주소가 복사 됐습니다.");
     });
 
     $addressCopy.addEventListener("touchend", (e: Event) => {
