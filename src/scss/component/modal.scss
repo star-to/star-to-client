@@ -15,11 +15,12 @@
     width: 100%;
     color: rgb(43, 40, 40);
     .toast__content {
-      font-size: 0.8em;
+      font-size: 0.6em;
       background: rgb(243, 238, 238);
       padding: 9px 19px;
       border-radius: 17px;
       box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      white-space: nowrap;
     }
   }
 }
