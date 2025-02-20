@@ -511,7 +511,7 @@ export default class Home implements Component {
       const address = this.selectPlaceInfo.road_address_name;
       navigator.clipboard.writeText(address);
 
-      Toast.show("주소가 복사 됐습니다.");
+      Toast.show("주소가 복사 됐습니다.", 1000);
     });
 
     $addressCopy.addEventListener("touchend", (e: Event) => {
